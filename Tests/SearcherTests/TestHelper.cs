@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Common;
 
 
@@ -18,6 +19,21 @@ namespace SearcherTests
                 }
             }
             return false;
+        }
+
+        public static string XmlFileName
+        {
+            get { return Path.GetFullPath(@"1\5\note.xml"); }
+        }
+
+        public static string AssemblyFileName
+        {
+            get { return Path.GetFullPath(@"1\2\3\log4net.dll"); }
+        }
+
+        public static string NativeFileName
+        {
+            get { return Path.GetFullPath(@"1\2\3\7z.exe"); }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Common.Interfaces;
 using log4net;
 
 namespace Common
@@ -17,16 +18,16 @@ namespace Common
             _services = new Dictionary<Type, object>();
         }
 
-        ///// <summary>
-        ///// Сервис регистрации комов
-        ///// </summary>
-        //public static IComRegistrationService ComRegistrationService
-        //{
-        //    get
-        //    {
-        //        return _services[typeof (IComRegistrationService)] as IComRegistrationService;
-        //    }
-        //}
+        /// <summary>
+        /// Настройки поиска, указанные пользователем
+        /// </summary>
+        public static ISearchSettings SearchSettings
+        {
+            get
+            {
+                return _services[typeof (ISearchSettings)] as ISearchSettings;
+            }
+        }
 
         ///// <summary>
         ///// Настройки приложения

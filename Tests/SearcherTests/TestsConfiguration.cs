@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using Common;
+using Common.Interfaces;
 using NUnit.Framework;
+using SearcherTests.ServiceImpls;
 using log4net.Config;
 
 
@@ -15,6 +18,7 @@ public class TestsConfiguration
         try
         {
             XmlConfigurator.Configure();
+            RegisterFakeServices();
             RestoreTestData();
         }
         catch (Exception ex)
@@ -22,6 +26,18 @@ public class TestsConfiguration
             Debug.Write(Log.Content);
             throw;
         }
+    }
+
+    public static void RegisterFakeServices()
+    {
+#if ISOLATION_REQUIRED
+        //unit tests => register fake services (local build at developer workstation)
+#else
+        //system tests => register real services (nighty build at build agent)
+
+#endif
+        AppContext.RegisterService(FakeObjectsFactory.CreateSettings(), typeof(ISearchSettings));
+
     }
 
     public static void RestoreTestData()
