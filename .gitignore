@@ -1,0 +1,14 @@
+debug/
+release/
+sources/debug
+unittests/debug
+systemtests/debug
+sources/release
+unit tests/release
+Bin/
+*.user
+*.suo
+*.o
+*.pdb
+~*.*
+_ReSharper.*/
