@@ -29,21 +29,13 @@ namespace Common
             }
         }
 
-        ///// <summary>
-        ///// Настройки приложения
-        ///// </summary>
-        //public static ISettings Settings
-        //{
-        //    get { return _services[typeof (ISettings)] as ISettings; }
-        //}
-
-        ///// <summary>
-        ///// Прокся для работы с тфс
-        ///// </summary>
-        //public static ITeamFoundationService Tfs
-        //{
-        //    get { return _services[typeof (ITeamFoundationService)] as ITeamFoundationService; }
-        //}
+        /// <summary>
+        /// Шлюз к файловой системе
+        /// </summary>
+        public static IFileSystem FileSystem
+        {
+            get { return _services[typeof(IFileSystem)] as IFileSystem; }
+        }
 
         ///// <summary>
         ///// Получение у винды информации о tlb

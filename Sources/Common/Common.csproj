@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppContext.cs" />
+    <Compile Include="Interfaces\IFileSystem.cs" />
     <Compile Include="Interfaces\ISearchPlugin.cs" />
     <Compile Include="Interfaces\ISearchSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

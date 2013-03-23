@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Xml.Linq;
 using Common;
+using Common.Interfaces;
 
 namespace ServiceImpls
 {
-    public class FileSystem
+    public class FileSystem : IFileSystem
     {
-
-        private string FixFolderName(string folderName)
+        public string FixFolderName(string folderName)
         {
             if (folderName.IsNullOrEmpty())
             {
@@ -76,6 +79,35 @@ namespace ServiceImpls
             }
 
         }
+
+        public XDocument LoadXmlFile(string fileName)
+        {
+            var doc = XDocument.Load(fileName);
+            return doc;
+        }
+
+        public AssemblyName GetAssemblyInfo(string fileName)
+        {
+            AssemblyName asmInfo = null;
+            try
+            {
+                asmInfo = AssemblyName.GetAssemblyName(fileName);
+                return asmInfo;
+            }
+            catch (System.IO.FileNotFoundException)
+            {}
+            catch (System.BadImageFormatException)
+            {}
+            catch (System.IO.FileLoadException)
+            {}
+            return asmInfo;
+        }
+
+        public Assembly LoadAssemblyToDomain(AppDomain domain, AssemblyName asmInfo)
+        {
+            return domain.Load(asmInfo);
+        }
+
 
         private void InitSubfolders(string folderName, List<string> subfolders)
         {

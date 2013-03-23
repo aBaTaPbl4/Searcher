@@ -24,7 +24,7 @@ namespace SearchByType
                 AssemblyName asmInfo = null;
                 if (!AssociatedFileExtensions.Contains(Path.GetExtension(fileName)) 
                     || settings.FileContentSearchPattern.IsNullOrEmpty()
-                    || !IsFileAssembly(fileName, out asmInfo))
+                    || !IsAssembly(fileName, out asmInfo))
                 {
                     return false;
                 }
@@ -39,12 +39,12 @@ namespace SearchByType
             }            
         }
 
-        private bool AssemblyContainsType(AssemblyName asmInfo, string typeName)
+        public bool AssemblyContainsType(AssemblyName asmInfo, string typeName)
         {
             AppDomain domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null);
             try
             {
-                var asm = domain.Load(asmInfo);
+                var asm = AppContext.FileSystem.LoadAssemblyToDomain(domain, asmInfo);
                 var q = from t in asm.GetTypes()
                         where t.Name.ContainsIgnoreCase(typeName) && (t.IsClass || t.IsInterface)
                         select t;
@@ -57,30 +57,10 @@ namespace SearchByType
         }
 
 
-        private bool IsFileAssembly(string fileName, out AssemblyName asmInfo)
+        public bool IsAssembly(string fileName, out AssemblyName asmInfo)
         {
-            asmInfo = null;
-            try
-            {
-                asmInfo = AssemblyName.GetAssemblyName(fileName);
-                return true;
-            }
-
-            catch (System.IO.FileNotFoundException)
-            {
-
-                return false;
-            }
-
-            catch (System.BadImageFormatException)
-            {
-                return false;
-            }
-
-            catch (System.IO.FileLoadException)
-            {
-                return false;
-            }
+            asmInfo = AppContext.FileSystem.GetAssemblyInfo(fileName);
+            return asmInfo != null;
         }
 
         public string Name
