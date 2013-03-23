@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using log4net;
 
-namespace ServicesImpl
+namespace Common
 {
     /// <summary>
     /// Контекст приложения. 

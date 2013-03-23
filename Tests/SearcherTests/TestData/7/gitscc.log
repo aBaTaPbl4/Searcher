@@ -1,0 +1,42 @@
+1/19/2013 11:18:49 AM DiffFile: C:\.My projects\new\NReplicator
+System.Exception: I can't find the name of your HOME directory
+I can't find the name of your HOME directory
+
+   at GitScc.GitBash.RunCmd(String args, String workingDirectory)
+   at GitScc.GitFileStatusTracker.DiffFile(String fileName)
+
+1/19/2013 11:19:04 AM DiffFile: C:\.My projects\new\NReplicator
+System.Exception: I can't find the name of your HOME directory
+I can't find the name of your HOME directory
+
+   at GitScc.GitBash.RunCmd(String args, String workingDirectory)
+   at GitScc.GitFileStatusTracker.DiffFile(String fileName)
+
+1/19/2013 3:23:54 PM DiffFile: C:\.My projects\new\NReplicator
+System.Exception: I can't find the name of your HOME directory
+I can't find the name of your HOME directory
+
+   at GitScc.GitBash.RunCmd(String args, String workingDirectory)
+   at GitScc.GitFileStatusTracker.DiffFile(String fileName)
+
+1/19/2013 3:24:53 PM DiffFile: C:\.My projects\new\NReplicator
+System.Exception: I can't find the name of your HOME directory
+I can't find the name of your HOME directory
+
+   at GitScc.GitBash.RunCmd(String args, String workingDirectory)
+   at GitScc.GitFileStatusTracker.DiffFile(String fileName)
+
+1/27/2013 6:16:46 AM DiffFile: C:\.My projects\new\NReplicator
+System.Exception: I can't find the name of your HOME directory
+I can't find the name of your HOME directory
+
+   at GitScc.GitBash.RunCmd(String args, String workingDirectory)
+   at GitScc.GitFileStatusTracker.DiffFile(String fileName)
+
+1/27/2013 5:36:38 PM DiffFile: C:\.My projects\new\NReplicator
+System.Exception: I can't find the name of your HOME directory
+I can't find the name of your HOME directory
+
+   at GitScc.GitBash.RunCmd(String args, String workingDirectory)
+   at GitScc.GitFileStatusTracker.DiffFile(String fileName)
+
