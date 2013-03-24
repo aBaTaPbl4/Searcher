@@ -1,7 +1,9 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.IO;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using VTRegScan;
+using Searcher.VM;
 
 namespace ScanX.Panels
 {
@@ -40,11 +42,11 @@ namespace ScanX.Panels
         private void CheckBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             // bug: somehow checkboxes got broken..
-            ScanData d = (ScanData)lstResults.Items.CurrentItem;
-            if (d != null)
-            {
-                d.Check = !d.Check;
-            }
+            //ScanData d = (ScanData)lstResults.Items.CurrentItem;
+            //if (d != null)
+            //{
+            //    d.Check = !d.Check;
+            //}
         }
 
         private void MenuItem_Clicked(object sender, RoutedEventArgs e)
@@ -55,6 +57,7 @@ namespace ScanX.Panels
                 ScanData s = (ScanData)lstResults.Items.CurrentItem;
                 if (s != null)
                 {
+                    //todo:add delete files
                     switch (m.Header.ToString())
                     {
                         case "Select Item":
@@ -77,11 +80,11 @@ namespace ScanX.Panels
                                 CheckItems(false);
                                 break;
                             }
-                        case "Go to Key":
-                            {
-                                OpenKey(s);
-                                break;
-                            }
+                        //case "Go to Key":
+                        //    {
+                        //        OpenKey(s);
+                        //        break;
+                        //    }
                         case "Go to Folder":
                             {
                                 OpenFolder(s);
@@ -91,19 +94,19 @@ namespace ScanX.Panels
                             {
                                 wndDetails w = new wndDetails();
                                 ScanData d = (ScanData)lstResults.Items.CurrentItem;
-                                w.txtType.Text = d.Name;
-                                w.txtRoot.Text = d.Root.ToString();
-                                w.txtSubkey.Text = d.Key;
-                                w.txtValue.Text = d.Value;
-                                w.txtDetails.Text = IdToDescription(d.Id);
+                                //w.txtType.Text = d.Name;
+                                //w.txtRoot.Text = d.Root.ToString();
+                                //w.txtSubkey.Text = d.Key;
+                                //w.txtValue.Text = d.Value;
+                                //w.txtDetails.Text = IdToDescription(d.Id);
                                 w.ShowDialog();
                                 break;
                             }
-                        case "Help":
-                            {
-                                OpenApp("http://www.vtdev.com/");
-                                break;
-                            }
+                        //case "Help":
+                        //    {
+                        //        OpenApp("http://www.vtdev.com/");
+                        //        break;
+                        //    }
                     }
                 }
             }
@@ -181,39 +184,41 @@ namespace ScanX.Panels
             }
         }
 
-        private void OpenApp(string path)
-        {
-            cLightning lgt = new cLightning();
-            lgt.ShellOpen(path, cLightning.SHOW_COMMANDS.SW_NORMAL);
-        }
+        //private void OpenApp(string path)
+        //{
+        //    cLightning lgt = new cLightning();
+        //    lgt.ShellOpen(path, cLightning.SHOW_COMMANDS.SW_NORMAL);
+        //}
 
-        private void OpenKey(ScanData data)
-        {
-            string key = data.Key;
-            if (key.Length > 0)
-            {
-                key = data.Root + @"\" + data.Key;
-                cLightning cr = new VTRegScan.cLightning();
-                if (cr.SetJumpKey(key))
-                {
-                    cr.ShellOpen("regedit", VTRegScan.cLightning.SHOW_COMMANDS.SW_NORMAL);
-                }
-            }
-        }
+        //private void OpenKey(ScanData data)
+        //{
+        //    string key = data.Key;
+        //    if (key.Length > 0)
+        //    {
+        //        key = data.Root + @"\" + data.Key;
+        //        cLightning cr = new VTRegScan.cLightning();
+        //        if (cr.SetJumpKey(key))
+        //        {
+        //            cr.ShellOpen("regedit", VTRegScan.cLightning.SHOW_COMMANDS.SW_NORMAL);
+        //        }
+        //    }
+        //}
 
         private void OpenFolder(ScanData data)
         {
-            string folder = data.Value;
-            if (folder.Length > 0 && folder.Contains(@":\"))
-            {
-                try
-                {
-                    folder = folder.Substring(0, folder.LastIndexOf(@"\") + 1);
-                    cLightning cr = new VTRegScan.cLightning();
-                    cr.ShellOpen(folder, VTRegScan.cLightning.SHOW_COMMANDS.SW_NORMAL);
-                }
-                finally { }
-            }
+            Process.Start("explorer", "\"" +
+                          Path.GetDirectoryName(data.FileName) + "\"");
+            //string folder = data.Value;
+            //if (folder.Length > 0 && folder.Contains(@":\"))
+            //{
+            //    try
+            //    {
+            //        folder = folder.Substring(0, folder.LastIndexOf(@"\") + 1);
+            //        cLightning cr = new VTRegScan.cLightning();
+            //        cr.ShellOpen(folder, VTRegScan.cLightning.SHOW_COMMANDS.SW_NORMAL);
+                //}
+                //finally { }
+            //}
         }
         #endregion
     }

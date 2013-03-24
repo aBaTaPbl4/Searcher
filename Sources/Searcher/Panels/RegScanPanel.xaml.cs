@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
+using Common;
+using Searcher.VM;
 
 namespace ScanX.Panels
 {
@@ -8,9 +11,29 @@ namespace ScanX.Panels
     /// </summary>
     public partial class RegScanPanel : UserControl
     {
+        private readonly ObservableCollection<PluginDecorator> _plugins;
+
         public RegScanPanel()
         {
             InitializeComponent();
+            _plugins = new ObservableCollection<PluginDecorator>();
+            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            {
+                foreach (var plugin in AppContext.PluginManager.ExternalPlugins)
+                {
+                    _plugins.Add(new PluginDecorator()
+                    {
+                        IsActive = false,
+                        Plugin = plugin
+                    });
+                }                
+            }
+
+        }
+
+        public ObservableCollection<PluginDecorator> Plugins
+        {
+            get { return _plugins; }
         }
 
         private void Start_Clicked(object sender, RoutedEventArgs e)
@@ -22,7 +45,7 @@ namespace ScanX.Panels
         {
             get
             {
-                return chkControlScan.IsChecked ?? false;
+                return false;
             }
         }
 
@@ -30,39 +53,17 @@ namespace ScanX.Panels
         {
             get
             {
-                return chkHardControlClean.IsChecked ?? false;
+                return  false;
             }
         }
 
-        private void chkControlScan_Checked(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (!IsNeedToScanControls)
-            {
-                chkHardControlClean.IsChecked = false;
-                chkOnlyCleanComFromConfig.IsChecked = false;
-            }
-            chkHardControlClean.IsEnabled = IsNeedToScanControls;
-            chkOnlyCleanComFromConfig.IsEnabled = IsNeedHardClean;
+            rbnOR.IsChecked = true;
+            //txtFileContent.IsEnabled = true;
+            //txtFileName.IsEnabled = true;
+            DataContext = this;
         }
 
-        private void chkHardControlClean_Checked(object sender, RoutedEventArgs e)
-        {
-            if (!IsNeedHardClean)
-            {
-                chkOnlyCleanComFromConfig.IsChecked = false;
-            }
-            chkOnlyCleanComFromConfig.IsEnabled = IsNeedHardClean;
-        }
-
-        private void chkOnlyComFromConfig_Checked(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Checkbox_Checked(object sender, RoutedEventArgs e)
-        {
-           // CheckBox c = (CheckBox)sender;
-           // c.IsChecked = !c.IsChecked;
-        }
     }
 }

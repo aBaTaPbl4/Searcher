@@ -4,6 +4,11 @@ using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Windows;
+using Common;
+using Common.Interfaces;
+using Searcher.VM;
+using ServiceImpls;
+using log4net.Config;
 
 namespace ScanX
 {
@@ -14,9 +19,20 @@ namespace ScanX
     {
         protected override void OnStartup(StartupEventArgs e)
         {
-            //StartupUri = new Uri("Window1.xaml", UriKind.Relative);
+            XmlConfigurator.Configure();
+            RegisterServices();
+            var pm = AppContext.PluginManager as PluginManager;
+            pm.PrivateDomain = AppDomain.CurrentDomain;
+            pm.ScanPluginsFolder();
             StartupUri = new Uri("wndMain.xaml", UriKind.Relative);
             base.OnStartup(e);
+        }
+
+        protected void RegisterServices()
+        {
+            AppContext.RegisterService(new SearchSettings(),typeof(ISearchSettings));
+            AppContext.RegisterService(new FileSystem(), typeof(IFileSystem));
+            AppContext.RegisterService(new PluginManager(), typeof(IPluginManager));
         }
     }
 }

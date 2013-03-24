@@ -7,16 +7,16 @@
         SnapsToDevicePixels="True" FontFamily="Arial">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="4">
-            <TextBlock FontWeight="DemiBold" Margin="4" Text="Scan Type:" />
-            <TextBlock Name="txtType" Margin="4"/>
-            <TextBlock FontWeight="DemiBold" Margin="4" Text="Root Key:" />
-            <TextBlock Name="txtRoot" Margin="4"/>
-            <TextBlock FontWeight="DemiBold" Margin="4" Text="SubKey" />
-            <TextBlock Name="txtSubkey" Margin="4" />
-            <TextBlock FontWeight="DemiBold" Margin="4" Text="Value" />
-            <TextBlock Name="txtValue" Margin="4" />
-            <TextBlock FontWeight="DemiBold" Margin="4" Text="Details" />
-            <TextBlock Name="txtDetails" Margin="4"  TextWrapping="Wrap" />
+            <TextBlock FontWeight="DemiBold" Margin="4" Text="File name:" />
+            <TextBlock Name="txtFileName" Margin="4"/>
+            <TextBlock FontWeight="DemiBold" Margin="4" Text="Size:" />
+            <TextBlock Name="txtSize" Margin="4"/>
+            <TextBlock FontWeight="DemiBold" Margin="4" Text="Creation Date" />
+            <TextBlock Name="txtCreationDate" Margin="4" />
+            <TextBlock FontWeight="DemiBold" Margin="4" Text="Modification Date" />
+            <TextBlock Name="txtModificationDate" Margin="4" />
+            <TextBlock FontWeight="DemiBold" Margin="4" Text="Found by plugin" />
+            <TextBlock Name="txtFoundByPlugin" Margin="4"  TextWrapping="Wrap" />
         </StackPanel>
     </Grid>
 </Window>

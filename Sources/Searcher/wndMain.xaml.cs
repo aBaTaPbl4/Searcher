@@ -20,18 +20,21 @@
 #region Directives
 using System;
 using System.Windows;
+using Common;
+using Models;
 using ScanX.Implementation;
 using ScanX.Panels;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using VTRegScan;
+using Searcher.VM;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Threading;
+using log4net;
+
 #endregion
 
 namespace ScanX
@@ -57,8 +60,7 @@ namespace ScanX
         BitmapImage _bmpDrive;
         BitmapImage _bmpOptions;
         BitmapImage _bmpAbout;
-        cRegScan _RegScan;
-        private static cRestore _Restore = new cRestore();
+        SearchEngine _RegScan;
         private DispatcherTimer _aUpdateTimer;
         private static DispatcherTimer _aRestoreTimer;
         private static bool _bRestoreComplete = false;
@@ -77,8 +79,8 @@ namespace ScanX
         private static int[] _aSubScan;
         private static DateTime _dTime;
         private static TimeSpan _tTimeElapsed;
-        private ObservableCollection<ScanData> _Results = new ObservableCollection<ScanData>();
-        private Logging _cLog;
+        private ObservableCollection<PluginDecorator> _Results = new ObservableCollection<PluginDecorator>();
+        private ILog _cLog;
         private BackgroundWorker _oProcessAsyncBackgroundWorker = null;
         public delegate void ProcessCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
         public event ProcessCompletedEventHandler ProcessCompleted;
@@ -109,10 +111,7 @@ namespace ScanX
         {
             InitializeComponent();
             InitFields();
-            _cLog = new Logging(AppDomain.CurrentDomain.BaseDirectory + "log.txt");
-           // cSecurity cs = new cSecurity();
-           // cs.ChangeObjectOwnership(@"HKEY_CLASSES_ROOT\CLSID\{722b3793-5367-4446-b6bb-db89b05c1f24}", cSecurity.SE_OBJECT_TYPE.SE_REGISTRY_KEY);
-           // cs.ChangeKeyPermissions(cSecurity.ROOT_KEY.HKEY_CLASSES_ROOT, @"CLSID\{722b3793-5367-4446-b6bb-db89b05c1f24}", cs.UserName(cSecurity.EXTENDED_NAME_FORMAT.NameSamCompatible), cSecurity.eRegistryAccess.Registry_Full_Control, cSecurity.eAccessType.Access_Allowed, cSecurity.eInheritenceFlags.Child_Inherit_Level);
+            _cLog = AppContext.Logger;
         }
         #endregion
 
@@ -134,9 +133,9 @@ namespace ScanX
             _sLabel = label;
         }
 
-        private void RegScan_MatchItem(cLightning.ROOT_KEY root, string key, string value, string data, RESULT_TYPE id)
+        private void RegScan_MatchItem(string fileName)
         {
-            _sMatch = data;
+            _sMatch = fileName;
             _iResultsCounter += 1;
         }
 
@@ -277,7 +276,7 @@ namespace ScanX
                         CheckItems(false);
                         break;
                     case "btnRemove":
-                        RemoveItems();
+                        //RemoveItems();
                         this.IsResetPending = true;
                         break;
                     case "btnRestore":
@@ -287,10 +286,10 @@ namespace ScanX
                         ShowLog();
                         break;
                     case "btnHelpMain":
-                        OpenApp("http://www.vtdev.com/net/scanx.html");
+                        //OpenApp("http://www.vtdev.com/net/scanx.html");
                         break;
                     case "btnHelpHome":
-                        OpenApp("http://www.vtdev.com/");
+                        //OpenApp("http://www.vtdev.com/");
                         break;
                     case "btnHelpAbout":
                         // load about form
@@ -329,13 +328,13 @@ namespace ScanX
         #region Helpers
         private void CheckItems(bool check)
         {
-            if (_Results != null)
-            {
-                foreach (ScanData o in _Results)
-                {
-                    o.Check = check;
-                }
-            }
+            //if (_Results != null)
+            //{
+            //    foreach (ScanData o in _Results)
+            //    {
+            //        o.Check = check;
+            //    }
+            //}
         }
 
         private static void DoEvents()
@@ -416,17 +415,17 @@ namespace ScanX
             _bmpOptions = new BitmapImage(new Uri("/Images/options.png", UriKind.Relative));
             _bmpAbout = new BitmapImage(new Uri("/Images/about.png", UriKind.Relative));
             
-            _RegScan = new cRegScan();
-            _RegScan.CurrentPath += new cRegScan.CurrentPathDelegate(RegScan_CurrentPath);
-            _RegScan.KeyCount += new cRegScan.KeyCountDelegate(RegScan_KeyCount);
-            _RegScan.LabelChange += new cRegScan.LabelChangeDelegate(RegScan_LabelChange);
-            _RegScan.MatchItem += new cRegScan.MatchItemDelegate(RegScan_MatchItem);
-            _RegScan.ProcessChange += new cRegScan.ProcessChangeDelegate(RegScan_ProcessChange);
-            _RegScan.ProcessCompleted += new cRegScan.ProcessCompletedEventHandler(RegScan_ProcessCompleted);
-            _RegScan.ScanComplete += new cRegScan.ScanCompleteDelegate(RegScan_ScanComplete);
-            _RegScan.SubScanComplete += new cRegScan.SubScanCompleteDelegate(RegScan_SubScanComplete);
-            _RegScan.ScanCount += new cRegScan.ScanCountDelegate(RegScan_ScanCount);
-            _RegScan.StatusChange += new cRegScan.StatusChangeDelegate(RegScan_StatusChange);
+            _RegScan = new SearchEngine();
+            _RegScan.CurrentPath += new SearchEngine.CurrentPathDelegate(RegScan_CurrentPath);
+            _RegScan.KeyCount += new SearchEngine.KeyCountDelegate(RegScan_KeyCount);
+            _RegScan.LabelChange += new SearchEngine.LabelChangeDelegate(RegScan_LabelChange);
+            _RegScan.MatchItem += new SearchEngine.MatchItemDelegate(RegScan_MatchItem);
+            _RegScan.ProcessChange += new SearchEngine.ProcessChangeDelegate(RegScan_ProcessChange);
+            _RegScan.ProcessCompleted += new SearchEngine.ProcessCompletedEventHandler(RegScan_ProcessCompleted);
+            _RegScan.ScanComplete += new SearchEngine.ScanCompleteDelegate(RegScan_ScanComplete);
+            _RegScan.SubScanComplete += new SearchEngine.SubScanCompleteDelegate(RegScan_SubScanComplete);
+            _RegScan.ScanCount += new SearchEngine.ScanCountDelegate(RegScan_ScanCount);
+            _RegScan.StatusChange += new SearchEngine.StatusChangeDelegate(RegScan_StatusChange);
             // text updates
             _aUpdateTimer = new System.Windows.Threading.DispatcherTimer();
             _aUpdateTimer.Interval = new TimeSpan(1000);
@@ -451,219 +450,216 @@ namespace ScanX
             this.grdNonClient.IsEnabled = unlocked;
         }
 
-        private void LogDetail(ScanData data, bool result)
-        {
-            if (Properties.Settings.Default.SettingDetails == true)
-            {
-                string entry = "";
+        //private void LogDetail(ScanData data, bool result)
+        //{
+        //    if (Properties.Settings.Default.SettingDetails == true)
+        //    {
+        //        string entry = "";
 
-                if (result)
-                {
-                    entry = "Attempted deletion of value: " + data.Root.ToString() + @"\" + data.Key + " successful.";
-                }
-                else
-                {
-                    entry = "Attempted deletion of value: " + data.Root.ToString() + @"\" + data.Key + " failed.";
-                }
-                _cLog.WriteLine(entry);
-            }
-        }
+        //        if (result)
+        //        {
+        //            entry = "Attempted deletion of value: " + data.Root.ToString() + @"\" + data.Key + " successful.";
+        //        }
+        //        else
+        //        {
+        //            entry = "Attempted deletion of value: " + data.Root.ToString() + @"\" + data.Key + " failed.";
+        //        }
+        //        _cLog.WriteLine(entry);
+        //    }
+        //}
 
         private void LogEntry(string entry)
         {
-            if (Properties.Settings.Default.SettingLog == true)
-            {
-                _cLog.WriteLog(entry);
-            }
+            _cLog.Info(entry);
         }
 
-        private void ModSecVal(cLightning.ROOT_KEY RootKey, string SubKey, cSecurity.eInheritenceFlags flags)
-        {
-            string sKey = RootKey.ToString();
-            cSecurity sec = new cSecurity();
-            string name = sec.UserName(cSecurity.EXTENDED_NAME_FORMAT.NameSamCompatible);
+        //private void ModSecVal(cLightning.ROOT_KEY RootKey, string SubKey, cSecurity.eInheritenceFlags flags)
+        //{
+        //    string sKey = RootKey.ToString();
+        //    cSecurity sec = new cSecurity();
+        //    string name = sec.UserName(cSecurity.EXTENDED_NAME_FORMAT.NameSamCompatible);
 
-            if (name == null)
-            {
-                name = sec.UserName();
-            }
-            sKey += @"\" + SubKey;
-            sec.ChangeObjectOwnership(sKey, cSecurity.SE_OBJECT_TYPE.SE_REGISTRY_KEY);
-            sec.ChangeKeyPermissions((cSecurity.ROOT_KEY)RootKey, SubKey, name, cSecurity.eRegistryAccess.Registry_Full_Control, cSecurity.eAccessType.Access_Allowed, flags);
-        }
+        //    if (name == null)
+        //    {
+        //        name = sec.UserName();
+        //    }
+        //    sKey += @"\" + SubKey;
+        //    sec.ChangeObjectOwnership(sKey, cSecurity.SE_OBJECT_TYPE.SE_REGISTRY_KEY);
+        //    sec.ChangeKeyPermissions((cSecurity.ROOT_KEY)RootKey, SubKey, name, cSecurity.eRegistryAccess.Registry_Full_Control, cSecurity.eAccessType.Access_Allowed, flags);
+        //}
 
-        private void OpenApp(string path)
-        {
-            cLightning lgt = new cLightning();
-            lgt.ShellOpen(path, cLightning.SHOW_COMMANDS.SW_SHOWNOACTIVATE);
-        }
+        //private void OpenApp(string path)
+        //{
+        //    cLightning lgt = new cLightning();
+        //    lgt.ShellOpen(path, cLightning.SHOW_COMMANDS.SW_SHOWNOACTIVATE);
+        //}
 
-        private void RemoveItems()
-        {
-            bool res = false;
-            bool val = false;
-            bool ret = false;
-            int items = 0;
+        //private void RemoveItems()
+        //{
+        //    bool res = false;
+        //    bool val = false;
+        //    bool ret = false;
+        //    int items = 0;
 
-            // test for checked items first
-            foreach (ScanData o in _Results)
-            {
-                if (o.Check == true)
-                {
-                    val = true;
-                    break;
-                }
-            }
-            if (val)
-            {
-                //set a restore point
+        //    // test for checked items first
+        //    foreach (ScanData o in _Results)
+        //    {
+        //        if (o.Check == true)
+        //        {
+        //            val = true;
+        //            break;
+        //        }
+        //    }
+        //    if (val)
+        //    {
+        //        //set a restore point
 
-                res = (bool)Properties.Settings.Default.SettingRestore;
+        //        res = (bool)Properties.Settings.Default.SettingRestore;
 
-                if (res)
-                {
-                    MessageBoxResult chc = MessageBox.Show("Would you like to create a System Restore Point before proceeding? The Restore process may take several minutes to complete..",
-                        "System Restore", MessageBoxButton.YesNo, MessageBoxImage.Question);
-                    if (chc == MessageBoxResult.Yes)
-                    {
-                        // restore visual
-                        RestoreProgressStart();
-                        if (!_bRestoreSucess)
-                        {
-                            RestoreProgressStop();
-                            res = false;
-                            MessageBoxResult msg = MessageBox.Show("System Restore is either disabled or unavailable on this computer. " +
-                                "Do you wish to set up System Restore before proceeding? Without System Restore, changes to your system can Not be Undone",
-                                        "Restore Disabled!", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-                            if (msg == MessageBoxResult.Yes)
-                            {
-                                if (!ShowProtection())
-                                {
-                                    _pnlOptions.chkRestore.IsChecked = false;
-                                }
-                                return;
-                            }
-                            else if (msg == MessageBoxResult.No)
-                            {
-                                LogEntry("System Restore deemed unavailable or deactivated. Option disabled.");
-                                _pnlOptions.chkRestore.IsChecked = false;
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            RestoreProgressStop();
-                        }
-                    }
-                }
+        //        if (res)
+        //        {
+        //            MessageBoxResult chc = MessageBox.Show("Would you like to create a System Restore Point before proceeding? The Restore process may take several minutes to complete..",
+        //                "System Restore", MessageBoxButton.YesNo, MessageBoxImage.Question);
+        //            if (chc == MessageBoxResult.Yes)
+        //            {
+        //                // restore visual
+        //                RestoreProgressStart();
+        //                if (!_bRestoreSucess)
+        //                {
+        //                    RestoreProgressStop();
+        //                    res = false;
+        //                    MessageBoxResult msg = MessageBox.Show("System Restore is either disabled or unavailable on this computer. " +
+        //                        "Do you wish to set up System Restore before proceeding? Without System Restore, changes to your system can Not be Undone",
+        //                                "Restore Disabled!", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+        //                    if (msg == MessageBoxResult.Yes)
+        //                    {
+        //                        if (!ShowProtection())
+        //                        {
+        //                            _pnlOptions.chkRestore.IsChecked = false;
+        //                        }
+        //                        return;
+        //                    }
+        //                    else if (msg == MessageBoxResult.No)
+        //                    {
+        //                        LogEntry("System Restore deemed unavailable or deactivated. Option disabled.");
+        //                        _pnlOptions.chkRestore.IsChecked = false;
+        //                    }
+        //                    else
+        //                    {
+        //                        return;
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    RestoreProgressStop();
+        //                }
+        //            }
+        //        }
 
-                cLightning lightning = new cLightning();
+        //        cLightning lightning = new cLightning();
 
-                // iterate through and remove
-                foreach (ScanData o in _Results)
-                {
-                    if (o.Check == true)
-                    {
-                        switch (o.Id)
-                        {
-                            // delete value
-                            case 1:
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 5:
-                            case 7:
-                            case 9:
-                            case 10:
-                            case 11:
-                            case 12:
-                            case 13:
-                            case 14:
-                            case 15:
-                            case 16:
-                            case 17:
-                            case 18:
-                            case 19:
-                            case 21:
-                            case 22:
-                            case 23:
-                            case 24:
-                            case 25:
-                            case 26:
-                            case 27:
-                                {
-                                    if (o.Value == "Default")
-                                    {
-                                        o.Value = "";
-                                    }
-                                    ret = lightning.DeleteValue(o.Root, o.Key, o.Value);
-                                    if (ret == false)
-                                    {
-                                        ModSecVal(o.Root, o.Key, cSecurity.eInheritenceFlags.Child_Inherit_Level);
-                                        ret = lightning.DeleteValue(o.Root, o.Key, o.Value);
-                                    }
-                                    items += 1;
-                                    break;
-                                }
-                            // delete key
-                            case 6:
-                            case 8:
-                                {
-                                    ret = (lightning.DeleteKey(o.Root, o.Key));
-                                    if (ret == false)
-                                    {
-                                        ModSecVal(o.Root, o.Key, cSecurity.eInheritenceFlags.Container_Inherit);
-                                        ret = lightning.DeleteValue(o.Root, o.Key, o.Value);
-                                    }
-                                    items += 1;
-                                    break;
-                                }
-                            // recreate value
-                            case 20:
-                                {
-                                    ret = (lightning.DeleteValue(o.Root, o.Key, o.Value));
-                                    lightning.WriteMulti(o.Root, o.Key, "VDD", "");
-                                    items += 1;
-                                    break;
-                                }
-                            //delete guid key
-                            case 28:
-                                {
-                                    ret = (lightning.DeleteTree(o.Root, o.Key));
-                                    if (ret == false)
-                                    {
-                                        ModSecVal(o.Root, o.Key, cSecurity.eInheritenceFlags.Object_Container_Inherit);
-                                        ret = lightning.DeleteTree(o.Root, o.Key);
-                                    }
-                                    items += 1;
-                                    break;
-                                }
-                        }
-                        LogDetail(o, ret);
-                    }
-                }
-                // finalize restore
-                if (res)
-                {
-                    _Restore.EndRestore(false);
-                }
-                LogEntry("Items removal action completed successfully.");
-                ScanCancel();
-            }
-            else
-            {
-                MessageBoxResult can = MessageBox.Show("You haven't selected any items for removal. To Reset the Scan Results, select Cancel",
-                        "No Items Selected", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
-                if (can == MessageBoxResult.Cancel)
-                {
-                    LogEntry("Scan Results were Reset.");
-                    ScanCancel();
-                }
-            }
-        }
+        //        // iterate through and remove
+        //        foreach (ScanData o in _Results)
+        //        {
+        //            if (o.Check == true)
+        //            {
+        //                switch (o.Id)
+        //                {
+        //                    // delete value
+        //                    case 1:
+        //                    case 2:
+        //                    case 3:
+        //                    case 4:
+        //                    case 5:
+        //                    case 7:
+        //                    case 9:
+        //                    case 10:
+        //                    case 11:
+        //                    case 12:
+        //                    case 13:
+        //                    case 14:
+        //                    case 15:
+        //                    case 16:
+        //                    case 17:
+        //                    case 18:
+        //                    case 19:
+        //                    case 21:
+        //                    case 22:
+        //                    case 23:
+        //                    case 24:
+        //                    case 25:
+        //                    case 26:
+        //                    case 27:
+        //                        {
+        //                            if (o.Value == "Default")
+        //                            {
+        //                                o.Value = "";
+        //                            }
+        //                            ret = lightning.DeleteValue(o.Root, o.Key, o.Value);
+        //                            if (ret == false)
+        //                            {
+        //                                ModSecVal(o.Root, o.Key, cSecurity.eInheritenceFlags.Child_Inherit_Level);
+        //                                ret = lightning.DeleteValue(o.Root, o.Key, o.Value);
+        //                            }
+        //                            items += 1;
+        //                            break;
+        //                        }
+        //                    // delete key
+        //                    case 6:
+        //                    case 8:
+        //                        {
+        //                            ret = (lightning.DeleteKey(o.Root, o.Key));
+        //                            if (ret == false)
+        //                            {
+        //                                ModSecVal(o.Root, o.Key, cSecurity.eInheritenceFlags.Container_Inherit);
+        //                                ret = lightning.DeleteValue(o.Root, o.Key, o.Value);
+        //                            }
+        //                            items += 1;
+        //                            break;
+        //                        }
+        //                    // recreate value
+        //                    case 20:
+        //                        {
+        //                            ret = (lightning.DeleteValue(o.Root, o.Key, o.Value));
+        //                            lightning.WriteMulti(o.Root, o.Key, "VDD", "");
+        //                            items += 1;
+        //                            break;
+        //                        }
+        //                    //delete guid key
+        //                    case 28:
+        //                        {
+        //                            ret = (lightning.DeleteTree(o.Root, o.Key));
+        //                            if (ret == false)
+        //                            {
+        //                                ModSecVal(o.Root, o.Key, cSecurity.eInheritenceFlags.Object_Container_Inherit);
+        //                                ret = lightning.DeleteTree(o.Root, o.Key);
+        //                            }
+        //                            items += 1;
+        //                            break;
+        //                        }
+        //                }
+        //                //LogDetail(o, ret);
+        //            }
+        //        }
+        //        // finalize restore
+        //        if (res)
+        //        {
+        //            _Restore.EndRestore(false);
+        //        }
+        //        LogEntry("Items removal action completed successfully.");
+        //        ScanCancel();
+        //    }
+        //    else
+        //    {
+        //        MessageBoxResult can = MessageBox.Show("You haven't selected any items for removal. To Reset the Scan Results, select Cancel",
+        //                "No Items Selected", MessageBoxButton.OKCancel, MessageBoxImage.Exclamation);
+        //        if (can == MessageBoxResult.Cancel)
+        //        {
+        //            LogEntry("Scan Results were Reset.");
+        //            ScanCancel();
+        //        }
+        //    }
+        //}
 
         private void Reset()
         {
@@ -711,23 +707,23 @@ namespace ScanX
                 _pnlScanResults.lstResults.ItemsSource = null;
                 _pnlScanResults.lstResults.DataContext = null;
             }
-            if (_RegScan.Data.Count > 0)
-            {
-                _Results = new ObservableCollection<ScanData>(_RegScan.Data);
+            //if (_RegScan.Data.Count > 0)
+            //{
+            //    _Results = new ObservableCollection<ScanData>(_RegScan.Data);
 
-                foreach (ScanData o in _Results)
-                {
-                    o.ImagePath = IdToImage(o.Id);
-                }
-                _pnlScanResults.lstResults.ItemsSource = _Results;
-                _pnlScanResults.lstResults.DataContext = _Results;
-            }
+            //    foreach (ScanData o in _Results)
+            //    {
+            //        o.ImagePath = IdToImage(o.Id);
+            //    }
+            //    _pnlScanResults.lstResults.ItemsSource = _Results;
+            //    _pnlScanResults.lstResults.DataContext = _Results;
+            //}
         }
 
         private void ResetEngine()
         {
             _RegScan.CancelProcessAsync(); 
-            _RegScan.Data.Clear();
+            _RegScan = new SearchEngine();
             this.IsResetPending = true;
         }
 
@@ -765,11 +761,11 @@ namespace ScanX
             _pnlScanResults.lstResults.IsEnabled = false;
             UnLockControls(false);
             // launch restore on a new thread
-            _oProcessAsyncBackgroundWorker = new BackgroundWorker();
-            _oProcessAsyncBackgroundWorker.WorkerSupportsCancellation = true;
-            _oProcessAsyncBackgroundWorker.DoWork += new DoWorkEventHandler(_oProcessAsyncBackgroundWorker_DoWork);
-            _oProcessAsyncBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(_oProcessAsyncBackgroundWorker_RunWorkerCompleted);
-            _oProcessAsyncBackgroundWorker.RunWorkerAsync();
+            //_oProcessAsyncBackgroundWorker = new BackgroundWorker();
+            //_oProcessAsyncBackgroundWorker.WorkerSupportsCancellation = true;
+            //_oProcessAsyncBackgroundWorker.DoWork += new DoWorkEventHandler(_oProcessAsyncBackgroundWorker_DoWork);
+            //_oProcessAsyncBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(_oProcessAsyncBackgroundWorker_RunWorkerCompleted);
+            //_oProcessAsyncBackgroundWorker.RunWorkerAsync();
 
             double safe = 0;
             do
@@ -785,53 +781,53 @@ namespace ScanX
             } while (_bRestoreComplete != true);
         }
 
-        private void RestoreProgressStop()
-        {
-            grdRestore.Visibility = Visibility.Collapsed;
-            _pnlScanResults.lstResults.IsEnabled = true;
-            UnLockControls(true);
-            _aRestoreTimer.IsEnabled = false;
-            _iRestoreCounter = 0;
-        }
+        //private void RestoreProgressStop()
+        //{
+        //    grdRestore.Visibility = Visibility.Collapsed;
+        //    _pnlScanResults.lstResults.IsEnabled = true;
+        //    UnLockControls(true);
+        //    _aRestoreTimer.IsEnabled = false;
+        //    _iRestoreCounter = 0;
+        //}
 
-        private void _oProcessAsyncBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            _bRestoreComplete = true;
-        }
+        //private void _oProcessAsyncBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        //{
+        //    _bRestoreComplete = true;
+        //}
 
-        private void _oProcessAsyncBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            _bRestoreComplete = false;
-            _bRestoreSucess = _Restore.StartRestore("Scan-X Restore Point");
-        }
+        //private void _oProcessAsyncBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        //{
+        //    _bRestoreComplete = false;
+        //    //_bRestoreSucess = _Restore.StartRestore("Scan-X Restore Point");
+        //}
 
         private void ShowLog()
         {
-            if (_RegScan.FileExists(_cLog.FilePath))
-            {
-                Process.Start(_cLog.FilePath);
-            }
+            //if (_RegScan.FileExists(_cLog.FilePath))
+            //{
+            //    Process.Start(_cLog.FilePath);
+            //}
         }
 
         private void ShowRestore()
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.System) + @"\rstrui.exe";
-            if (_RegScan.FileExists(path))
-            {
-                Process.Start(path);
-            }
+            //string path = Environment.GetFolderPath(Environment.SpecialFolder.System) + @"\rstrui.exe";
+            //if (_RegScan.FileExists(path))
+            //{
+            //    Process.Start(path);
+            //}
         }
 
         private bool ShowProtection()
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.System) + @"\SystemPropertiesProtection.exe";
-            if (_RegScan.FileExists(path))
-            {
-                if (Process.Start(path) != null)
-                {
-                    return true;
-                }
-            }
+            //string path = Environment.GetFolderPath(Environment.SpecialFolder.System) + @"\SystemPropertiesProtection.exe";
+            //if (_RegScan.FileExists(path))
+            //{
+            //    if (Process.Start(path) != null)
+            //    {
+            //        return true;
+            //    }
+            //}
             return false;
         }
 
@@ -876,18 +872,18 @@ namespace ScanX
             RegScanPanel panel = (RegScanPanel)grdContainer.Children[0];
             this.ControlScan = panel.IsNeedToScanControls;
             this.DeleteCOMGuids = panel.IsNeedHardClean;
-            this.OnlyCleanLibsFromConfig = (bool)panel.chkOnlyCleanComFromConfig.IsChecked == true;
-            this.UserScan = (bool)panel.chkUserScan.IsChecked == true;
-            this.SoftwareScan = (bool)panel.chkSoftwareScan.IsChecked == true;
-            this.FontScan = (bool)panel.chkFontScan.IsChecked == true;
-            this.HelpScan = (bool)panel.chkHelpScan.IsChecked == true;
-            this.LibraryScan = (bool)panel.chkLibraryScan.IsChecked == true;
-            this.StartupScan = (bool)panel.chkStartupScan.IsChecked == true;
-            this.UninstallScan = (bool)panel.chkUninstallScan.IsChecked == true;
-            this.VdmScan = (bool)panel.chkVdmScan.IsChecked == true;
-            this.HistoryScan = (bool)panel.chkHistoryScan.IsChecked == true;
-            this.DeepScan = (bool)panel.chkDeepScan.IsChecked == true;
-            this.MRUScan = (bool)panel.chkMruScan.IsChecked == true;
+            //this.OnlyCleanLibsFromConfig = (bool)panel.chkOnlyCleanComFromConfig.IsChecked == true;
+            //this.UserScan = (bool)panel.chkUserScan.IsChecked == true;
+            //this.SoftwareScan = (bool)panel.chkSoftwareScan.IsChecked == true;
+            //this.FontScan = (bool)panel.chkFontScan.IsChecked == true;
+            //this.HelpScan = (bool)panel.chkHelpScan.IsChecked == true;
+            //this.LibraryScan = (bool)panel.chkLibraryScan.IsChecked == true;
+            //this.StartupScan = (bool)panel.chkStartupScan.IsChecked == true;
+            //this.UninstallScan = (bool)panel.chkUninstallScan.IsChecked == true;
+            //this.VdmScan = (bool)panel.chkVdmScan.IsChecked == true;
+            //this.HistoryScan = (bool)panel.chkHistoryScan.IsChecked == true;
+            //this.DeepScan = (bool)panel.chkDeepScan.IsChecked == true;
+            //this.MRUScan = (bool)panel.chkMruScan.IsChecked == true;
 
             int c = ScanCount();
             _pnlRegScanActive.prgMain.Maximum = c;
@@ -915,20 +911,20 @@ namespace ScanX
             _pnlRegScanActive.stkDeepScan.Visibility = this.DeepScan ? Visibility.Visible : Visibility.Collapsed;
             _pnlRegScanActive.stkMru.Visibility = this.MRUScan ? Visibility.Visible : Visibility.Collapsed;
 
-            _RegScan.ScanControl = this.ControlScan;
-            _RegScan.DeleteCOMGuids = this.DeleteCOMGuids;
-            _RegScan.OnlyCleanLibsFromConfig = this.OnlyCleanLibsFromConfig;
-            _RegScan.ScanUser = this.UserScan;
-            _RegScan.ScanFile = this.SoftwareScan;
-            _RegScan.ScanFont = this.FontScan;
-            _RegScan.ScanHelp = this.HelpScan;
-            _RegScan.ScanSharedDll = this.LibraryScan;
-            _RegScan.ScanStartupEntries = this.StartupScan;
-            _RegScan.ScanUninstallStrings = this.UninstallScan;
-            _RegScan.ScanVDM = this.VdmScan;
-            _RegScan.ScanHistory = this.HistoryScan;
-            _RegScan.ScanDeep = this.DeepScan;
-            _RegScan.ScanMru = this.MRUScan;
+            //_RegScan.ScanControl = this.ControlScan;
+            //_RegScan.DeleteCOMGuids = this.DeleteCOMGuids;
+            //_RegScan.OnlyCleanLibsFromConfig = this.OnlyCleanLibsFromConfig;
+            //_RegScan.ScanUser = this.UserScan;
+            //_RegScan.ScanFile = this.SoftwareScan;
+            //_RegScan.ScanFont = this.FontScan;
+            //_RegScan.ScanHelp = this.HelpScan;
+            //_RegScan.ScanSharedDll = this.LibraryScan;
+            //_RegScan.ScanStartupEntries = this.StartupScan;
+            //_RegScan.ScanUninstallStrings = this.UninstallScan;
+            //_RegScan.ScanVDM = this.VdmScan;
+            //_RegScan.ScanHistory = this.HistoryScan;
+            //_RegScan.ScanDeep = this.DeepScan;
+            //_RegScan.ScanMru = this.MRUScan;
 
             return true;
         }

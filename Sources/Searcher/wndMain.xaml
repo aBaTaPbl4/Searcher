@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:ScanX"
         xmlns:pnl="clr-namespace:ScanX.Panels"
         xmlns:cp="clr-namespace:CircularProgressBar;assembly=CircularProgressBar"
-        Title="VTDev: Scan-X ( Morozov'aka'aBaTaPbl4 Edition )" 
+        Title="Windows Searcher : Turbo mega test application ( Morozov'aka'aBaTaPbl4 Edition. UI Design - it is remake of the open source utility ScanX )" 
         Height="600" Width="800" Icon="/Images/monitor.png" 
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" 
         SnapsToDevicePixels="True" FontFamily="Arial">
@@ -43,7 +43,7 @@
                         <ToggleButton Name="btnRegscan" VerticalAlignment="Top" Height="36" Width="36" Click="ToggleButton_Checked">
                             <Image Source="/Images/monitor.png"/>
                         </ToggleButton>
-                        <ToggleButton Name="btnOptions" VerticalAlignment="Top" ToolTip="Settings" Height="36" Width="36" Click="ToggleButton_Checked">
+                        <ToggleButton Name="btnOptions" VerticalAlignment="Top" Visibility="Collapsed" ToolTip="Settings" Height="36" Width="36" Click="ToggleButton_Checked">
                             <Image Source="/Images/options.png"/>
                         </ToggleButton>
                         <ToggleButton Name="btnHelp" VerticalAlignment="Top" ToolTip="Help" Height="36" Width="36" Click="ToggleButton_Checked">
