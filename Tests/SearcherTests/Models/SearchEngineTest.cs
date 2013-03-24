@@ -19,9 +19,15 @@ namespace SearcherTests.Models
         }
 
         [Test]
-        public void StartScanTest()
+        public void StartScanWithUnhandledEventsTest()
         {
             Assert.IsFalse(_engine.StartScan(), Log.Content);
+        }
+
+        [Test, Ignore("Заставить работать тест каогда буду делать UI")]
+        public void StartScanWithHandledEventsTest()
+        {
+            Assert.IsTrue(_engine.StartScan(), Log.Content);
         }
     }
 }

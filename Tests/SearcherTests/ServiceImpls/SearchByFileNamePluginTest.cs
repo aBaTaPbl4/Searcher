@@ -13,7 +13,7 @@ namespace SearcherTests.ServiceImpls
         [SetUp]
         public void Setup()
         {
-            _plugin = new SearchByFileNamePlugin();
+            _plugin = TestsConfiguration.ObjectsFactory.CreateFileNamePlugin();
         }
 
         [TestCase("note.xml", true)]

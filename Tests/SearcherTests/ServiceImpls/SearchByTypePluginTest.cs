@@ -13,7 +13,7 @@ namespace SearcherTests.ServiceImpls
         [SetUp]
         public void Setup()
         {
-            _plugin = new SearchByTypePlugin();
+            _plugin = TestsConfiguration.ObjectsFactory.CreateTypePlugin();
         }
 
         [TestCase("ILog", false, true)] //interface

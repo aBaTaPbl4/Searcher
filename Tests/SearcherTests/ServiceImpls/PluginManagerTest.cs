@@ -16,7 +16,7 @@ namespace SearcherTests.ServiceImpls
         [SetUp]
         public void Setup()
         {
-            _manager = new PluginManager();    
+            _manager = TestsConfiguration.ObjectsFactory.CreatePluginManagerConcrete();
         }
 
         [Test]

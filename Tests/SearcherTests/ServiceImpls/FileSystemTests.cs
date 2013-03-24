@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Common.Interfaces;
 using NUnit.Framework;
 using ServiceImpls;
 
@@ -8,12 +9,12 @@ namespace SearcherTests.ServiceImpls
     [TestFixture]
     public class FileSystemTests
     {
-        private FileSystem _fs;
+        private IFileSystem _fs;
 
         [SetUp]
         public void Setup()
         {
-            _fs = new FileSystem();
+            _fs = TestsConfiguration.ObjectsFactory.CreateFileSystem();
         }
 
         [TearDown]

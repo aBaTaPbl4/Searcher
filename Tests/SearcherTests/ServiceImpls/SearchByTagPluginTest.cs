@@ -14,7 +14,7 @@ namespace SearcherTests.ServiceImpls
         [SetUp]
         public void Setup()
         {
-            _plugin = new SearchByTagPlugin();
+            _plugin = TestsConfiguration.ObjectsFactory.CreateTagPlugin();
         }
 
         [TestCase("not", false)]

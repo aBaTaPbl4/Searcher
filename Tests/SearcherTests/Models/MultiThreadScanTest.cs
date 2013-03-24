@@ -12,7 +12,7 @@ namespace SearcherTests.Models
     {
         protected override ScanStrategyBase CreateStrategy()
         {
-            return new MultiThreadScan();
+            return TestsConfiguration.ObjectsFactory.CreateMultiThreadStrategy();
         }
     }
 }
