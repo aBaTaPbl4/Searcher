@@ -26,7 +26,7 @@ namespace SearcherTests.ServiceImpls
         {
             var fileName = isNative ? TestHelper.NativeFileName : TestHelper.AssemblyFileName;
 
-            var settings = TestObjectsFactory.CreateSettings("",typeToSearch);
+            var settings = TestsConfiguration.ObjectsFactory.CreateSettings("", typeToSearch);
             var actualResult = _plugin.Check(fileName, settings);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }

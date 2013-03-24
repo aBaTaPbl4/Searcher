@@ -6,6 +6,7 @@ using Common.Interfaces;
 using NUnit.Framework;
 using Searcher.VM;
 using SearcherTests;
+using SearcherTests.ObjectsFactory;
 using SearcherTests.ServiceImpls;
 using ServiceImpls;
 using log4net.Config;
@@ -14,6 +15,15 @@ using log4net.Config;
 [SetUpFixture]
 public class TestsConfiguration
 {
+
+    public static IObjectsFactory ObjectsFactory
+    {
+        get 
+        { 
+            return AppContext.GetServiceInstance(
+                    typeof (IObjectsFactory)) as IObjectsFactory; 
+        }
+    }
 
     [SetUp]
     public static void RunBeforeAnyTests()
@@ -38,25 +48,27 @@ public class TestsConfiguration
         }
     }
 
+
     public static void RegisterServices()
     {
-        IFileSystem fs;
-        IPluginManager pm;
+
+        IObjectsFactory factory = null;
         
 #if (ISOLATION_REQUIRED)
         //aBaTaPbl4:unit tests => register fake services (during local build at developer workstation)
-
-        fs = TestObjectsFactory.CreateFileSystemStub();        
-        pm = TestObjectsFactory.CreatePluginManagerStub();
+        
+        factory = new UnitTestsObjectsFactory();
+                
 #else
         //aBaTaPbl4:system tests => register real services (during nighty build at build agent)
 
-        fs = new FileSystem();
-        pm = new PluginManager();
+        factory = new SystemTestsObjectsFactory();
 #endif
-        AppContext.RegisterService(fs, typeof(IFileSystem));
-        AppContext.RegisterService(pm, typeof(IPluginManager));
-        AppContext.RegisterService(TestObjectsFactory.CreateSettings(), typeof(ISearchSettings));
+
+        AppContext.RegisterService(factory, typeof(IObjectsFactory));
+        AppContext.RegisterService(factory.CreateFileSystem(), typeof(IFileSystem));
+        AppContext.RegisterService(factory.CreatePluginManager(), typeof(IPluginManager));
+        AppContext.RegisterService(factory.CreateSettings(), typeof(ISearchSettings));
 
     }
 

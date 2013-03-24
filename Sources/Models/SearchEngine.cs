@@ -12,6 +12,7 @@ namespace Models
     {
         private BackgroundWorker _oProcessAsyncBackgroundWorker;
         private List<string> _foundFiles = new List<string>();
+        private ScanStrategyBase _scanStrategy;
 
         #region Delegates
         public delegate void LabelChangeDelegate(string phase, string label);
@@ -70,6 +71,29 @@ namespace Models
             }            
         }
 
+        public ScanStrategyBase ScanStrategy
+        {
+            get
+            {
+                if (_scanStrategy == null)
+                {
+                    if (AppContext.SearchSettings.IsMultithreadRequired)
+                    {
+                        _scanStrategy = new MultiThreadScan();
+                    }
+                    else
+                    {
+                        _scanStrategy = new SingleThreadScan();
+                    }                    
+                }
+                return _scanStrategy;
+            }
+            set
+            {
+                _scanStrategy = value;
+            }
+        }
+
         public bool StartScan()
         {
             
@@ -80,16 +104,8 @@ namespace Models
                 return false;
             }
             StatusChange("Starting scanning...");
-            SingleThreadScan scan;
-            if (AppContext.SearchSettings.IsMultithreadRequired)
-            {
-                throw new NotImplementedException("");
-            }
-            else
-            {
-                scan = new SingleThreadScan();
-            }
-            var result = scan.StartScan(this);
+
+            var result = ScanStrategy.StartScan(this);
             StatusChange("Scan finished...");
             ScanComplete();
             return result;

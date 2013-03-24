@@ -1,38 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Common;
 
 namespace Models.ScanStrategies
 {
-    public class SingleThreadScan
+    public class SingleThreadScan : ScanStrategyBase
     {
-        private SearchEngine _engine;
-
-        public bool StartScan(SearchEngine engine)
+        public override bool StartScan(SearchEngine engine)
         {
             _engine = engine;
-            var foldersToScan = AppContext.FileSystem.GetAllSubfolders(AppContext.SearchSettings.FolderToScan);
-            foldersToScan.Add(AppContext.SearchSettings.FolderToScan);
-            foreach(var folderName in foldersToScan)
+            foreach(var folderName in FoldersToScan)
             {
                 ScanFolder(folderName);
             }
-            return false;
-        }
-
-        protected void ScanFolder(string folderName)
-        {
-            var files = AppContext.FileSystem.GetFiles(folderName);
-            foreach (var fileName in files)
-            {
-                foreach (var plugin in AppContext.SearchSettings.ActivePlugins)
-                {
-                    if (plugin.Check(fileName, AppContext.SearchSettings))
-                    {
-                        _engine.AddFoundFile(fileName);
-                        break;
-                    }
-                }
-            }
+            return true;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace SearcherTests.ServiceImpls
         [TestCase("note.xmlns", false)]
         public void CheckTest(string fileNamePattern, bool expectedResult)
         {
-            var serv = TestObjectsFactory.CreateSettings(fileNamePattern);
+            var serv = TestsConfiguration.ObjectsFactory.CreateSettings(fileNamePattern);
             var actualResult = _plugin.Check(TestHelper.XmlFileName, serv);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }

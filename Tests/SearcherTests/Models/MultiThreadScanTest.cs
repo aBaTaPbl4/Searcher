@@ -8,11 +8,11 @@ using NUnit.Framework;
 namespace SearcherTests.Models
 {
     [TestFixture]
-    public class SingleThreadScanTest : ScanTest
+    public class MultiThreadScanTest : ScanTest
     {
         protected override ScanStrategyBase CreateStrategy()
         {
-            return new SingleThreadScan();
+            return new MultiThreadScan();
         }
     }
 }
