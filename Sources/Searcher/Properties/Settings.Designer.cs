@@ -22,5 +22,41 @@ namespace Searcher.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SettingRestore {
+            get {
+                return ((bool)(this["SettingRestore"]));
+            }
+            set {
+                this["SettingRestore"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SettingLog {
+            get {
+                return ((bool)(this["SettingLog"]));
+            }
+            set {
+                this["SettingLog"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SettingDetails {
+            get {
+                return ((bool)(this["SettingDetails"]));
+            }
+            set {
+                this["SettingDetails"] = value;
+            }
+        }
     }
 }

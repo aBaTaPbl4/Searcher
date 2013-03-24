@@ -7,7 +7,7 @@ using Common.Interfaces;
 namespace Searcher.VM
 {
     /// <summary>
-    /// Класс для отображения в гриде
+    /// Класс для отображения в UI
     /// </summary>
     public class PluginDecorator
     {
@@ -15,7 +15,7 @@ namespace Searcher.VM
         public bool IsActive { get; set; }
         public string Name
         {
-            get { return null; }
+            get { return Plugin.Name; }
         }
         
     }

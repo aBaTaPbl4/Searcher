@@ -16,21 +16,54 @@ namespace ServiceImpls
     /// </summary>
     public class PluginManager : IPluginManager, IDisposable
     {
-        private List<ISearchPlugin> _plugins;
+        private List<ISearchPlugin> _externalPlugins;
         private ISearchPlugin _mainPlugin;
         private AppDomain _privateDomain;
 
         public PluginManager()
         {
-            _plugins = new List<ISearchPlugin>();
+            _externalPlugins = new List<ISearchPlugin>();
             _mainPlugin = new SearchByFileNamePlugin();
-            _plugins.Add(_mainPlugin);
-            _privateDomain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null);
+        }
+
+        public AppDomain PrivateDomain
+        {
+            get
+            {
+                if (_privateDomain == null)
+                {
+                    _privateDomain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null);
+                }
+                return _privateDomain;
+            }
+            set
+            {
+                if (_privateDomain == value)
+                {
+                    return;
+                }
+                if (_privateDomain != null)
+                {
+                    AppDomain.Unload(_privateDomain);
+                }
+                _privateDomain = value;
+            }
+        }
+
+        public ISearchPlugin[] ExternalPlugins
+        {
+            get { return _externalPlugins.ToArray(); }
         }
 
         public ISearchPlugin[] AllPlugins
         {
-            get { return _plugins.ToArray(); }
+            get
+            {
+                var list = new List<ISearchPlugin>();
+                list.Add(_mainPlugin);
+                list.AddRange(_externalPlugins);
+                return list.ToArray();
+            }
         }
 
         public ISearchPlugin MainPlugin
@@ -38,9 +71,22 @@ namespace ServiceImpls
             get { return _mainPlugin; }
         }
 
+        Assembly LoadAssemblyToDomainIfNeeded(AppDomain domain, AssemblyName asmInfo)
+        {
+            var loadedAssemblyNames = (from a in domain.GetAssemblies()
+                                       select a.FullName).ToArray();
+            Assembly asm = null;
+            if (!loadedAssemblyNames.Contains(asmInfo.FullName))
+            {
+                asm = AppContext.FileSystem.LoadAssemblyToDomain(domain, asmInfo);
+            }
+            return asm;
+        }
+
         public void ScanPluginsFolder()
         {
             var pluginFiles = AppContext.FileSystem.GetFiles("Plugins");
+            
             foreach (var pluginFileName in pluginFiles)
             {
                 try
@@ -50,23 +96,20 @@ namespace ServiceImpls
                     {
                         continue;
                     }
-                    var loadedAssemblyNames = (from a in _privateDomain.GetAssemblies()
-                                               select a.FullName).ToArray();
-                    Assembly asm;
-                    if (!loadedAssemblyNames.Contains(asmInfo.FullName))
-                    {
-                        asm = AppContext.FileSystem.LoadAssemblyToDomain(_privateDomain, asmInfo);    
-                    }
-                    else
+                    
+                    var asm = LoadAssemblyToDomainIfNeeded(PrivateDomain, asmInfo);
+                    bool pluginAlredyLoaded = asm == null;
+                    if (pluginAlredyLoaded)
                     {
                         continue;
                     }
+
                     var pluginTypes = (from t in asm.GetTypes()
                                       where t.IsClass && t.GetInterfaces().Contains(typeof (ISearchPlugin))
                                       select t).ToArray();
                     foreach (var pluginType in pluginTypes)
                     {
-                        _plugins.Add((ISearchPlugin)Activator.CreateInstance(pluginType));
+                        _externalPlugins.Add((ISearchPlugin)Activator.CreateInstance(pluginType));
                     }
 
                 }

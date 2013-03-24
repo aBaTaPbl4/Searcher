@@ -9,8 +9,14 @@ using Common.Interfaces;
 
 namespace ServiceImpls
 {
+    [Serializable]
     public class FileSystem : IFileSystem
     {
+
+        public FileSystem()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += DependenciesResolver;
+        }
         public string FixFolderName(string folderName)
         {
             if (folderName.IsNullOrEmpty())
@@ -105,9 +111,14 @@ namespace ServiceImpls
 
         public Assembly LoadAssemblyToDomain(AppDomain domain, AssemblyName asmInfo)
         {
-            return domain.Load(asmInfo);
+             return domain.Load(asmInfo);            
         }
 
+        public Assembly DependenciesResolver(object sender, ResolveEventArgs args)
+        {
+            //allow to resolve conflicts here
+            return null;
+        }
 
         private void InitSubfolders(string folderName, List<string> subfolders)
         {
