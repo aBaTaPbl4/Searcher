@@ -6,7 +6,8 @@ namespace Common.Interfaces
     {
         string FileNameSearchPattern { get; }
         string FileContentSearchPattern { get; }
-        List<ISearchPlugin> ActivePlugins { get;}
+        ISearchPlugin[] ActivePlugins { get; }
         bool IsMultithreadRequired { get; }
+        string FolderToScan { get; }
     }
 }

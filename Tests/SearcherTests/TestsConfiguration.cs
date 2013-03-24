@@ -4,6 +4,8 @@ using System.IO;
 using Common;
 using Common.Interfaces;
 using NUnit.Framework;
+using Searcher.VM;
+using SearcherTests;
 using SearcherTests.ServiceImpls;
 using ServiceImpls;
 using log4net.Config;
@@ -19,8 +21,15 @@ public class TestsConfiguration
         try
         {
             XmlConfigurator.Configure();
-            RegisterFakeServices();
+            RegisterServices();
             RestoreTestData();
+            CopyFolder(
+                Path.GetFullPath(@"..\..\..\..\Bin\Plugins"), 
+                Path.Combine(Environment.CurrentDirectory, "Plugins"));
+            var pm = AppContext.PluginManager as PluginManager;
+            pm.ScanPluginsFolder();
+            var settings = AppContext.SearchSettings as SearchSettings;
+            settings.ActivePlugins = pm.AllPlugins;
         }
         catch (Exception ex)
         {
@@ -29,18 +38,25 @@ public class TestsConfiguration
         }
     }
 
-    public static void RegisterFakeServices()
+    public static void RegisterServices()
     {
-#if ISOLATION_REQUIRED
-        //unit tests => register fake services (local build at developer workstation)
+        IFileSystem fs;
+        IPluginManager pm;
+        
+#if (ISOLATION_REQUIRED)
+        //aBaTaPbl4:unit tests => register fake services (during local build at developer workstation)
+
+        fs = TestObjectsFactory.CreateFileSystemStub();        
+        pm = TestObjectsFactory.CreatePluginManagerStub();
 #else
-        //system tests => register real services (nighty build at build agent)
-        var fs = new FileSystem();
-        //fs
-        AppContext.RegisterService(fs, typeof(IFileSystem));
-        AppContext.RegisterService(fs, fs.GetType());
+        //aBaTaPbl4:system tests => register real services (during nighty build at build agent)
+
+        fs = new FileSystem();
+        pm = new PluginManager();
 #endif
-        AppContext.RegisterService(FakeObjectsFactory.CreateSettings(), typeof(ISearchSettings));
+        AppContext.RegisterService(fs, typeof(IFileSystem));
+        AppContext.RegisterService(pm, typeof(IPluginManager));
+        AppContext.RegisterService(TestObjectsFactory.CreateSettings(), typeof(ISearchSettings));
 
     }
 

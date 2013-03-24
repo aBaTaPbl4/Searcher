@@ -35,5 +35,13 @@ namespace SearcherTests
         {
             get { return Path.GetFullPath(@"1\2\3\7z.exe"); }
         }
+
+        public static string DeepestFolder
+        {
+            get
+            {
+                return Path.GetFullPath("1");
+            }
+        }
     }
 }

@@ -11,6 +11,9 @@ namespace SearchByType
 {
     public class SearchByTypePlugin : ISearchPlugin
     {
+
+        public const string PluginName = "SearchByTypePlugin";
+
         public SearchType Type
         {
             get { return SearchType.ByFileContent; }
@@ -22,9 +25,10 @@ namespace SearchByType
             try
             {
                 AssemblyName asmInfo = null;
-                if (!AssociatedFileExtensions.Contains(Path.GetExtension(fileName)) 
-                    || settings.FileContentSearchPattern.IsNullOrEmpty()
-                    || !IsAssembly(fileName, out asmInfo))
+                if (settings.FileContentSearchPattern.IsNullOrEmpty() ||
+                    !AssociatedFileExtensions.Contains(Path.GetExtension(fileName)) ||
+                    settings.FileContentSearchPattern.IsNullOrEmpty() ||
+                    !IsAssembly(fileName, out asmInfo))
                 {
                     return false;
                 }
@@ -65,7 +69,7 @@ namespace SearchByType
 
         public string Name
         {
-            get { return "SearchByTypePlugin"; }
+            get { return PluginName; }
         }
 
         public List<string> AssociatedFileExtensions

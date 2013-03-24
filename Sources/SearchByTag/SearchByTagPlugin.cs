@@ -9,6 +9,8 @@ namespace SearchByTag
 {
     public class SearchByTagPlugin : ISearchPlugin
     {
+        public const string PluginName = "SearchByTagPlugin";
+
         public SearchType Type
         {
             get { return SearchType.ByFileContent; }
@@ -19,7 +21,8 @@ namespace SearchByTag
         {
             try
             {
-                if (!AssociatedFileExtensions.Contains(Path.GetExtension(fileName)))
+                if (settings.FileContentSearchPattern.IsNullOrEmpty() ||
+                    !AssociatedFileExtensions.Contains(Path.GetExtension(fileName)))
                 {
                     return false;
                 }
@@ -42,7 +45,7 @@ namespace SearchByTag
 
         public string Name
         {
-            get { return "SearchByTagPlugin"; }
+            get { return PluginName; }
         }
 
         public List<string> AssociatedFileExtensions

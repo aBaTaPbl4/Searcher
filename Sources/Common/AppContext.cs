@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Common.Interfaces;
 using log4net;
+using System.Linq;
 
 namespace Common
 {
@@ -37,18 +38,13 @@ namespace Common
             get { return _services[typeof(IFileSystem)] as IFileSystem; }
         }
 
-        ///// <summary>
-        ///// Получение у винды информации о tlb
-        ///// </summary>
-        //public static IComInformationService ComInformationService
-        //{
-        //    get { return _services[typeof (IComInformationService)] as IComInformationService; }
-        //}
-
-        //public static IVersionInfoFixer Fixer
-        //{
-        //    get { return _services[typeof (IVersionInfoFixer)] as IVersionInfoFixer; }    
-        //}
+        /// <summary>
+        /// Получаем доступ к информации о подгруженных плагинах
+        /// </summary>
+        public static IPluginManager PluginManager
+        {
+            get { return _services[typeof(IPluginManager)] as IPluginManager; }
+        }
 
         /// <summary>
         /// Регистрация сервиса приложения
@@ -57,9 +53,41 @@ namespace Common
         /// <param name="type">Тип сервиса через который тащить экземпляр</param>
         public static void RegisterService(object serviceInstance, Type type)
         {
+            if (_services.ContainsKey(type) &&
+                _services[type] != serviceInstance)
+            {
+                ReleaseExistingInstance(type);
+            }
             _services[type] = serviceInstance;
+            var concreteType = serviceInstance.GetType();
+            if (type != concreteType)
+            {
+                _services[concreteType] = serviceInstance;
+            }
+
         }
 
+        /// <summary>
+        /// Check if needed to call Dispose
+        /// </summary>
+        /// <param name="serviceInstance"></param>
+        /// <param name="type"></param>
+        private static void ReleaseExistingInstance(Type type)
+        {
+            //release old service instance
+            var serv = _services[type];
+            _services.Remove(type);
+            Type concreteType = serv.GetType();
+            if (_services.ContainsKey(concreteType))
+            {
+                _services.Remove(concreteType);
+            }
+            if (concreteType.GetInterfaces().Contains(typeof(IDisposable)))
+            {
+                var servDisposible = serv as IDisposable;
+                servDisposible.Dispose();
+            }
+        }
         /// <summary>
         /// Получить экземпляр сервиса
         /// </summary>

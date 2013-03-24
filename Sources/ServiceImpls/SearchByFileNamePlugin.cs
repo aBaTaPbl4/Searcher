@@ -23,6 +23,10 @@ namespace ServiceImpls
         {
             try
             {
+                if (settings.FileNameSearchPattern.IsNullOrEmpty())
+                {
+                    return false;
+                }
                 return Path.GetFileName(fileName).Contains(settings.FileNameSearchPattern);
             }
             catch (Exception ex)

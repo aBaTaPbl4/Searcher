@@ -51,25 +51,31 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\AppContextTest.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Models\SearchEngineTest.cs" />
+    <Compile Include="Models\SingleThreadScanTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceImpls\PluginManagerTest.cs" />
     <Compile Include="ServiceImpls\SearchByTypePluginTest.cs" />
     <Compile Include="ServiceImpls\SearchByTagPluginTest.cs" />
-    <Compile Include="ServiceImpls\FakeServiceFactory.cs" />
+    <Compile Include="TestObjectsFactory.cs" />
     <Compile Include="ServiceImpls\FileSystemTests.cs" />
     <Compile Include="ServiceImpls\SearchByFileNamePluginTest.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="TestsConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\" />
-    <Folder Include="Models\" />
     <Folder Include="TestData\6\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\Common\Common.csproj">
       <Project>{7DF6CCDE-ACE4-46C2-887C-852D7A03C69E}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sources\Models\Models.csproj">
+      <Project>{95F571B2-6091-4911-A4D4-82A392A7F471}</Project>
+      <Name>Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Sources\SearchByTag\SearchByTag.csproj">
       <Project>{24116A64-8A43-4B6A-BB99-A8566832DDF1}</Project>
@@ -78,6 +84,10 @@
     <ProjectReference Include="..\..\Sources\SearchByType\SearchByType.csproj">
       <Project>{BDA527ED-63C3-4C18-BCCD-D1493506C235}</Project>
       <Name>SearchByType</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sources\Searcher\Searcher.csproj">
+      <Project>{7FFF1A5E-993D-4078-8687-28315138FCFE}</Project>
+      <Name>Searcher</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Sources\ServiceImpls\ServiceImpls.csproj">
       <Project>{F9458F0D-C4E4-47D5-B78B-C7FD07A1616A}</Project>
@@ -92,6 +102,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\1\2\4\note_error.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\1\2\4\test.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\1\2\test.txt">

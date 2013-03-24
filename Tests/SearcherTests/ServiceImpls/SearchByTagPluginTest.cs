@@ -22,7 +22,7 @@ namespace SearcherTests.ServiceImpls
         [TestCase("heading", true)]
         public void CheckTest(string tagName, bool expectedResult)
         {
-            var settings = FakeObjectsFactory.CreateSettings("",tagName);
+            var settings = TestObjectsFactory.CreateSettings("",tagName);
             var actualResult = _plugin.Check(TestHelper.XmlFileName, settings);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }
