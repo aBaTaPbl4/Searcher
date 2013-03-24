@@ -50,9 +50,7 @@ namespace SearcherTests
         //todo: Оставил до тех пор пока не допишу UnitTestsObjectsFactory
         public ScanStrategyBase CreateStrategy()
         {
-            var strategy = MockRepository.GenerateStub<ScanStrategyBase>();
-            strategy.Stub(x => x.StartScan(null)).IgnoreArguments().Return(true);
-            return strategy;
+            return CreateSingleThreadStrategy();
         }
 
         public ScanStrategyBase CreateMultiThreadStrategy()

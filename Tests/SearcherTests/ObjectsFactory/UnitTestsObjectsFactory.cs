@@ -5,6 +5,7 @@ using System.Text;
 using Common.Interfaces;
 using Models;
 using Models.ScanStrategies;
+using Rhino.Mocks;
 using ServiceImpls;
 
 namespace SearcherTests.ObjectsFactory
@@ -33,7 +34,9 @@ namespace SearcherTests.ObjectsFactory
 
         public ScanStrategyBase CreateStrategy()
         {
-            throw new NotImplementedException();
+            var strategy = MockRepository.GenerateStub<ScanStrategyBase>();
+            strategy.Stub(x => x.StartScan(null)).IgnoreArguments().Return(true);
+            return strategy;
         }
 
         public SearchEngine CreateEngine()
