@@ -1,4 +1,6 @@
-﻿using Common;
+﻿using System;
+using System.IO;
+using Common;
 using Common.Interfaces;
 using Models;
 using Models.ScanStrategies;
@@ -18,6 +20,17 @@ namespace SearcherTests
     /// </summary>
     public class SystemTestsObjectsFactory : IObjectsFactory
     {
+        public void Initialize()
+        {
+            
+        }
+
+        public void RestoreObjects()
+        {
+            var sourcePath = Path.Combine(Environment.CurrentDirectory, "TestData");
+            var destPath = Environment.CurrentDirectory;
+            TestHelper.CopyFolder(sourcePath, destPath);
+        }
 
         public ISearchSettings CreateSettings(string fileNameSearchPattern = "note.*", string fileContentSearchPattern = "note", bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
         {
@@ -47,7 +60,6 @@ namespace SearcherTests
             return new PluginManager();
         }
 
-        //todo: Оставил до тех пор пока не допишу UnitTestsObjectsFactory
         public ScanStrategyBase CreateStrategy()
         {
             return CreateSingleThreadStrategy();

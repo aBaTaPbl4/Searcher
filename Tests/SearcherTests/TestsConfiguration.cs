@@ -33,13 +33,11 @@ public class TestsConfiguration
             XmlConfigurator.Configure();
             RegisterServices();
             RestoreTestData();
-            CopyFolder(
+            TestHelper.CopyFolder(
                 Path.GetFullPath(@"..\..\..\..\Bin\Plugins"), 
                 Path.Combine(Environment.CurrentDirectory, "Plugins"));
             var pm = AppContext.PluginManager as PluginManager;
             pm.ScanPluginsFolder();
-            var settings = AppContext.SearchSettings as SearchSettings;
-            settings.ActivePlugins = pm.AllPlugins;
         }
         catch (Exception ex)
         {
@@ -53,18 +51,17 @@ public class TestsConfiguration
     {
 
         IObjectsFactory factory = null;
-        
-#if (ISOLATION_REQUIRED)
-        //aBaTaPbl4:unit tests => register fake services (during local build at developer workstation)
-        
+
+#if (ISOLATION_REQUIRED)//aBaTaPbl4:unit tests => register fake services(using by local build at developer workstation)
+                
         factory = new UnitTestsObjectsFactory();
                 
-#else
-        //aBaTaPbl4:system tests => register real services (during nighty build at build agent)
+#else//aBaTaPbl4:system tests => register real services(using by nighty build, to check compatiblity with net-services, db etc)
 
         factory = new SystemTestsObjectsFactory();
-#endif
 
+#endif
+        factory.Initialize();
         AppContext.RegisterService(factory, typeof(IObjectsFactory));
         AppContext.RegisterService(factory.CreateFileSystem(), typeof(IFileSystem));
         AppContext.RegisterService(factory.CreatePluginManager(), typeof(IPluginManager));
@@ -74,35 +71,13 @@ public class TestsConfiguration
 
     public static void RestoreTestData()
     {
-        var sourcePath = Path.Combine(Environment.CurrentDirectory, "TestData");
-        var destPath = Environment.CurrentDirectory;
-        CopyFolder(sourcePath, destPath);
-    }
-
-    public static void CopyFolder(string sourceFolder, string destFolder)
-    {
-        if (!Directory.Exists(destFolder))
-            Directory.CreateDirectory(destFolder);
-        string[] files = Directory.GetFiles(sourceFolder);
-        foreach (string file in files)
-        {
-            string name = Path.GetFileName(file);
-            string dest = Path.Combine(destFolder, name);
-            File.Copy(file, dest, true);
-        }
-        string[] folders = Directory.GetDirectories(sourceFolder);
-        foreach (string folder in folders)
-        {
-            string name = Path.GetFileName(folder);
-            string dest = Path.Combine(destFolder, name);
-            CopyFolder(folder, dest);
-        }
+        ObjectsFactory.RestoreObjects();
     }
 
 
-    [TearDown]
-    public static void RunAfterAnyTests()
-    {
-
-    }
+    //[TearDown]
+    //public static void RunAfterAnyTests()
+    //{
+        
+    //}
 }
