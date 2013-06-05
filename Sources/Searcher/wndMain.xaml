@@ -1,8 +1,8 @@
-﻿<Window x:Class="ScanX.wndMain"
+﻿<Window x:Class="Searcher.wndMain"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:ScanX"
-        xmlns:pnl="clr-namespace:ScanX.Panels"
+        xmlns:local="clr-namespace:Searcher"
+        xmlns:pnl="clr-namespace:Searcher.Panels"
         xmlns:cp="clr-namespace:CircularProgressBar;assembly=CircularProgressBar"
         Title="Windows Searcher : Turbo mega test application ( Morozov'aka'aBaTaPbl4 Edition. UI Design - it is remake of the open source utility ScanX )" 
         Height="600" Width="800" Icon="/Images/monitor.png" 
@@ -43,7 +43,7 @@
                         <ToggleButton Name="btnRegscan" VerticalAlignment="Top" Height="36" Width="36" Click="ToggleButton_Checked">
                             <Image Source="/Images/monitor.png"/>
                         </ToggleButton>
-                        <ToggleButton Name="btnOptions" VerticalAlignment="Top" Visibility="Collapsed" ToolTip="Settings" Height="36" Width="36" Click="ToggleButton_Checked">
+                        <ToggleButton Name="btnOptions" VerticalAlignment="Top" ToolTip="Settings" Height="36" Width="36" Click="ToggleButton_Checked">
                             <Image Source="/Images/options.png"/>
                         </ToggleButton>
                         <ToggleButton Name="btnHelp" VerticalAlignment="Top" ToolTip="Help" Height="36" Width="36" Click="ToggleButton_Checked">

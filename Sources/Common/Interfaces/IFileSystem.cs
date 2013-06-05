@@ -26,5 +26,6 @@ namespace Common.Interfaces
         XDocument LoadXmlFile(string fileName);
         AssemblyName GetAssemblyInfo(string fileName);
         Assembly LoadAssemblyToDomain(AppDomain domain, AssemblyName asmInfo);
+        bool FileExtists(string fileName);
     }
 }

@@ -4,7 +4,7 @@ using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
 
-namespace ScanX.Implementation
+namespace Searcher.Implementation
 {
     public class GlassHelper
     {

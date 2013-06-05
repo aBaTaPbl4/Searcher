@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ScanX.Panels.RegScanActivePanel"
+﻿<UserControl x:Class="Searcher.Panels.RegScanActivePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cp="clr-namespace:CircularProgressBar;assembly=CircularProgressBar"

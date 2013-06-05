@@ -1,53 +1,44 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics;
+using System.Windows.Controls;
+using Common;
+using Searcher.VM;
 
-namespace ScanX.Panels
+namespace Searcher.Panels
 {
     /// <summary>
     /// Interaction logic for TopLeftPanel.xaml
     /// </summary>
     public partial class OptionsPanel : UserControl
     {
+        private OptionsPanelVM _data;
+
         public OptionsPanel()
         {
             InitializeComponent();
-            //this.chkRestore.IsChecked = Properties.Settings.Default.SettingRestore;
-            //this.chkLogging.IsChecked = Properties.Settings.Default.SettingLog;
-            //this.chkLogDetailed.IsChecked = Properties.Settings.Default.SettingDetails;
+            _data = new OptionsPanelVM();
+            DataContext = _data;
         }
 
-        private void Start_Clicked(object sender, System.Windows.RoutedEventArgs e)
+        private void Chk_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            //
-        }
-
-        private void UserControl_Unloaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-            //Properties.Settings.Default.SettingRestore = (bool)this.chkRestore.IsChecked;
-            //Properties.Settings.Default.SettingLog = (bool)this.chkLogging.IsChecked;
-            //Properties.Settings.Default.SettingDetails = (bool)this.chkLogDetailed.IsChecked;
-            //Properties.Settings.Default.Save();
-        }
-
-        private void chkRestore_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            CheckBox chk = (CheckBox)sender;
-            if (chk.Name == "chkRestore")
+            CheckBox chk = e.OriginalSource as CheckBox;
+            if (chk == null)
+                return;
+            if (chk.Name == "chkAsync")
             {
-                //Properties.Settings.Default.SettingRestore.Equals((bool)chk.IsChecked);
-            }
-            else if (chk.Name == "chkLogging")
-            {
-                //Properties.Settings.Default.SettingLog.Equals((bool)chk.IsChecked);
-            }
-            else
-            {
-                //Properties.Settings.Default.SettingDetails.Equals((bool)chk.IsChecked);
+                txtThreadsNum.IsEnabled = chk.IsChecked ?? false;
+                
             }
         }
 
-        private void chkBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void btnShowLog_Clicked(object sender, System.Windows.RoutedEventArgs e)
         {
-
+            var logFileName = "log.txt";
+            if (AppContext.FileSystem.FileExtists(logFileName))
+            {
+                Process.Start("notepad.exe", logFileName);
+            }
         }
+
     }
 }

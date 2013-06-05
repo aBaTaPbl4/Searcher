@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ScanX.Implementation
+namespace Searcher.Implementation
 {
     public class Logging
     {

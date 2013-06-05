@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -91,6 +92,10 @@ namespace ServiceImpls
             {
                 try
                 {
+                    if (!Path.GetExtension(pluginFileName).Equals(".dll", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
                     var asmInfo = AppContext.FileSystem.GetAssemblyInfo(pluginFileName);
                     if (asmInfo == null)
                     {

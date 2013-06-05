@@ -4,65 +4,36 @@ using System.Windows.Controls;
 using Common;
 using Searcher.VM;
 
-namespace ScanX.Panels
+namespace Searcher.Panels
 {
     /// <summary>
     /// Interaction logic for RegScanPanel.xaml
     /// </summary>
     public partial class RegScanPanel : UserControl
     {
-        private readonly ObservableCollection<PluginDecorator> _plugins;
+        private readonly ScanOptionVM _data;
 
         public RegScanPanel()
         {
             InitializeComponent();
-            _plugins = new ObservableCollection<PluginDecorator>();
+            _data = new ScanOptionVM();
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
-                foreach (var plugin in AppContext.PluginManager.ExternalPlugins)
-                {
-                    _plugins.Add(new PluginDecorator()
-                    {
-                        IsActive = false,
-                        Plugin = plugin
-                    });
-                }                
+                _data.InitPlugins();
             }
+            
 
-        }
-
-        public ObservableCollection<PluginDecorator> Plugins
-        {
-            get { return _plugins; }
-        }
-
-        private void Start_Clicked(object sender, RoutedEventArgs e)
-        {
-            //
-        }
-
-        public bool IsNeedToScanControls
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public bool IsNeedHardClean
-        {
-            get
-            {
-                return  false;
-            }
+            DataContext = _data;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             rbnOR.IsChecked = true;
-            //txtFileContent.IsEnabled = true;
-            //txtFileName.IsEnabled = true;
-            DataContext = this;
+        }
+
+        private void btnRegScanStart_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }

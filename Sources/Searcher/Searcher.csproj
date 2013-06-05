@@ -98,7 +98,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="Resources\App.xaml">
+    <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -164,7 +164,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Resources\App.xaml.cs">
+    <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -200,9 +200,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="VM\PluginDecorator.cs" />
+    <Compile Include="VM\OptionsPanelVM.cs" />
+    <Compile Include="VM\PluginDecoratorVM.cs" />
     <Compile Include="VM\ScanData.cs" />
-    <Compile Include="VM\SearchSettings.cs" />
+    <Compile Include="VM\ScanOptionVM.cs" />
     <Compile Include="wndMain.xaml.cs">
       <DependentUpon>wndMain.xaml</DependentUpon>
     </Compile>
@@ -304,9 +305,7 @@
   <ItemGroup>
     <Resource Include="Images\monitor.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\srclient.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

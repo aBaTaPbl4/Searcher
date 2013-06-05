@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Searcher.VM;
 
-namespace ScanX.Panels
+namespace Searcher.Panels
 {
     public partial class ScanResultsPanel : UserControl
     {

@@ -9,6 +9,9 @@ using Common.Interfaces;
 
 namespace ServiceImpls
 {
+    /// <summary>
+    /// Изоляция приложения от жесткого диска
+    /// </summary>
     [Serializable]
     public class FileSystem : IFileSystem
     {
@@ -137,6 +140,11 @@ namespace ServiceImpls
         public string GetFileContent(string fileName)
         {
             throw new NotImplementedException("");
+        }
+
+        public bool FileExtists(string fileName)
+        {
+            return File.Exists(fileName);
         }
 
     }

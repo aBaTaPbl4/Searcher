@@ -10,7 +10,7 @@ using Searcher.VM;
 using ServiceImpls;
 using log4net.Config;
 
-namespace ScanX
+namespace Searcher
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -30,7 +30,7 @@ namespace ScanX
 
         protected void RegisterServices()
         {
-            AppContext.RegisterService(new SearchSettings(),typeof(ISearchSettings));
+            AppContext.RegisterService(new ScanOptionVM(),typeof(ISearchSettings));
             AppContext.RegisterService(new FileSystem(), typeof(IFileSystem));
             AppContext.RegisterService(new PluginManager(), typeof(IPluginManager));
         }

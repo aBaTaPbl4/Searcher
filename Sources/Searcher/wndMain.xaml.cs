@@ -22,22 +22,21 @@ using System;
 using System.Windows;
 using Common;
 using Models;
-using ScanX.Implementation;
-using ScanX.Panels;
 using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
-using Searcher.VM;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Windows.Threading;
 using System.Threading;
+using Searcher.Implementation;
+using Searcher.Panels;
 using log4net;
 
 #endregion
 
-namespace ScanX
+namespace Searcher
 {
     public partial class wndMain : Window
     {
@@ -79,7 +78,7 @@ namespace ScanX
         private static int[] _aSubScan;
         private static DateTime _dTime;
         private static TimeSpan _tTimeElapsed;
-        private ObservableCollection<PluginDecorator> _Results = new ObservableCollection<PluginDecorator>();
+        private ObservableCollection<Searcher.VM.PluginDecoratorVM> _Results = new ObservableCollection<Searcher.VM.PluginDecoratorVM>();
         private ILog _cLog;
         private BackgroundWorker _oProcessAsyncBackgroundWorker = null;
         public delegate void ProcessCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
@@ -870,8 +869,8 @@ namespace ScanX
         private bool ScanSetup()
         {
             RegScanPanel panel = (RegScanPanel)grdContainer.Children[0];
-            this.ControlScan = panel.IsNeedToScanControls;
-            this.DeleteCOMGuids = panel.IsNeedHardClean;
+            //this.ControlScan = panel.IsNeedToScanControls;
+            //this.DeleteCOMGuids = panel.IsNeedHardClean;
             //this.OnlyCleanLibsFromConfig = (bool)panel.chkOnlyCleanComFromConfig.IsChecked == true;
             //this.UserScan = (bool)panel.chkUserScan.IsChecked == true;
             //this.SoftwareScan = (bool)panel.chkSoftwareScan.IsChecked == true;
@@ -1086,5 +1085,6 @@ namespace ScanX
             }
         }
         #endregion
+
     }
 }

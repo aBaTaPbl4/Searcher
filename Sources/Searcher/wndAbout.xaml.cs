@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace ScanX
+namespace Searcher
 {
     /// <summary>
     /// Interaction logic for wndAbout.xaml

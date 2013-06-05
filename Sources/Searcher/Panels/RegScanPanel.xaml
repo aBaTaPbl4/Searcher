@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ScanX.Panels.RegScanPanel"
+﻿<UserControl x:Class="Searcher.Panels.RegScanPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Height="Auto" Width="Auto" SnapsToDevicePixels="True" 
@@ -8,7 +8,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/ControlStyles.xaml"/>
+                <ResourceDictionary Source="/Resources/ControlStyles.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -42,27 +42,36 @@
             <StackPanel Name="stkCheckPanel" Grid.Row="0" Margin="30,6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <TextBlock Margin="8" FontFamily="Arial" FontSize="20" FontWeight="Bold" Text="Scan Options" />
                 <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="File name:" />
-                <TextBox Name="txtFileName" Margin="8" FontFamily="Arial" FontWeight="Bold"  Text=""  />
+                <TextBox Name="txtFileName" Margin="8" FontFamily="Arial" FontWeight="Bold"  Text="{Binding Path=FileNameSearchPattern}"  />
                 <DockPanel Margin ="8" LastChildFill="False">
-                    <RadioButton Name="rbnOR"  Margin="20 0" GroupName="Cond" Content="OR" IsThreeState="False" DockPanel.Dock="Left"/>
+                    <RadioButton Name="rbnOR"  Margin="20 0" GroupName="Cond" Content="OR" IsThreeState="False" DockPanel.Dock="Left" IsChecked="{Binding Path=OrLink}"/>
                     <RadioButton Name="rbnAND" Margin="20 0" GroupName="Cond" Content="AND" IsThreeState="False" IsEnabled="False" DockPanel.Dock="Right"/>
                 </DockPanel>
                 <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="File content:" />
-                <TextBox Name="txtFileContent" Margin="8" FontFamily="Arial" FontWeight="Bold" Text=""  />
+                <TextBox Name="txtFileContent" Margin="8" FontFamily="Arial" FontWeight="Bold" Text="{Binding Path=FileContentSearchPattern}"  />
+                <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="Folder:" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBox Name="txtFolder" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Stretch" Text="{Binding Path=FolderToScan}" />
+                    <Button Name="btnChoseFolder"  MaxHeight="20" 
+                            HorizontalAlignment="Right" Style="{StaticResource ResourceKey=SquareButton}" >...</Button>
+
+                                   
+                </StackPanel>
+                               
                 <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="Loaded plugins:" />
                 <StackPanel HorizontalAlignment="Stretch" >
-                    <ListBox Name="listBoxZone" ItemsSource="{Binding Plugins}"
+                    <ListBox Name="listBoxZone" ItemsSource="{Binding Path=Plugins}"
  Height="115" Background="Azure" HorizontalAlignment="Stretch">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <CheckBox Name="CheckBoxZone" Content="{Binding Name}"
-     IsChecked="{Binding IsActive}" IsEnabled="True" Margin="0,5,0,0"/>
+                                <CheckBox Name="CheckBoxZone" Content="{Binding Path=Name}"
+     IsChecked="{Binding Path=IsActive}" IsEnabled="True" Margin="0,5,0,0"/>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </StackPanel>
             </StackPanel>
-            <Button Name="btnRegScanStart" Click="Start_Clicked" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC">
+            <Button Name="btnRegScanStart" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC" Click="btnRegScanStart_Click">
                 Start
             </Button>
         </Grid>

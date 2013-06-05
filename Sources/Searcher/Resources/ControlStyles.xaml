@@ -48,6 +48,11 @@
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--      button      -->
     <!--//////////////////-->
+    <Style TargetType="Button" x:Key="SquareButton" BasedOn="{x:Type Button}">
+        <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="MinHeight" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" />
+    </Style>
+    
     <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="IsEnabled" Value="True"/>
@@ -394,7 +399,7 @@
             </Setter.Value>
         </Setter>
     </Style>
- 
+
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--     checkbox     -->
     <!--//////////////////-->

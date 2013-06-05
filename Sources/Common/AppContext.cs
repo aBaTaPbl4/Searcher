@@ -8,7 +8,7 @@ namespace Common
 {
     /// <summary>
     /// Контекст приложения. 
-    /// Также реализует реестр сервисов, доступный из любой точки приложения.(aBaTaPbl4)
+    /// Является оберткой над Spring.Net IoC
     /// </summary>
     public static class AppContext
     {

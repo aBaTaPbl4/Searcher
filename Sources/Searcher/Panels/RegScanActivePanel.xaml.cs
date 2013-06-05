@@ -1,7 +1,7 @@
 ﻿using System.Windows.Controls;
 using CircularProgressBar;
 
-namespace ScanX.Panels
+namespace Searcher.Panels
 {
     /// <summary>
     /// Interaction logic for TopRightPanel.xaml

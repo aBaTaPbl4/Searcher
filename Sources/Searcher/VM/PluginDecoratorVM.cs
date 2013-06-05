@@ -9,7 +9,7 @@ namespace Searcher.VM
     /// <summary>
     /// Класс для отображения в UI
     /// </summary>
-    public class PluginDecorator
+    public class PluginDecoratorVM
     {
         public ISearchPlugin Plugin { get; set; }
         public bool IsActive { get; set; }
