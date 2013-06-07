@@ -35,7 +35,7 @@ namespace SearcherTests
         public ISearchSettings CreateSettings(string fileNameSearchPattern = "note.*", string fileContentSearchPattern = "note", bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
         {
 
-            var settings = new ScanOptionVM();
+            var settings = new ScanPanelVM();
             settings.FolderToScan = TestHelper.DeepestFolder;
             settings.IsMultithreadRequired = isMultithreaded;
             settings.FileNameSearchPattern = fileNameSearchPattern;

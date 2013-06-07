@@ -176,25 +176,25 @@ namespace Searcher
             {
                 _iRestoreCounter = 1;
             }
-            prgRestore.Value = _iRestoreCounter;
+//            prgRestore.Value = _iRestoreCounter;
         }
 
         private void _aUpdateTimer_Tick(object sender, EventArgs e)
         {
-            _pnlRegScanActive.txtScanPhase.Text = _sPhase;
-            _pnlRegScanActive.txtScanDescription.Text = _sLabel;
-            _pnlRegScanActive.txtScanningKey.Text = _sPath;
-            _pnlRegScanActive.txtScanningHive.Text = _sHive;
-            _pnlRegScanActive.txtKeyCount.Text = _iKeyCounter.ToString();
-            if (_sMatch.Length > 0)
-            {
-                _pnlRegScanActive.txtLastMatch.Text = _sMatch;
-            }
-            _pnlRegScanActive.txtMatchCount.Text = _iResultsCounter.ToString();
-            _pnlRegScanActive.prgMain.Maximum = _iProgressMax;
-            _pnlRegScanActive.prgMain.Value = _iSegmentCounter;
-            _pnlRegScanActive.txtSegmentsRemaining.Text = (_pnlRegScanActive.prgMain.Maximum - _iSegmentCounter).ToString();
-            _pnlRegScanActive.txtSegmentsScanned.Text = _iSegmentCounter.ToString();
+            //_pnlRegScanActive.txtScanPhase.Text = _sPhase;
+            //_pnlRegScanActive.txtScanDescription.Text = _sLabel;
+            //_pnlRegScanActive.txtScanningKey.Text = _sPath;
+            //_pnlRegScanActive.txtScanningHive.Text = _sHive;
+            //_pnlRegScanActive.txtKeyCount.Text = _iKeyCounter.ToString();
+            //if (_sMatch.Length > 0)
+            //{
+            //    _pnlRegScanActive.txtLastMatch.Text = _sMatch;
+            //}
+            //_pnlRegScanActive.txtMatchCount.Text = _iResultsCounter.ToString();
+            //_pnlRegScanActive.prgMain.Maximum = _iProgressMax;
+            //_pnlRegScanActive.prgMain.Value = _iSegmentCounter;
+            //_pnlRegScanActive.txtSegmentsRemaining.Text = (_pnlRegScanActive.prgMain.Maximum - _iSegmentCounter).ToString();
+            //_pnlRegScanActive.txtSegmentsScanned.Text = _iSegmentCounter.ToString();
             this.txtStatusBar.Text = _sSegment;
 
             SubProgressUpdate();
@@ -329,7 +329,7 @@ namespace Searcher
         {
             //if (_Results != null)
             //{
-            //    foreach (ScanData o in _Results)
+            //    foreach (ScanDataVM o in _Results)
             //    {
             //        o.Check = check;
             //    }
@@ -449,7 +449,7 @@ namespace Searcher
             this.grdNonClient.IsEnabled = unlocked;
         }
 
-        //private void LogDetail(ScanData data, bool result)
+        //private void LogDetail(ScanDataVM data, bool result)
         //{
         //    if (Properties.Settings.Default.SettingDetails == true)
         //    {
@@ -501,7 +501,7 @@ namespace Searcher
         //    int items = 0;
 
         //    // test for checked items first
-        //    foreach (ScanData o in _Results)
+        //    foreach (ScanDataVM o in _Results)
         //    {
         //        if (o.Check == true)
         //        {
@@ -558,7 +558,7 @@ namespace Searcher
         //        cLightning lightning = new cLightning();
 
         //        // iterate through and remove
-        //        foreach (ScanData o in _Results)
+        //        foreach (ScanDataVM o in _Results)
         //        {
         //            if (o.Check == true)
         //            {
@@ -671,23 +671,23 @@ namespace Searcher
 
         private void ResetContext()
         {
-            // reset panel vars
-            _pnlRegScanActive.txtScanPhase.Text = "";
-            _sLabel = "";
-            _pnlRegScanActive.txtScanningKey.Text = "";
-            _sPath = "";
-            _pnlRegScanActive.txtScanningHive.Text = "";
-            _sHive = "";
-            _pnlRegScanActive.txtKeyCount.Text = "";
-            _iKeyCounter = 0;
-            _pnlRegScanActive.txtLastMatch.Text = "";
-            _sMatch = "";
-            _pnlRegScanActive.txtMatchCount.Text = "";
-            _iResultsCounter = 0;
-            _pnlRegScanActive.txtSegmentsRemaining.Text = "";
-            _iSegmentCounter = 0;
-            _pnlRegScanActive.txtSegmentsScanned.Text = "";
-            _pnlRegScanActive.btnRegScanCancel.Content = "Cancel";
+            //// reset panel vars
+            //_pnlRegScanActive.txtScanPhase.Text = "";
+            //_sLabel = "";
+            //_pnlRegScanActive.txtScanningKey.Text = "";
+            //_sPath = "";
+            //_pnlRegScanActive.txtScanningHive.Text = "";
+            //_sHive = "";
+            //_pnlRegScanActive.txtKeyCount.Text = "";
+            //_iKeyCounter = 0;
+            //_pnlRegScanActive.txtLastMatch.Text = "";
+            //_sMatch = "";
+            //_pnlRegScanActive.txtMatchCount.Text = "";
+            //_iResultsCounter = 0;
+            //_pnlRegScanActive.txtSegmentsRemaining.Text = "";
+            //_iSegmentCounter = 0;
+            //_pnlRegScanActive.txtSegmentsScanned.Text = "";
+            //_pnlRegScanActive.btnRegScanCancel.Content = "Cancel";
             // reset counters
             this.IsTimerOn = false;
             _iKeyCounter = 0;
@@ -708,9 +708,9 @@ namespace Searcher
             }
             //if (_RegScan.Data.Count > 0)
             //{
-            //    _Results = new ObservableCollection<ScanData>(_RegScan.Data);
+            //    _Results = new ObservableCollection<ScanDataVM>(_RegScan.Data);
 
-            //    foreach (ScanData o in _Results)
+            //    foreach (ScanDataVM o in _Results)
             //    {
             //        o.ImagePath = IdToImage(o.Id);
             //    }
@@ -756,7 +756,6 @@ namespace Searcher
             _dTime = DateTime.Now;
             _bRestoreComplete = false;
             _aRestoreTimer.IsEnabled = true;
-            grdRestore.Visibility = Visibility.Visible;
             _pnlScanResults.lstResults.IsEnabled = false;
             UnLockControls(false);
             // launch restore on a new thread
@@ -843,7 +842,7 @@ namespace Searcher
             UnLockControls(true);
             this.IsTimerOn = false;
             _aUpdateTimer.IsEnabled = false;
-            _pnlRegScanActive.btnRegScanCancel.Content = "Status: Registry Scan Completed.. " + items.ToString() + " removed..";
+//            _pnlRegScanActive.btnRegScanCancel.Content = "Status: Registry Scan Completed.. " + items.ToString() + " removed..";
             ResetContext();
             ToggleToolBarButtons("btnRegscan");
             TogglePanels("btnRegscan");
@@ -897,34 +896,6 @@ namespace Searcher
 
             ResetProgressBars();
 
-            _pnlRegScanActive.stkUserScan.Visibility = this.UserScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkControlScan.Visibility = this.ControlScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkSoftwareScan.Visibility = this.SoftwareScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkFontsScan.Visibility = this.FontScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkHelpScan.Visibility = this.HelpScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkLibrariesScan.Visibility = this.LibraryScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkStartupScan.Visibility = this.StartupScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkUninstall.Visibility = this.UninstallScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkVdmScan.Visibility = this.VdmScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkHistoryScan.Visibility = this.HistoryScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkDeepScan.Visibility = this.DeepScan ? Visibility.Visible : Visibility.Collapsed;
-            _pnlRegScanActive.stkMru.Visibility = this.MRUScan ? Visibility.Visible : Visibility.Collapsed;
-
-            //_RegScan.ScanControl = this.ControlScan;
-            //_RegScan.DeleteCOMGuids = this.DeleteCOMGuids;
-            //_RegScan.OnlyCleanLibsFromConfig = this.OnlyCleanLibsFromConfig;
-            //_RegScan.ScanUser = this.UserScan;
-            //_RegScan.ScanFile = this.SoftwareScan;
-            //_RegScan.ScanFont = this.FontScan;
-            //_RegScan.ScanHelp = this.HelpScan;
-            //_RegScan.ScanSharedDll = this.LibraryScan;
-            //_RegScan.ScanStartupEntries = this.StartupScan;
-            //_RegScan.ScanUninstallStrings = this.UninstallScan;
-            //_RegScan.ScanVDM = this.VdmScan;
-            //_RegScan.ScanHistory = this.HistoryScan;
-            //_RegScan.ScanDeep = this.DeepScan;
-            //_RegScan.ScanMru = this.MRUScan;
-
             return true;
         }
 
@@ -945,7 +916,7 @@ namespace Searcher
             UnLockControls(true);
             this.IsTimerOn = false;
             _aUpdateTimer.IsEnabled = false;
-            _pnlRegScanActive.btnRegScanCancel.Content = "Next";
+            //_pnlRegScanActive.btnRegScanCancel.Content = "Next";
         }
 
         private static void SubProgressCounter(string id)
@@ -993,18 +964,18 @@ namespace Searcher
 
         private void SubProgressUpdate()
         {
-            _pnlRegScanActive.prgControlScan.Value = _aSubScan[0];
-            _pnlRegScanActive.prgUserScan.Value = _aSubScan[1];
-            _pnlRegScanActive.prgSoftwareScan.Value = _aSubScan[2];
-            _pnlRegScanActive.prgFontScan.Value = _aSubScan[3];
-            _pnlRegScanActive.prgHelpScan.Value = _aSubScan[4];
-            _pnlRegScanActive.prgLibrariesScan.Value = _aSubScan[5];
-            _pnlRegScanActive.prgStartupScan.Value = _aSubScan[6];
-            _pnlRegScanActive.prgUninstallScan.Value = _aSubScan[7];
-            _pnlRegScanActive.prgVdmScan.Value = _aSubScan[8];
-            _pnlRegScanActive.prgHistoryScan.Value = _aSubScan[9];
-            _pnlRegScanActive.prgDeepScan.Value = _aSubScan[10];
-            _pnlRegScanActive.prgMruScan.Value = _aSubScan[11];
+            //_pnlRegScanActive.prgControlScan.Value = _aSubScan[0];
+            //_pnlRegScanActive.prgUserScan.Value = _aSubScan[1];
+            //_pnlRegScanActive.prgSoftwareScan.Value = _aSubScan[2];
+            //_pnlRegScanActive.prgFontScan.Value = _aSubScan[3];
+            //_pnlRegScanActive.prgHelpScan.Value = _aSubScan[4];
+            //_pnlRegScanActive.prgLibrariesScan.Value = _aSubScan[5];
+            //_pnlRegScanActive.prgStartupScan.Value = _aSubScan[6];
+            //_pnlRegScanActive.prgUninstallScan.Value = _aSubScan[7];
+            //_pnlRegScanActive.prgVdmScan.Value = _aSubScan[8];
+            //_pnlRegScanActive.prgHistoryScan.Value = _aSubScan[9];
+            //_pnlRegScanActive.prgDeepScan.Value = _aSubScan[10];
+            //_pnlRegScanActive.prgMruScan.Value = _aSubScan[11];
         }
 
         private void TogglePanels(string name)

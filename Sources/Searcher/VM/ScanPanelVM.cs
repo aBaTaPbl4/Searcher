@@ -9,19 +9,31 @@ using Common.Interfaces;
 namespace Searcher.VM
 {
     
-    public class ScanOptionVM : ISearchSettings
+    public class ScanPanelVM : ISearchSettings
     {
         private string _fileNameSearchPattern;
         private List<ISearchPlugin> _activePlugins;
 
-        public ScanOptionVM()
+        public ScanPanelVM()
         {
             _activePlugins = new List<ISearchPlugin>();
             OrLink = true;
+            IsHidden = null;
+            IsArch = null;
+            IsReadOnly = null;
+            MinModificationDate = new DateTime(1955, 1, 1);
+            MinFileSize = 0;
         }
 
         public bool OrLink { get; set; }
-
+        public bool? IsHidden { get; set; }
+        public bool? IsArch { get; set; }
+        public bool? IsReadOnly{ get; set; }
+        public DateTime MinModificationDate { get; set; }
+        /// <summary>
+        /// Минимальный размер файла в кб
+        /// </summary>
+        public int MinFileSize { get; set; }
         //todo: продумать как бы сделать валидацию покорретней
         public string FileNameSearchPattern
         {
@@ -42,6 +54,21 @@ namespace Searcher.VM
         public string FolderToScan { get; set; }
 
         public string FileContentSearchPattern { get; set; }
+
+        public void SetActivePlugin(PluginDecoratorVM activePlugin)
+        {
+            foreach (var curPlugin in Plugins)
+            {
+                if (curPlugin == activePlugin)
+                {
+                    curPlugin.IsActive = true;
+                }
+                else
+                {
+                    curPlugin.IsActive = false;
+                }
+            }
+        }
 
         public ISearchPlugin[] ActivePlugins
         {

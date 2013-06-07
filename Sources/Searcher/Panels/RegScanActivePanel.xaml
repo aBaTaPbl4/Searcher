@@ -25,55 +25,16 @@
                     Scan Progress
                 </TextBlock>
                 <cp:CircularProgressBar Name="prgMain" BarColor="#FF3D81BA" Margin="2,6,4,16" Visibility="Visible" Value="0" Width="100" Height="100" BorderBrush="Transparent" />
-                
-                <StackPanel Name="stkControlScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgControlScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="Control Scan"/>
-                </StackPanel>
-                <StackPanel Name="stkUserScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgUserScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="User Scan"/>
-                </StackPanel>
-                <StackPanel Name="stkSoftwareScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgSoftwareScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="System Software"/>
-                </StackPanel>
-                <StackPanel Name="stkFontsScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgFontScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="System Fonts"/>
-                </StackPanel>
-                <StackPanel Name="stkHelpScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgHelpScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="System Help Files"/>
-                </StackPanel>
-                <StackPanel Name="stkLibrariesScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgLibrariesScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="Shared Libraries"/>
-                </StackPanel>
-                <StackPanel Name="stkStartupScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgStartupScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="Startup Entries"/>
-                </StackPanel>
-                <StackPanel Name="stkUninstall" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgUninstallScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="Installation Strings"/>
-                </StackPanel>
-                <StackPanel Name="stkVdmScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgVdmScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="Virtual Devices"/>
-                </StackPanel>
-                <StackPanel Name="stkHistoryScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgHistoryScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="History and Start Menu"/>
-                </StackPanel>
-                <StackPanel Name="stkDeepScan" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgDeepScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="Deep System Scan"/>
-                </StackPanel>
-                <StackPanel Name="stkMru" Orientation="Horizontal"  HorizontalAlignment="Left" Margin="20,0,0,0" >
-                    <cp:CircularProgressBar Name="prgMruScan" Theme="GlassyProgressBarStyle" Visibility="Visible" Value="0" Width="16" Height="16" BarColor="#FF3D81BA" />
-                    <TextBlock Margin="10,4" Text="MRU List Scan"/>
-                </StackPanel>
+                <TextBlock Margin="5" FontWeight="DemiBold" Text="Search results: " />
+                <ListView Margin="5" ItemsSource="{Binding Path=Results}"  Name="lstSearchResults">
+                    <ListView.View>
+                        <GridView>
+                            <GridView.Columns>
+                                <GridViewColumn Header="File name" DisplayMemberBinding="{Binding Path=FileName}" />
+                            </GridView.Columns>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </StackPanel>
             <Line DockPanel.Dock="Right" Y1="0" Y2="500" 
                   Stroke="DarkGray" Width="0.5" 
@@ -87,14 +48,6 @@
             <StackPanel Grid.Row="0" Margin="2,2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <TextBlock Margin="0,10,8,8" FontFamily="Arial" FontSize="20" FontWeight="Bold" Text="Statistics" />
                 <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
-                    <TextBlock FontWeight="DemiBold" Text="Scan Name: " />
-                    <TextBlock Name="txtScanPhase" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
-                    <TextBlock FontWeight="DemiBold" Text="Scan Description: " />
-                    <TextBlock Name="txtScanDescription" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
                     <TextBlock FontWeight="DemiBold" Text="Match Count: " />
                     <TextBlock Name="txtMatchCount" />
                 </StackPanel>
@@ -103,31 +56,19 @@
                     <TextBlock Name="txtLastMatch" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
-                    <TextBlock FontWeight="DemiBold" Text="Scanning Hive: " />
-                    <TextBlock Name="txtScanningHive" />
+                    <TextBlock FontWeight="DemiBold" Text="Folders Scanned: " ToolTip="Scaned folders count"/>
+                    <TextBlock Name="txtFolderCount" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
-                    <TextBlock FontWeight="DemiBold" Text="SubKey: " />
-                    <TextBlock Name="txtScanningKey" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
-                    <TextBlock FontWeight="DemiBold" Text="Key Count: " />
-                    <TextBlock Name="txtKeyCount" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
-                    <TextBlock FontWeight="DemiBold" Text="Segments Scanned: " />
-                    <TextBlock Name="txtSegmentsScanned" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
-                    <TextBlock FontWeight="DemiBold" Text="Segments Remaining: " />
-                    <TextBlock Name="txtSegmentsRemaining" />
+                    <TextBlock FontWeight="DemiBold" Text="Current Folder: " />
+                    <TextBlock Name="txtCurrentFolder" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,4,2,2" Height="Auto" VerticalAlignment="Stretch">
                     <TextBlock FontWeight="DemiBold" Text="Time Elapsed: " />
                     <TextBlock Name="txtTimeElapsed" />
                 </StackPanel>
             </StackPanel>
-            <Button Name="btnRegScanCancel" Click="Start_Clicked" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC">
+            <Button Name="btnScanCancel" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC">
                 Cancel
             </Button>
         </Grid>

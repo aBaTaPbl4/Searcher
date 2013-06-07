@@ -6,9 +6,10 @@ using System.Text;
 
 namespace Searcher.VM
 {
-    public class ScanData : INotifyPropertyChanged
+    public class ScanDataVM : INotifyPropertyChanged
     {
         private string _fileName;
+        private string _folderName;
         private bool _check;
 
         public string FileName
@@ -24,6 +25,18 @@ namespace Searcher.VM
             }
         }
 
+        public string FolderName
+        {
+            get
+            {
+                return _folderName;
+            }
+            set
+            {
+                OnPropertyChanged("FolderName");
+                _folderName = value;
+            }
+        }
         public bool Check
         {
             get { return _check; }

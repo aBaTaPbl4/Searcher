@@ -42,7 +42,7 @@ namespace Searcher.Panels
         private void CheckBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             // bug: somehow checkboxes got broken..
-            //ScanData d = (ScanData)lstResults.Items.CurrentItem;
+            //ScanDataVM d = (ScanDataVM)lstResults.Items.CurrentItem;
             //if (d != null)
             //{
             //    d.Check = !d.Check;
@@ -54,7 +54,7 @@ namespace Searcher.Panels
             MenuItem m = (MenuItem)sender;
             if (m != null)
             {
-                ScanData s = (ScanData)lstResults.Items.CurrentItem;
+                ScanDataVM s = (ScanDataVM)lstResults.Items.CurrentItem;
                 if (s != null)
                 {
                     //todo:add delete files
@@ -93,7 +93,7 @@ namespace Searcher.Panels
                         case "Item Details":
                             {
                                 wndDetails w = new wndDetails();
-                                ScanData d = (ScanData)lstResults.Items.CurrentItem;
+                                ScanDataVM d = (ScanDataVM)lstResults.Items.CurrentItem;
                                 //w.txtType.Text = d.Name;
                                 //w.txtRoot.Text = d.Root.ToString();
                                 //w.txtSubkey.Text = d.Key;
@@ -124,7 +124,7 @@ namespace Searcher.Panels
         {
             if (lstResults.Items != null)
             {
-                foreach (ScanData o in lstResults.Items)
+                foreach (ScanDataVM o in lstResults.Items)
                 {
                     o.Check = check;
                 }
@@ -190,7 +190,7 @@ namespace Searcher.Panels
         //    lgt.ShellOpen(path, cLightning.SHOW_COMMANDS.SW_NORMAL);
         //}
 
-        //private void OpenKey(ScanData data)
+        //private void OpenKey(ScanDataVM data)
         //{
         //    string key = data.Key;
         //    if (key.Length > 0)
@@ -204,10 +204,10 @@ namespace Searcher.Panels
         //    }
         //}
 
-        private void OpenFolder(ScanData data)
+        private void OpenFolder(ScanDataVM dataVM)
         {
             Process.Start("explorer", "\"" +
-                          Path.GetDirectoryName(data.FileName) + "\"");
+                          Path.GetDirectoryName(dataVM.FileName) + "\"");
             //string folder = data.Value;
             //if (folder.Length > 0 && folder.Contains(@":\"))
             //{

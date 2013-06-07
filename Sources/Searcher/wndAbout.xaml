@@ -16,7 +16,7 @@
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal" Margin="10">
-                <TextBlock Foreground="{StaticResource GlossBackgroundGradient}" FontSize="32" FontWeight="Bold" FontFamily="Tahoma" Text="Searcher"/>
+                <TextBlock Foreground="{StaticResource GlossBackgroundGradient}" FontSize="32" FontWeight="Bold" FontFamily="Tahoma" Text="Searcher 1.0"/>
             </StackPanel>
             <TextBlock TextWrapping="Wrap" Margin="12">
             <TextBlock.Text>

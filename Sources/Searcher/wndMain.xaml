@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:Searcher"
         xmlns:pnl="clr-namespace:Searcher.Panels"
         xmlns:cp="clr-namespace:CircularProgressBar;assembly=CircularProgressBar"
-        Title="Windows Searcher : Turbo mega test application ( Morozov'aka'aBaTaPbl4 Edition. UI Design - it is remake of the open source utility ScanX )" 
+        Title="File Searcher" 
         Height="600" Width="800" Icon="/Images/monitor.png" 
         ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" 
         SnapsToDevicePixels="True" FontFamily="Arial">
@@ -60,24 +60,11 @@
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Image Name="imgStatusBar" Source="/Images/monitor.png" Margin="4" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         <TextBlock Name="txtStatusBar" Width="Auto" FontSize="12" FontWeight="Normal" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Status: Registry Scan Pending..
+                            Status: File Scan Pending..
                         </TextBlock>
                     </StackPanel>
                 </GroupBox>
             </Grid>
         </Border>
-        
-        <Grid Name="grdRestore" Grid.Row="1" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden">
-            <Grid.BitmapEffect>
-                <DropShadowBitmapEffect ShadowDepth="3"/>
-            </Grid.BitmapEffect>
-            <Rectangle Stroke="DarkGray" StrokeThickness="1" />
-            <StackPanel Margin="4" Orientation="Horizontal">
-                <TextBlock Margin="4" Width="Auto" FontSize="12" FontWeight="DemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                    Creating a System Restore Snapshot. This may take several minutes..
-                </TextBlock>
-                <cp:CircularProgressBar Name="prgRestore" Minimum="1" Maximum="1000" Value="0" BarColor="#FF3D81BA" Margin="8" Theme="GlassyProgressBarStyle" Visibility="Visible" Width="40" Height="40" BorderBrush="Transparent" />
-            </StackPanel>
-        </Grid>
     </Grid>
 </Window>

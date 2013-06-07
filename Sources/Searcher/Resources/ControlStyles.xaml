@@ -48,11 +48,7 @@
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--      button      -->
     <!--//////////////////-->
-    <Style TargetType="Button" x:Key="SquareButton" BasedOn="{x:Type Button}">
-        <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
-        <Setter Property="MinHeight" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" />
-    </Style>
-    
+
     <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="IsEnabled" Value="True"/>
@@ -229,6 +225,14 @@
         </Setter>
     </Style>
 
+    <Style TargetType="Button" x:Key="SquareButton" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="MaxHeight" Value="20" />
+        <Setter Property="MaxWidth" Value="20" />
+        <Setter Property="Foreground" Value="#FCFCFC" />
+        <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="MinHeight" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" />
+    </Style>
+    
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--   radiobutton    -->
     <!--//////////////////-->
@@ -399,7 +403,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--     checkbox     -->
     <!--//////////////////-->
@@ -592,7 +596,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-
+    
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--    textblock     -->
     <!--//////////////////-->
@@ -958,6 +962,25 @@
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--      listbox     -->
     <!--//////////////////-->
+    <Style x:Key="RadioButtonListStyle" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="Margin" Value="2" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <RadioButton Focusable="False" IsChecked="{Binding Path=IsSelected, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" >
+                                    <ContentPresenter></ContentPresenter>
+                                </RadioButton>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Setter.Value>
+        </Setter>
+    </Style>
+        
     <!--scrollbar-->
     <Style x:Key="GlossyBlackScrollBar" TargetType="ScrollBar">
         <Setter Property="MinWidth" Value="17"/>

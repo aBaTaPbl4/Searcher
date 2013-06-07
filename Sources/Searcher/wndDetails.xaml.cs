@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Searcher.VM;
 
 namespace Searcher
 {
@@ -7,9 +8,21 @@ namespace Searcher
     /// </summary>
     public partial class wndDetails : Window
     {
+        private ScanDataVM _data;
         public wndDetails()
         {
             InitializeComponent();
+        }
+
+        
+        public ScanDataVM Data
+        {
+            get { return _data; }
+            set
+            {
+                _data = value;
+                DataContext = value;
+            }
         }
     }
 }

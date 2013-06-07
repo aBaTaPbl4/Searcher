@@ -13,7 +13,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid Loaded="Window_Loaded">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
             <ColumnDefinition Width="*" />
@@ -41,37 +41,38 @@
             </Grid.RowDefinitions>
             <StackPanel Name="stkCheckPanel" Grid.Row="0" Margin="30,6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <TextBlock Margin="8" FontFamily="Arial" FontSize="20" FontWeight="Bold" Text="Scan Options" />
-                <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="File name:" />
-                <TextBox Name="txtFileName" Margin="8" FontFamily="Arial" FontWeight="Bold"  Text="{Binding Path=FileNameSearchPattern}"  />
-                <DockPanel Margin ="8" LastChildFill="False">
+                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Folder:" />
+                <DockPanel Margin ="8 0 8 0" LastChildFill="True">
+                    <Button Name="btnChoseFolder"  MaxHeight="20" 
+                            HorizontalAlignment="Right" Style="{StaticResource ResourceKey=SquareButton}" DockPanel.Dock="Right" Click="btnChoseFolder_Click" >
+                        <TextBlock VerticalAlignment="Center">...</TextBlock></Button>
+                    <TextBox Name="txtFolder" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Stretch" Text="{Binding Path=FolderToScan}" DockPanel.Dock="Left" />
+                </DockPanel>
+                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File name:" />
+                <TextBox Name="txtFileName" Margin="8 0 8 8" FontFamily="Arial" FontWeight="Bold"  Text="{Binding Path=FileNameSearchPattern}"  />
+                <DockPanel Margin ="8 0 8 0" LastChildFill="False">
                     <RadioButton Name="rbnOR"  Margin="20 0" GroupName="Cond" Content="OR" IsThreeState="False" DockPanel.Dock="Left" IsChecked="{Binding Path=OrLink}"/>
                     <RadioButton Name="rbnAND" Margin="20 0" GroupName="Cond" Content="AND" IsThreeState="False" IsEnabled="False" DockPanel.Dock="Right"/>
                 </DockPanel>
-                <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="File content:" />
-                <TextBox Name="txtFileContent" Margin="8" FontFamily="Arial" FontWeight="Bold" Text="{Binding Path=FileContentSearchPattern}"  />
-                <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="Folder:" />
-                <StackPanel Orientation="Horizontal">
-                    <TextBox Name="txtFolder" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Stretch" Text="{Binding Path=FolderToScan}" />
-                    <Button Name="btnChoseFolder"  MaxHeight="20" 
-                            HorizontalAlignment="Right" Style="{StaticResource ResourceKey=SquareButton}" >...</Button>
-
-                                   
-                </StackPanel>
-                               
-                <TextBlock Margin="8" FontFamily="Arial" FontWeight="Bold" Text="Loaded plugins:" />
-                <StackPanel HorizontalAlignment="Stretch" >
-                    <ListBox Name="listBoxZone" ItemsSource="{Binding Path=Plugins}"
- Height="115" Background="Azure" HorizontalAlignment="Stretch">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <CheckBox Name="CheckBoxZone" Content="{Binding Path=Name}"
-     IsChecked="{Binding Path=IsActive}" IsEnabled="True" Margin="0,5,0,0"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
+                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File content:" />
+                <TextBox Name="txtFileContent" Margin="8 0 8 0" FontFamily="Arial" FontWeight="Bold" Text="{Binding Path=FileContentSearchPattern}"  />
+                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File min size(KB):" />
+                <TextBox Name="txtFileSize" Margin="8 0 8 0" FontFamily="Arial" FontWeight="Bold" Text="{Binding Path=MinFileSize}"  />
+                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Min modification date:" />
+                <DatePicker Height="25" HorizontalAlignment="Left" Margin="8 0 8 0" Name="dtpMinModificationDate" VerticalAlignment="Top" Width="115" Text="{Binding Path=MinModificationDate}"/>
+                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Attributes:" />
+                <WrapPanel Margin="8 0 8 0">
+                    <CheckBox Name="chkHidden" Margin="4,2,2,2" IsChecked= "{Binding Path=IsHidden}" >Hidden</CheckBox>
+                    <CheckBox Name="chkArchieve" Margin="4,2,2,2" IsChecked= "{Binding Path=IsArch}" >Archieve</CheckBox>
+                    <CheckBox Name="chkReadOnly" Margin="4,2,2,2" IsChecked= "{Binding Path=IsReadOnly}" >Read only</CheckBox>
+                </WrapPanel>
+                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Plugin to use:" />
+                <StackPanel Margin="8 0 8 0" HorizontalAlignment="Stretch" >
+                    <ListBox Name="lstPlugins" Style="{StaticResource RadioButtonListStyle}" ItemsSource="{Binding Path=Plugins}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">
                     </ListBox>
                 </StackPanel>
             </StackPanel>
-            <Button Name="btnRegScanStart" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC" Click="btnRegScanStart_Click">
+            <Button Name="btnScanStart" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC" Click="btnScanStart_Click">
                 Start
             </Button>
         </Grid>

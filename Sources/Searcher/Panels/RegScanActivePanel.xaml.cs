@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls;
 using CircularProgressBar;
+using Searcher.VM;
 
 namespace Searcher.Panels
 {
@@ -8,14 +9,18 @@ namespace Searcher.Panels
     /// </summary>
     public partial class RegScanActivePanel : UserControl
     {
+        private ScanActivePanelVM _data;
+
         public RegScanActivePanel()
         {
             InitializeComponent();
+            _data = new ScanActivePanelVM();
+            DataContext = _data;
         }
 
-        private void Start_Clicked(object sender, System.Windows.RoutedEventArgs e)
+        public ScanActivePanelVM ViewModel
         {
-
+            get { return _data; }
         }
     }
 }

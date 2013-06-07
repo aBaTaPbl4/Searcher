@@ -1,8 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Common;
+using System.Windows.Forms;
 using Searcher.VM;
+using UserControl = System.Windows.Controls.UserControl;
 
 namespace Searcher.Panels
 {
@@ -11,12 +11,12 @@ namespace Searcher.Panels
     /// </summary>
     public partial class RegScanPanel : UserControl
     {
-        private readonly ScanOptionVM _data;
+        private readonly ScanPanelVM _data;
 
         public RegScanPanel()
         {
             InitializeComponent();
-            _data = new ScanOptionVM();
+            _data = new ScanPanelVM();
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
                 _data.InitPlugins();
@@ -26,14 +26,25 @@ namespace Searcher.Panels
             DataContext = _data;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private void btnScanStart_Click(object sender, RoutedEventArgs e)
         {
-            rbnOR.IsChecked = true;
+            int i = 1;
+            i++;
         }
 
-        private void btnRegScanStart_Click(object sender, RoutedEventArgs e)
+        private void btnChoseFolder_Click(object sender, RoutedEventArgs e)
         {
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                txtFolder.Text = dialog.SelectedPath;
+            }
+        }
 
+        private void lstPlugins_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var itm = lstPlugins.SelectedItem as PluginDecoratorVM;
+            _data.SetActivePlugin(itm);
         }
 
     }
