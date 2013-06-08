@@ -23,7 +23,7 @@
                             
         </Grid.Resources>
         <ListBox ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True" SelectionMode="Extended"  Grid.Row="0" Name="lstResults" Margin="4"
-                 Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseLeftButtonUp="CheckBox_MouseLeftButtonUp">
+                 Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
@@ -96,13 +96,13 @@
             </ListBox.ContextMenu>
         </ListBox>
         <DockPanel Grid.Row="1" Margin="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <Button Name="btnSelectAll" DockPanel.Dock="Left" Click="Start_Clicked" Width="100" Height="30" HorizontalAlignment="Right" Margin="25,2,10,2" Foreground="#FCFCFC" >
+            <Button Name="btnSelectAll" DockPanel.Dock="Left" Width="100" Height="30" HorizontalAlignment="Right" Margin="25,2,10,2" Foreground="#FCFCFC" >
                 Select All
             </Button>
-            <Button Name="btnDeselectAll" DockPanel.Dock="Left" Click="Start_Clicked" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,10,2" Foreground="#FCFCFC">
+            <Button Name="btnDeselectAll" DockPanel.Dock="Left" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,10,2" Foreground="#FCFCFC">
                 Deselect All
             </Button>
-            <Button Name="btnRemove" DockPanel.Dock="Right" Click="Start_Clicked" Width="140" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC">
+            <Button Name="btnRemove" DockPanel.Dock="Right" Width="140" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC">
                 Remove Selected
             </Button>
         </DockPanel>

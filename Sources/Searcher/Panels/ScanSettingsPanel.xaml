@@ -84,7 +84,7 @@
                     </ListBox>
                 </StackPanel>
             </StackPanel>
-            <Button Name="btnScanStart" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC" Click="btnScanStart_Click">
+            <Button Name="btnScanStart" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC" >
                 Start
             </Button>
         </Grid>

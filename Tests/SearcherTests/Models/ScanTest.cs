@@ -24,7 +24,7 @@ namespace SearcherTests.Models
         {
             Process = new SearchProcess();
             Process.Folder = TestHelper.DeepestFolder;
-            Process.MatchItem += RegScan_MatchItem;
+            Process.FileWasFound += RegScan_MatchItem;
             _scan = CreateStrategy();
             _foundFiles = new List<string>();
         }
@@ -60,9 +60,9 @@ namespace SearcherTests.Models
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
 
-        private void RegScan_MatchItem(string file)
+        private void RegScan_MatchItem(ScanData file)
         {
-            _foundFiles.Add(file);
+            _foundFiles.Add(file.FullName);
         }
     }
 }

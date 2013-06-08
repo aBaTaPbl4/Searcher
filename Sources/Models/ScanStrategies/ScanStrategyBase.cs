@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using Common;
 
 namespace Models.ScanStrategies
@@ -22,16 +23,31 @@ namespace Models.ScanStrategies
         protected void ScanFolder(string folderName)
         {
             var files = AppContext.FileSystem.GetFiles(folderName);
-            foreach (var fileName in files)
+            foreach (var fullFileName in files)
             {
                 foreach (var plugin in AppContext.SearchSettings.ActivePlugins)
                 {
-                    if (plugin.Check(fileName, AppContext.SearchSettings))
+                    if (plugin.Check(fullFileName, AppContext.SearchSettings))
                     {
-                        _search.AddFoundFile(fileName);
+                        var fileInfo = new ScanData();
+                        fileInfo.FileName = Path.GetFileName(fullFileName);
+                        fileInfo.FolderName = Path.GetDirectoryName(fullFileName);
+                        _search.AddFoundFile(fileInfo);
                         break;
                     }
                 }
+            }
+        }
+
+        public static ScanStrategyBase CreateInstance()
+        {
+            if (AppContext.SearchSettings.IsMultithreadRequired)
+            {
+                return new MultiThreadScan();
+            }
+            else
+            {
+                return new SingleThreadScan();
             }
         }
     }

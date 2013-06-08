@@ -62,7 +62,7 @@
                         </TextBox>
                         <CheckBox Name="chkLogging"  Margin="10,4,2,2" IsChecked="{Binding Path=EnableLogging}">Enable Logging</CheckBox>
                         <CheckBox Name="chkLogDetailed" Margin="10,4,2,2" IsChecked="{Binding Path=VerboseLogging}">Log Match Details</CheckBox>
-                        <Button Name="btnShowLog" Content="Show Log" Click="btnShowLog_Clicked" Margin="10,10,20,10" Width="160" Height="30" HorizontalAlignment="Right" Foreground="#FCFCFC" />
+                        <Button Name="btnShowLog" Content="Show Log" Margin="10,10,20,10" Width="160" Height="30" HorizontalAlignment="Right" Foreground="#FCFCFC" />
                     </StackPanel>
                 </Border>
             </StackPanel>

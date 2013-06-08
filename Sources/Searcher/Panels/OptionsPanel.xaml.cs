@@ -26,19 +26,10 @@ namespace Searcher.Panels
                 return;
             if (chk.Name == "chkAsync")
             {
-                txtThreadsNum.IsEnabled = chk.IsChecked ?? false;
-                
+                txtThreadsNum.IsEnabled = chk.IsChecked ?? false;                
             }
         }
 
-        private void btnShowLog_Clicked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            var logFileName = "log.txt";
-            if (AppContext.FileSystem.FileExtists(logFileName))
-            {
-                Process.Start("notepad.exe", logFileName);
-            }
-        }
 
         public OptionsPanelVM ViewModel
         {

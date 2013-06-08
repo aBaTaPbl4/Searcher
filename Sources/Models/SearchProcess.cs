@@ -10,66 +10,80 @@ namespace Models
 {
     public class SearchProcess
     {
-        private BackgroundWorker _oProcessAsyncBackgroundWorker;
-        private List<string> _foundFiles = new List<string>();
+        private BackgroundWorker _worker;
+        private readonly List<ScanData> _foundFiles = new List<ScanData>();
         private ScanStrategyBase _scanStrategy;
 
         #region Delegates
-        public delegate void LabelChangeDelegate(string phase, string label);
-        public delegate void CurrentPathDelegate(string hive, string path);
-        public delegate void KeyCountDelegate();
-        public delegate void MatchItemDelegate(string file);
-        public delegate void StatusChangeDelegate(string label);
-        public delegate void ProcessChangeDelegate();
-        public delegate void ScanCountDelegate(int count);
-        public delegate void ScanCompleteDelegate();
-        public delegate void SubScanCompleteDelegate(string id);
+        public delegate void ReportProgressDelegate(int percentsComplete);
+        public delegate void FileFoundDelegate(ScanData foundInfo);        
+        public delegate void SubScanCompleteDelegate(string folderName);
         public delegate void ProcessCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
         #endregion
 
         #region Events
-        [Description("Status update")]
-        public event LabelChangeDelegate LabelChange;
-        [Description("Current processing path")]
-        public event CurrentPathDelegate CurrentPath;
-        [Description("Key processed count")]
-        public event KeyCountDelegate KeyCount;
-        [Description("Match item was found")]
-        public event MatchItemDelegate MatchItem;
-        [Description("Processing status has changed")]
-        public event StatusChangeDelegate StatusChange;
-        [Description("Processing shifted to new task")]
-        public event ProcessChangeDelegate ProcessChange;
-        [Description("Task counter")]
-        public event ScanCountDelegate ScanCount;
-        [Description("Scan Completed")]
-        public event ScanCompleteDelegate ScanComplete;
-        [Description("Scan Completed")]
+
+        [Description("Occures when progress is changed")]
+        public event ReportProgressDelegate ProgressChanged;
+        
+        [Description("Occurs when file matched to condition has found")]
+        public event FileFoundDelegate FileWasFound;
+        
+        [Description("Occurs when subfolder scan completed")]
         public event SubScanCompleteDelegate SubScanComplete;
-        public event ProcessCompletedEventHandler ProcessCompleted;
+
+        [Description("Occurs when scan Completed")]
+        public event ProcessCompletedEventHandler ScanComplete;
+
+        internal void RaiseProgressChanged(int currentProgress)
+        {
+            if (ProgressChanged != null)
+            {
+                ProgressChanged(currentProgress);
+            }
+        }
+
+        internal void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (ScanComplete != null)
+            {
+                ScanComplete(this, e);
+            }
+        }
+
+        internal void RaiseSubScanCompleted(string folderName)
+        {
+            if (ScanComplete != null)
+            {
+                SubScanComplete(folderName);
+            }
+        }
+
+        private void RaiseFileWasFound(ScanData fileInfo)
+        {
+            if (FileWasFound != null)
+            {
+                FileWasFound(fileInfo);
+            }
+        }
         #endregion
 
         public string Folder{ get; set; }
 
-        public string[] FoundFiles
+        public ScanData[] FoundFiles
         {
             get { return _foundFiles.ToArray(); }
         }
 
-        internal void AddFoundFile(string fileName)
+        internal void AddFoundFile(ScanData fileInfo)
         {
             lock(_foundFiles)
             {
-                if (!_foundFiles.Contains(fileName))
-                {
-                    _foundFiles.Add(fileName);
-                }
-                if (MatchItem != null)
-                {
-                    MatchItem(fileName);
-                }
-            }            
+                _foundFiles.Add(fileInfo);
+                RaiseFileWasFound(fileInfo);
+            }
         }
+
 
         public ScanStrategyBase ScanStrategy
         {
@@ -77,14 +91,7 @@ namespace Models
             {
                 if (_scanStrategy == null)
                 {
-                    if (AppContext.SearchSettings.IsMultithreadRequired)
-                    {
-                        _scanStrategy = new MultiThreadScan();
-                    }
-                    else
-                    {
-                        _scanStrategy = new SingleThreadScan();
-                    }                    
+                    _scanStrategy = ScanStrategyBase.CreateInstance();
                 }
                 return _scanStrategy;
             }
@@ -94,49 +101,39 @@ namespace Models
             }
         }
 
-        public bool StartScan()
-        {
-            
-            if (LabelChange == null || CurrentPath == null || KeyCount == null || MatchItem == null ||
-                StatusChange == null || ProcessChange == null || ScanCount == null || ScanComplete == null || 
-                SubScanComplete == null)
-            {
-                return false;
-            }
-            StatusChange("Starting scanning...");
-
-            var result = ScanStrategy.StartScan(this);
-            StatusChange("Scan finished...");
-            ScanComplete();
-            return result;
-        }
-
         public void AsyncScan()
         {
-            if (_oProcessAsyncBackgroundWorker != null)
+            if (_worker != null)
             {
                 ResetAsync();
             }
 
-            _oProcessAsyncBackgroundWorker = new BackgroundWorker();
-            _oProcessAsyncBackgroundWorker.WorkerSupportsCancellation = true;
-            _oProcessAsyncBackgroundWorker.DoWork += ProcessAsyncBackgroundWorker_DoWork;
-            _oProcessAsyncBackgroundWorker.RunWorkerCompleted += ProcessAsyncBackgroundWorker_RunWorkerCompleted;
-            _oProcessAsyncBackgroundWorker.Disposed += new EventHandler(_oProcessAsyncBackgroundWorker_Disposed);
-            _oProcessAsyncBackgroundWorker.RunWorkerAsync();
+            _worker = new BackgroundWorker();
+            _worker.WorkerSupportsCancellation = true;
+            _worker.DoWork += DoWork;
+            _worker.RunWorkerCompleted += RaiseScanCompleted;
+            _worker.Disposed += new EventHandler(WorkerDisposed);
+            _worker.RunWorkerAsync();
         }
 
 
         public void CancelProcessAsync()
         {
-            if (_oProcessAsyncBackgroundWorker != null)
+            if (_worker != null)
             {
-                _oProcessAsyncBackgroundWorker.CancelAsync();
+                _worker.CancelAsync();
                 ResetAsync();
             }
         }
 
-        private void ProcessAsyncBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        public bool StartScan()
+        {
+
+            var result = ScanStrategy.StartScan(this);
+            return result;
+        }
+
+        private void DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
@@ -151,27 +148,19 @@ namespace Models
             }
         }
 
-        private void ProcessAsyncBackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (ProcessCompleted != null)
-            {
-                ProcessCompleted(this, e);
-            }
-        }
-
         private void ResetAsync()
         {
-            if (_oProcessAsyncBackgroundWorker != null)
+            if (_worker != null)
             {
-                _oProcessAsyncBackgroundWorker.Dispose();
+                _worker.Dispose();
             }
         }
 
-        private void _oProcessAsyncBackgroundWorker_Disposed(object sender, EventArgs e)
+        private void WorkerDisposed(object sender, EventArgs e)
         {
-            _oProcessAsyncBackgroundWorker.DoWork -= ProcessAsyncBackgroundWorker_DoWork;
-            _oProcessAsyncBackgroundWorker.RunWorkerCompleted -= ProcessAsyncBackgroundWorker_RunWorkerCompleted;
-            _oProcessAsyncBackgroundWorker = null;
+            _worker.DoWork -= DoWork;
+            _worker.RunWorkerCompleted -= RaiseScanCompleted;
+            _worker = null;
         }
 
         private class StopProcessingException : Exception

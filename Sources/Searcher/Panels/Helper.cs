@@ -9,19 +9,19 @@ namespace Searcher.Panels
 {
     public static class Helper
     {
-        public static bool IsValid(DependencyObject obj)
+        public static bool IsValidObject(DependencyObject obj)
         {
             // The dependency object is valid if it has no errors, 
             //and all of its children (that are dependency objects) are error-free.
             return !Validation.GetHasError(obj) &&
                 LogicalTreeHelper.GetChildren(obj)
                 .OfType<DependencyObject>()
-                .All(child => IsValid(child));
+                .All(child => IsValidObject(child));
         }
 
         public static bool IsValid(this UserControl ctrl)
         {
-            return IsValid(ctrl);
+            return IsValidObject(ctrl);
         }
     }
 }

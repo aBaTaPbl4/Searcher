@@ -1,5 +1,6 @@
 ﻿#region Directives
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Common;
@@ -76,10 +77,10 @@ namespace Searcher
             if (btn == null)
                 return;
 
-
+            string url = null;
             switch (btn.Name)
             {
-                case "btnRegScanStart":
+                case "btnScanStart":
                     if ((string)btn.Content == "Start")
                     {
                         if (_pnlScanSettings.AllDataValid())
@@ -94,7 +95,7 @@ namespace Searcher
                         }
                     }
                     break;
-                case "btnRegScanCancel":
+                case "btnScanCancel":
                     if ((string)btn.Content == "Cancel")
                     {
                         LogEntry("Scan Aborted by User.");
@@ -106,7 +107,7 @@ namespace Searcher
                     }
                     else
                     {
-                        TogglePanels("Results");
+                        ToggleResultsPanel();
                     }
                     break;
                 case "btnSelectAll":
@@ -118,8 +119,34 @@ namespace Searcher
                 case "btnRemove":
                     _vm.RemoveResults();
                     break;
+                case "btnShowLog":
+                    OpenLogInNotepad();
+                    break;
+                case "btnHelpMain":
+                    OpenUrlInBrowser("http://yandex.ru");
+                    break;
+                case "btnHelpHome":
+                    OpenUrlInBrowser("http://google.ru");
+                    break;
+                case "btnAbout":
+                    ShowAboutWindow();
+                    break;                    
             }
             
+        }
+
+        private static void OpenLogInNotepad()
+        {
+            var logFileName = "log.txt";
+            if (AppContext.FileSystem.FileExtists(logFileName))
+            {
+                Process.Start("notepad.exe", logFileName);
+            }
+        }
+
+        private void OpenUrlInBrowser(string url)
+        {
+            Process.Start("iexplore.exe", url);
         }
 
         private void Link_Click(object sender, MouseButtonEventArgs e)
@@ -129,9 +156,14 @@ namespace Searcher
             if (lnk.Name == "imgAbout" )
             {
                 // load about form
-                WndAbout w = new WndAbout();
-                w.ShowDialog();
+                ShowAboutWindow();
             }
+        }
+
+        private static void ShowAboutWindow()
+        {
+            WndAbout w = new WndAbout();
+            w.ShowDialog();
         }
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
@@ -155,10 +187,9 @@ namespace Searcher
             _pnlOptions = new OptionsPanel();
             _pnlHelp = new HelpPanel();
             _pnlActiveScan = new ActiveScanPanel();
-            _pnlScanResults = new ScanResultsPanel();
+            _pnlScanResults = new ScanResultsPanel(_pnlActiveScan.ViewModel);
             _vm = new WndMainVM();
             _vm.ActivityData = _pnlActiveScan.ViewModel;
-            _vm.SearchOptions = _pnlScanSettings.ViewModel;
             _vm.ProgramOptions = _pnlOptions.ViewModel;
             _bmpMonitor = new BitmapImage(new Uri("/Images/monitor.png", UriKind.Relative));
             _bmpOptions = new BitmapImage(new Uri("/Images/options.png", UriKind.Relative));
@@ -196,23 +227,23 @@ namespace Searcher
         {
             Reset();
             UnLockControls(true);
-            ToggleToolBarButtons("btnRegscan");
-            TogglePanels("btnRegscan");
+            ToggleScanSettingsButton();
+            ToggleScanSettingsPanel();
         }
 
         private void ScanComplete(int items)
         {
             UnLockControls(true);
 //            _pnlActiveScan.btnRegScanCancel.Content = "Status: Registry Scan Completed.. " + items.ToString() + " removed..";
-            ToggleToolBarButtons("btnRegscan");
-            TogglePanels("btnRegscan");
+            ToggleScanSettingsButton();
+            ToggleScanSettingsPanel();
         }
 
         private void ScanStart()
         {
             
             UnLockControls(false);            
-            TogglePanels("Active");
+            ToggleActiveScanPanel();
             _vm.StartScan();
         }
 
@@ -224,6 +255,20 @@ namespace Searcher
             _pnlActiveScan.btnScanCancel.Content = "Next";
         }
 
+        private void ToggleResultsPanel()
+        {
+            TogglePanels("Results");
+        }
+
+        private void ToggleScanSettingsPanel()
+        {
+            TogglePanels("btnRegscan");
+        }
+
+        private void ToggleActiveScanPanel()
+        {
+            TogglePanels("Active");
+        }
 
         private void TogglePanels(string name)
         {
@@ -268,6 +313,11 @@ namespace Searcher
                     txtStatusBar.Text = "Review Help Information..";
                     break;
             }
+        }
+
+        private void ToggleScanSettingsButton()
+        {
+            ToggleToolBarButtons("btnRegscan");
         }
 
         private void ToggleToolBarButtons(string button)

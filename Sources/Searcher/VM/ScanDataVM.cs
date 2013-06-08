@@ -4,45 +4,13 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Models;
 
 namespace Searcher.VM
 {
-    public class ScanDataVM : INotifyPropertyChanged
+    public class ScanDataVM : ScanData, INotifyPropertyChanged
     {
-        private string _fileName;
-        private string _folderName;
         private bool _check;
-
-        public string FileName
-        {
-            get
-            {
-                return _fileName;
-            }
-            set
-            {
-                OnPropertyChanged("FileName");
-                _fileName = value;
-            }
-        }
-
-        public string FolderName
-        {
-            get
-            {
-                return _folderName;
-            }
-            set
-            {
-                OnPropertyChanged("FolderName");
-                _folderName = value;
-            }
-        }
-
-        public string FullName
-        {
-            get { return Path.Combine(FolderName, FileName); }
-        }
 
         public bool Check
         {
@@ -54,6 +22,11 @@ namespace Searcher.VM
             }
         }
 
+        public void Init(ScanData data)
+        {
+            this.FileName = data.FileName;
+            this.FolderName = data.FolderName;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(String info)

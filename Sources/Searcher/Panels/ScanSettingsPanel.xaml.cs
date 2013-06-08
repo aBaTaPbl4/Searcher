@@ -17,18 +17,12 @@ namespace Searcher.Panels
         public ScanSettingsPanel()
         {
             InitializeComponent();
-            _data = new ScanSettingsPanelVM();
+            _data = AppContext.SearchSettings as ScanSettingsPanelVM;
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
                 _data.InitPlugins();
             }
             DataContext = _data;
-        }
-
-        private void btnScanStart_Click(object sender, RoutedEventArgs e)
-        {
-            int i = 1;
-            i++;
         }
 
         private void btnChoseFolder_Click(object sender, RoutedEventArgs e)

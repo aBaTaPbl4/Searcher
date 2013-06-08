@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace SearcherTests.Models
 {
     [TestFixture]
-    public class SearchEngineTest
+    public class SearchProcessTest
     {
         private SearchProcess _search;
 
@@ -18,16 +18,11 @@ namespace SearcherTests.Models
             _search = TestsConfiguration.ObjectsFactory.CreateEngine();
         }
 
-        [Test]
-        public void StartScanWithUnhandledEventsTest()
-        {
-            Assert.IsFalse(_search.StartScan(), Log.Content);
-        }
-
-        [Test, Ignore("Заставить работать тест каогда буду делать UI")]
-        public void StartScanWithHandledEventsTest()
+        [Test, Description("Если не подписались на события поиска, то все равно поиск должен успешно проходить")]
+        public void StartScan_WhenSearchEvents_Unhandled_Test()
         {
             Assert.IsTrue(_search.StartScan(), Log.Content);
         }
+
     }
 }

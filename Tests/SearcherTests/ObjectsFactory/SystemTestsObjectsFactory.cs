@@ -35,12 +35,14 @@ namespace SearcherTests
         public ISearchSettings CreateSettings(string fileNameSearchPattern = "note.*", string fileContentSearchPattern = "note", bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
         {
 
-            var settings = new ScanSettingsPanelVM();
+            var settings = MockRepository.GeneratePartialMock<ScanSettingsPanelVM>();
             settings.FolderToScan = TestHelper.DeepestFolder;
             settings.IsMultithreadRequired = isMultithreaded;
             settings.FileNameSearchPattern = fileNameSearchPattern;
             settings.FileContentSearchPattern = fileContentSearchPattern;
-            settings.ActivePlugins = activePlugins ?? AppContext.PluginManager.AllPlugins;
+            settings.InitPlugins();
+            activePlugins = activePlugins ?? AppContext.PluginManager.AllPlugins;
+            settings.Stub(x => x.ActivePlugins).Return(activePlugins);                
             return settings;            
         }
 

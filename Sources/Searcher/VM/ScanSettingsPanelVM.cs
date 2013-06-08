@@ -14,11 +14,9 @@ namespace Searcher.VM
     {
         private string _fileNameSearchPattern;
         private string _folderToScan;
-        private List<ISearchPlugin> _activePlugins;
 
         public ScanSettingsPanelVM()
         {
-            _activePlugins = new List<ISearchPlugin>();
             OrLink = true;
             IsHidden = null;
             IsArch = null;
@@ -55,8 +53,14 @@ namespace Searcher.VM
         //todo: нужна валидация на допустимые символы в папках
         public string FolderToScan
         {
-            get { return _folderToScan; }
-            set { _folderToScan = value; }
+            get
+            {
+                return _folderToScan;
+            }
+            set
+            {
+                _folderToScan = value;
+            }
         }
 
         public string FileContentSearchPattern { get; set; }
@@ -76,13 +80,11 @@ namespace Searcher.VM
             }
         }
 
-        public ISearchPlugin[] ActivePlugins
+        public virtual ISearchPlugin[] ActivePlugins
         {
-            get { return Plugins.Where(x => x.IsActive).ToArray() as ISearchPlugin[]; }
-            set
+            get
             {
-                //todo:закрыть публичный доступ
-                _activePlugins = new List<ISearchPlugin>(value);
+                return Plugins.Where(x => x.IsActive).Select(x=>x.Plugin).ToArray();
             }
         }
         
@@ -120,6 +122,10 @@ namespace Searcher.VM
                 {
                     foreach (var wrongChar in Path.GetInvalidPathChars())
                     {
+                        if (_fileNameSearchPattern.IsNullOrEmpty())
+                        {
+                            return null;
+                        }
                         if (_fileNameSearchPattern.Contains(wrongChar))
                         {
                             result = string.Format("File name contains wrong character '{0}'!!!", wrongChar);
@@ -128,6 +134,10 @@ namespace Searcher.VM
                 }
                 else if (name == "FolderToScan")
                 {
+                    if (_folderToScan.IsNullOrEmpty())
+                    {
+                        return null;
+                    }
 
                     bool folderIsNotExists = !this._folderToScan.IsNullOrEmpty() &&
                                              !AppContext.FileSystem.DirectoryExists(this._folderToScan);

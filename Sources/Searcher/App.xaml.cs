@@ -30,9 +30,13 @@ namespace Searcher
 
         protected void RegisterServices()
         {
-            AppContext.RegisterService(new ScanSettingsPanelVM(),typeof(ISearchSettings));
             AppContext.RegisterService(new FileSystem(), typeof(IFileSystem));
             AppContext.RegisterService(new PluginManager(), typeof(IPluginManager));
+            var searchSettings = new ScanSettingsPanelVM();
+            searchSettings.InitPlugins();
+            AppContext.RegisterService(searchSettings,typeof(ISearchSettings));
+            
+            
         }
     }
 }

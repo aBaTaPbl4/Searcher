@@ -18,7 +18,7 @@ namespace Searcher.VM
         public int MatchesCount { get; private set; }
         public string LastMatch { get; private set; }
         public int FolderCountScanned { get; private set; }
-        public string CurrentFolder { get; private set; }
+        public string LastScanedFolder { get; private set; }
         public double TimeElapsed { get; set; }
         public int ProgressMax { get; set; }
         public int Progress { get; set; }
@@ -32,9 +32,9 @@ namespace Searcher.VM
             LastMatch = data.FileName;
         }
 
-        public void SetCurrentFolder(string folderName)
+        public void FinishedFolderScan(string folderName)
         {
-            CurrentFolder = folderName;
+            LastScanedFolder = folderName;
             FolderCountScanned++;
         }
 
@@ -43,7 +43,7 @@ namespace Searcher.VM
             MatchesCount = 0;
             LastMatch = "";
             FolderCountScanned = 0;
-            CurrentFolder = "";
+            LastScanedFolder = "";
             TimeElapsed = 0;
             ProgressMax = 100;
             Progress = 0;

@@ -33,9 +33,9 @@
         </DockPanel>
         <Grid Grid.Column="1">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Center" >
-                <Button Name="btnHelpMain" Content="Go to the Help Page.." Click="GoToPage_Clicked" Width="250" Height="40" Margin="20,60,20,20" Foreground="#FCFCFC" />
-                <Button Name="btnHelpHome" Content="Go to the Home Page.." Click="GoToPage_Clicked" Width="250" Height="40" Margin="20" Foreground="#FCFCFC" />
-                <Button Name="btnAbout" Content="About it.." Click="btnAbout_Clicked" Width="250" Height="40" Margin="20" Foreground="#FCFCFC" />
+                <Button Name="btnHelpMain" Content="Go to the Help Page.." Width="250" Height="40" Margin="20,60,20,20" Foreground="#FCFCFC" />
+                <Button Name="btnHelpHome" Content="Go to the Home Page.." Width="250" Height="40" Margin="20" Foreground="#FCFCFC" />
+                <Button Name="btnAbout" Content="About it.." Width="250" Height="40" Margin="20" Foreground="#FCFCFC" />
             </StackPanel>
         </Grid>
     </Grid>
