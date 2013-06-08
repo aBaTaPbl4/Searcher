@@ -43,14 +43,6 @@ namespace Models
             }
         }
 
-        internal void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (ScanComplete != null)
-            {
-                ScanComplete(this, e);
-            }
-        }
-
         internal void RaiseSubScanCompleted(string folderName)
         {
             if (ScanComplete != null)
@@ -64,6 +56,14 @@ namespace Models
             if (FileWasFound != null)
             {
                 FileWasFound(fileInfo);
+            }
+        }
+
+        private void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (ScanComplete != null)
+            {
+                ScanComplete(this, e);
             }
         }
         #endregion
@@ -154,6 +154,7 @@ namespace Models
             {
                 _worker.Dispose();
             }
+            
         }
 
         private void WorkerDisposed(object sender, EventArgs e)

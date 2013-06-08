@@ -49,6 +49,7 @@
                         <TextBlock VerticalAlignment="Center">...</TextBlock></Button>
                     <TextBox Name="txtFolder" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Stretch" Text="{Binding Path=FolderToScan, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DockPanel.Dock="Left" />
                 </DockPanel>
+                <CheckBox Name="chkRecursive" Margin="8, 8, 8, 0" IsChecked= "{Binding Path=RecursiveScan}" >Seach in subdirectories</CheckBox>
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File name:" />
                 <TextBox Name="txtFileName" Margin="8 0 8 8" FontFamily="Arial" FontWeight="Bold"  Text="{Binding Path=FileNameSearchPattern, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  />
                 <DockPanel Margin ="8 0 8 0" LastChildFill="False">
@@ -70,14 +71,19 @@
                         </Binding>
                     </TextBox.Text>
                 </TextBox>
-                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Min modification date:" />
-                <DatePicker Height="25" HorizontalAlignment="Left" Margin="8 0 8 0" Name="dtpMinModificationDate" VerticalAlignment="Top" Width="115" Text="{Binding Path=MinModificationDate}"/>
-                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Attributes:" />
-                <WrapPanel Margin="8 0 8 0">
-                    <CheckBox Name="chkHidden" Margin="4,2,2,2" IsChecked= "{Binding Path=IsHidden}" >Hidden</CheckBox>
-                    <CheckBox Name="chkArchieve" Margin="4,2,2,2" IsChecked= "{Binding Path=IsArch}" >Archieve</CheckBox>
-                    <CheckBox Name="chkReadOnly" Margin="4,2,2,2" IsChecked= "{Binding Path=IsReadOnly}" >Read only</CheckBox>
-                </WrapPanel>
+                <UniformGrid Rows="2" Columns="2" Margin="8 8 8 8">
+                    <TextBlock Margin="2 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Changed after:" />
+                    <TextBlock Margin="2 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Attributes:" />                    
+                    <DatePicker Height="25" HorizontalAlignment="Left" Margin="2 0 8 0" Name="dtpMinModificationDate" VerticalAlignment="Stretch" Width="115" Text="{Binding Path=MinModificationDate}"/>
+                    <WrapPanel>
+                        <CheckBox Name="chkHidden" Margin="2,2,2,2" IsChecked= "{Binding Path=IsHidden}" >Hidden</CheckBox>
+                        <CheckBox Name="chkArchieve" Margin="2,2,2,2" IsChecked= "{Binding Path=IsArch}" >Archieve</CheckBox>
+                        <CheckBox Name="chkReadOnly" Margin="2,2,2,2" IsChecked= "{Binding Path=IsReadOnly}" >Read only</CheckBox>
+                    </WrapPanel>
+                </UniformGrid>
+                
+
+                
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Plugin to use:" />
                 <StackPanel Margin="8 0 8 0" HorizontalAlignment="Stretch" >
                     <ListBox Name="lstPlugins" Style="{StaticResource RadioButtonListStyle}" ItemsSource="{Binding Path=Plugins}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">

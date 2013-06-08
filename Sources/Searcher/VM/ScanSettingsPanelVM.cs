@@ -23,13 +23,20 @@ namespace Searcher.VM
             IsReadOnly = null;
             MinModificationDate = new DateTime(1955, 1, 1);
             MinFileSize = 0;
+            RecursiveScan = true;
+            FolderToScan = @"H:\docs";
+            FileNameSearchPattern = "L4D2";
+
         }
 
         public bool OrLink { get; set; }
         public bool? IsHidden { get; set; }
         public bool? IsArch { get; set; }
         public bool? IsReadOnly{ get; set; }
+        public bool RecursiveScan { get; set; }
+
         public DateTime MinModificationDate { get; set; }
+
         /// <summary>
         /// Минимальный размер файла в кб
         /// </summary>

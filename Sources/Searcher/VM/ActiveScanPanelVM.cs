@@ -6,8 +6,15 @@ using System.Text;
 
 namespace Searcher.VM
 {
-    public class ActiveScanPanelVM
+    public class ActiveScanPanelVM : ViewModel
     {
+        private int _matchesCount;
+        private string _lastMatch;
+        private int _folderCountScanned;
+        private int _progress;
+        private int _progressMax;
+        private double _timeElapsed;
+        private string _lastScanedFolder;
 
         public ActiveScanPanelVM()
         {
@@ -15,13 +22,76 @@ namespace Searcher.VM
             Reset();
         }
 
-        public int MatchesCount { get; private set; }
-        public string LastMatch { get; private set; }
-        public int FolderCountScanned { get; private set; }
-        public string LastScanedFolder { get; private set; }
-        public double TimeElapsed { get; set; }
-        public int ProgressMax { get; set; }
-        public int Progress { get; set; }
+        public int MatchesCount
+        {
+            get { return _matchesCount; }
+            private set
+            {
+                _matchesCount = value;
+                OnPropertyChanged("MatchesCount");
+            }
+        }
+
+        public string LastMatch
+        {
+            get { return _lastMatch; }
+            private set
+            {
+                _lastMatch = value;
+                OnPropertyChanged("LastMatch");
+            }
+        }
+
+        
+        public int FolderCountScanned
+        {
+            get { return _folderCountScanned; }
+            private set
+            {
+                _folderCountScanned = value;
+                OnPropertyChanged("FolderCountScanned");
+            }
+        }
+
+        public string LastScanedFolder
+        {
+            get { return _lastScanedFolder; }
+            private set
+            {
+                _lastScanedFolder = value;
+                OnPropertyChanged("LastScanedFolder");
+            }
+        }
+
+        public double TimeElapsed
+        {
+            get { return _timeElapsed; }
+            set
+            {
+                _timeElapsed = value;
+                OnPropertyChanged("TimeElapsed");
+            }
+        }
+
+        public int ProgressMax
+        {
+            get { return _progressMax; }
+            set
+            {
+                _progressMax = value;
+                OnPropertyChanged("ProgressMax");
+            }
+        }
+
+        public int Progress
+        {
+            get { return _progress; }
+            set
+            {
+                _progress = value;
+                OnPropertyChanged("Progress");
+            }
+        }
 
         public ObservableCollection<ScanDataVM> Results{ get; private set; }
 
@@ -47,6 +117,7 @@ namespace Searcher.VM
             TimeElapsed = 0;
             ProgressMax = 100;
             Progress = 0;
+            Results.Clear();
         }
 
         public void CheckResults(bool value)

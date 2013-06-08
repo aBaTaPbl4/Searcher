@@ -89,6 +89,19 @@ namespace ServiceImpls
 
         }
 
+        public int GetFilesCountToScan()
+        {
+            string folderName = AppContext.SearchSettings.FolderToScan;
+            if (AppContext.SearchSettings.RecursiveScan)
+            {
+                return Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).Length;
+            }
+            else
+            {
+                return Directory.GetFiles(folderName, "*.*", SearchOption.TopDirectoryOnly).Length;
+            }
+        }
+
         public XDocument LoadXmlFile(string fileName)
         {
             var doc = XDocument.Load(fileName);

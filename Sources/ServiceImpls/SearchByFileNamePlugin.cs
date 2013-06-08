@@ -27,7 +27,7 @@ namespace ServiceImpls
                 {
                     return false;
                 }
-                return Path.GetFileName(fileName).Contains(settings.FileNameSearchPattern);
+                return Path.GetFileName(fileName).ContainsIgnoreCase(settings.FileNameSearchPattern);
             }
             catch (Exception ex)
             {                

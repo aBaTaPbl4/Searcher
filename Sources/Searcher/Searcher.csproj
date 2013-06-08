@@ -177,6 +177,7 @@
   <ItemGroup>
     <Compile Include="Implementation\GlassHelper.cs" />
     <Compile Include="Implementation\Logging.cs" />
+    <Compile Include="VM\IWndMain.cs" />
     <Compile Include="Panels\Helper.cs" />
     <Compile Include="Panels\ScanResultsPanel.xaml.cs">
       <DependentUpon>ScanResultsPanel.xaml</DependentUpon>
@@ -212,6 +213,7 @@
     <Compile Include="VM\ActiveScanPanelVM.cs" />
     <Compile Include="VM\ScanDataVM.cs" />
     <Compile Include="VM\ScanSettingsPanelVM.cs" />
+    <Compile Include="VM\ViewModel.cs" />
     <Compile Include="VM\WndMainVM.cs" />
     <Compile Include="WndMain.xaml.cs">
       <DependentUpon>WndMain.xaml</DependentUpon>

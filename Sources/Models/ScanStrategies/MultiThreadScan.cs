@@ -13,9 +13,8 @@ namespace Models.ScanStrategies
             public string FolderName;
         }
 
-        public override bool StartScan(SearchProcess search)
+        protected override bool StartScanInner(SearchProcess search)
         {
-            _search = search;
             var waitHandles = new List<WaitHandle>();
             foreach(var folderName in FoldersToScan)
             {

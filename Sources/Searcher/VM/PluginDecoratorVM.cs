@@ -9,10 +9,21 @@ namespace Searcher.VM
     /// <summary>
     /// Класс для отображения в UI
     /// </summary>
-    public class PluginDecoratorVM
+    public class PluginDecoratorVM : ViewModel
     {
+        private bool _isActive;
         public ISearchPlugin Plugin { get; set; }
-        public bool IsActive { get; set; }
+        
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                _isActive = value;
+                OnPropertyChanged("IsActive");
+            }
+        }
+
         public string Name
         {
             get { return Plugin.Name; }

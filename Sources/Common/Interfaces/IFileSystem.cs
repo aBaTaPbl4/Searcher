@@ -29,5 +29,6 @@ namespace Common.Interfaces
         bool FileExtists(string fileName);
         bool DirectoryExists(string dir);
         void FileDelete(string fileName);
+        int GetFilesCountToScan();
     }
 }

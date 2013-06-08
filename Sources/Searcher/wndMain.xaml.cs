@@ -22,7 +22,7 @@ using log4net;
 
 namespace Searcher
 {
-    public partial class WndMain : Window
+    public partial class WndMain : Window, IWndMain
     {
 
         #region Fields
@@ -86,7 +86,7 @@ namespace Searcher
                         if (_pnlScanSettings.AllDataValid())
                         {
                             LogEntry("Scan Started...");
-                            ScanStart();
+                            StartScanning();
                         }
                         else
                         {
@@ -99,11 +99,7 @@ namespace Searcher
                     if ((string)btn.Content == "Cancel")
                     {
                         LogEntry("Scan Aborted by User.");
-                        if (_vm.IsTimerOn)
-                        {
-                            // cancel out
-                            ScanCancel();
-                        }
+                        StopScanning();
                     }
                     else
                     {
@@ -151,6 +147,9 @@ namespace Searcher
 
         private void Link_Click(object sender, MouseButtonEventArgs e)
         {
+            ToggleScanSettingsButton();
+            ToggleScanSettingsPanel();
+            
             Image lnk = (Image)sender;
 
             if (lnk.Name == "imgAbout" )
@@ -183,12 +182,13 @@ namespace Searcher
 
         private void InitFields()
         {
-            _pnlScanSettings = new ScanSettingsPanel();
+            //панель уже добавлена в разметке
+            _pnlScanSettings = (ScanSettingsPanel)grdContainer.Children[0];
             _pnlOptions = new OptionsPanel();
             _pnlHelp = new HelpPanel();
             _pnlActiveScan = new ActiveScanPanel();
             _pnlScanResults = new ScanResultsPanel(_pnlActiveScan.ViewModel);
-            _vm = new WndMainVM();
+            _vm = new WndMainVM(this);
             _vm.ActivityData = _pnlActiveScan.ViewModel;
             _vm.ProgramOptions = _pnlOptions.ViewModel;
             _bmpMonitor = new BitmapImage(new Uri("/Images/monitor.png", UriKind.Relative));
@@ -216,44 +216,38 @@ namespace Searcher
             _cLog.Info(entry);
         }
 
-        private void Reset()
-        {
-            _vm.StopScan();
-            _vm.ActivityData.Reset();
-        }
 
-
-        private void ScanCancel()
-        {
-            Reset();
-            UnLockControls(true);
-            ToggleScanSettingsButton();
-            ToggleScanSettingsPanel();
-        }
-
-        private void ScanComplete(int items)
+        public void ScanningCompleted()
         {
             UnLockControls(true);
-//            _pnlActiveScan.btnRegScanCancel.Content = "Status: Registry Scan Completed.. " + items.ToString() + " removed..";
-            ToggleScanSettingsButton();
-            ToggleScanSettingsPanel();
+            ToggleResultsPanel();
         }
 
-        private void ScanStart()
+        public void StopScanning()
+        {
+            _vm.StopScanning();
+            UnLockControls(true);
+            if (_vm.Results.Count > 0)
+            {
+                _pnlActiveScan.btnScanCancel.Content = "Next";    
+            }
+            else
+            {
+                _vm.ActivityData.Reset();
+                ToggleScanSettingsButton();
+                ToggleScanSettingsPanel();
+            }
+            
+        }
+
+        private void StartScanning()
         {
             
             UnLockControls(false);            
             ToggleActiveScanPanel();
-            _vm.StartScan();
+            _vm.StartScanning();
         }
 
-        private void ScanStop()
-        {
-            //ResetData();
-            _vm.StopScan();
-            UnLockControls(true);
-            _pnlActiveScan.btnScanCancel.Content = "Next";
-        }
 
         private void ToggleResultsPanel()
         {
@@ -281,16 +275,9 @@ namespace Searcher
             switch (name)
             {
                 case "btnRegscan":
-                    if (_vm.Results.Count > 0)
-                    {
-                        _pnlScanResults.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        _pnlScanSettings.Visibility = Visibility.Visible;
-                        imgStatusBar.Source = _bmpMonitor;
-                        txtStatusBar.Text = "Status: Scan Pending..";
-                    }
+                    _pnlScanSettings.Visibility = Visibility.Visible;
+                    imgStatusBar.Source = _bmpMonitor;
+                    txtStatusBar.Text = "Status: Scan Pending..";                    
                     break;
                 case "Active":
                     _pnlActiveScan.Visibility = Visibility.Visible;

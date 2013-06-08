@@ -10,19 +10,22 @@ using Models;
 
 namespace Searcher.VM
 {
-    public class WndMainVM
+    public class WndMainVM : ViewModel
     {
-        SearchProcess _regScan;
+        SearchProcess _scan;
         private DispatcherTimer _elapsedTimer;
         static DateTime _startScanningTime;
+        private string _statusBarMessage;
+        private IWndMain _mainWindow;
 
-        public WndMainVM()
+        public WndMainVM(IWndMain wnd)
         {
-            _regScan = new SearchProcess();
-            _regScan.ScanComplete += ScanCompleted;
-            _regScan.ProgressChanged += ProgressChanged;
-            _regScan.SubScanComplete += SubScanCompleted;
-            _regScan.FileWasFound += FileWasFound;
+            _mainWindow = wnd;
+            _scan = new SearchProcess();
+            _scan.ScanComplete += ScanCompleted;
+            _scan.ProgressChanged += ProgressChanged;
+            _scan.SubScanComplete += SubScanCompleted;
+            _scan.FileWasFound += FileWasFound;
             _elapsedTimer = new DispatcherTimer();
             _elapsedTimer.Interval = new TimeSpan(1000);
             _elapsedTimer.IsEnabled = false;
@@ -46,6 +49,7 @@ namespace Searcher.VM
         {
             StatusBarMessage = "Scan Complete!";
             _elapsedTimer.IsEnabled = false;
+            _mainWindow.ScanningCompleted();
         }
 
         private void ProgressChanged(int progress)
@@ -67,15 +71,17 @@ namespace Searcher.VM
 
         #endregion
 
-        public void StartScan()
+        public void StartScanning()
         {
             _startScanningTime = DateTime.Now;
             _elapsedTimer.IsEnabled = true;
+            _scan.AsyncScan();
         }
 
-        public void StopScan()
+        public void StopScanning()
         {
             _elapsedTimer.IsEnabled = false;
+            _scan.CancelProcessAsync();
         }
 
         public ObservableCollection<ScanDataVM> Results
@@ -83,7 +89,15 @@ namespace Searcher.VM
             get { return ActivityData.Results; }
         }
 
-        public string StatusBarMessage { get; set; }
+        public string StatusBarMessage
+        {
+            get { return _statusBarMessage; }
+            set
+            {
+                _statusBarMessage = value;
+                OnPropertyChanged("StatusBarMessage");
+            }
+        }
 
         public void RemoveResults()
         {

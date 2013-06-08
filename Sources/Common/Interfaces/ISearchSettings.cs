@@ -9,5 +9,6 @@ namespace Common.Interfaces
         ISearchPlugin[] ActivePlugins { get; }
         bool IsMultithreadRequired { get; }
         string FolderToScan { get; }
+        bool RecursiveScan { get; set; }
     }
 }
