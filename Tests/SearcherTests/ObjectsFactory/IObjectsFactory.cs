@@ -17,7 +17,7 @@ namespace SearcherTests
         IPluginManager CreatePluginManager();
         PluginManager CreatePluginManagerConcrete();
         ScanStrategyBase CreateStrategy();
-        SearchEngine CreateEngine();
+        SearchProcess CreateEngine();
         ScanStrategyBase CreateMultiThreadStrategy();
         ScanStrategyBase CreateSingleThreadStrategy();
         ISearchPlugin CreateFileNamePlugin();

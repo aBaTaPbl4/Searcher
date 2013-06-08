@@ -232,7 +232,37 @@
         <Setter Property="MinWidth" Value="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" />
         <Setter Property="MinHeight" Value="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" />
     </Style>
+
+    <!--\\\\\\\\\\\\\\\\\\-->
+    <!--   textbox        -->
+    <!--//////////////////-->
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Validation.ErrorTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <DockPanel LastChildFill="True">
+                        <TextBlock DockPanel.Dock="Left" 
+                        Foreground="Red"
+                        FontSize="12pt">
+                        !!!
+                        </TextBlock>
+                        <Border BorderBrush="Green" BorderThickness="1">
+                            <AdornedElementPlaceholder />
+                        </Border>
+                    </DockPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="true">
+                <Setter Property="ToolTip"
+                Value="{Binding RelativeSource={RelativeSource Self}, 
+                       Path=(Validation.Errors)[0].ErrorContent}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
     
+
     <!--\\\\\\\\\\\\\\\\\\-->
     <!--   radiobutton    -->
     <!--//////////////////-->

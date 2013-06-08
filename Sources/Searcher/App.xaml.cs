@@ -24,13 +24,13 @@ namespace Searcher
             var pm = AppContext.PluginManager as PluginManager;
             pm.PrivateDomain = AppDomain.CurrentDomain;
             pm.ScanPluginsFolder();
-            StartupUri = new Uri("wndMain.xaml", UriKind.Relative);
+            StartupUri = new Uri("WndMain.xaml", UriKind.Relative);
             base.OnStartup(e);
         }
 
         protected void RegisterServices()
         {
-            AppContext.RegisterService(new ScanPanelVM(),typeof(ISearchSettings));
+            AppContext.RegisterService(new ScanSettingsPanelVM(),typeof(ISearchSettings));
             AppContext.RegisterService(new FileSystem(), typeof(IFileSystem));
             AppContext.RegisterService(new PluginManager(), typeof(IPluginManager));
         }

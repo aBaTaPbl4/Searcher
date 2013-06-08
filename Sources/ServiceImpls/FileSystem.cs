@@ -147,5 +147,15 @@ namespace ServiceImpls
             return File.Exists(fileName);
         }
 
+        public void FileDelete(string fileName)
+        {
+            File.Delete(fileName);
+        }
+
+        public bool DirectoryExists(string dir)
+        {
+            return Directory.Exists(dir);
+        }
+
     }
 }

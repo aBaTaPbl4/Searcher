@@ -13,9 +13,9 @@ namespace Models.ScanStrategies
             public string FolderName;
         }
 
-        public override bool StartScan(SearchEngine engine)
+        public override bool StartScan(SearchProcess search)
         {
-            _engine = engine;
+            _search = search;
             var waitHandles = new List<WaitHandle>();
             foreach(var folderName in FoldersToScan)
             {

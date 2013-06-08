@@ -2,27 +2,26 @@
 using System.Windows.Controls;
 using System.Windows.Forms;
 using Searcher.VM;
+using Common;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace Searcher.Panels
 {
     /// <summary>
-    /// Interaction logic for RegScanPanel.xaml
+    /// Interaction logic for ScanSettingsPanel.xaml
     /// </summary>
-    public partial class RegScanPanel : UserControl
+    public partial class ScanSettingsPanel : UserControl
     {
-        private readonly ScanPanelVM _data;
+        private readonly ScanSettingsPanelVM _data;
 
-        public RegScanPanel()
+        public ScanSettingsPanel()
         {
             InitializeComponent();
-            _data = new ScanPanelVM();
+            _data = new ScanSettingsPanelVM();
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
                 _data.InitPlugins();
             }
-            
-
             DataContext = _data;
         }
 
@@ -45,6 +44,16 @@ namespace Searcher.Panels
         {
             var itm = lstPlugins.SelectedItem as PluginDecoratorVM;
             _data.SetActivePlugin(itm);
+        }
+
+        public ScanSettingsPanelVM ViewModel
+        {
+            get { return _data; }
+        }
+
+        public bool AllDataValid()
+        {
+            return this.IsValid() && !_data.FolderToScan.IsNullOrEmpty();
         }
 
     }

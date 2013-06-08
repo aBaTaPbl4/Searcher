@@ -40,5 +40,9 @@ namespace Searcher.Panels
             }
         }
 
+        public OptionsPanelVM ViewModel
+        {
+            get { return _data; }
+        }
     }
 }

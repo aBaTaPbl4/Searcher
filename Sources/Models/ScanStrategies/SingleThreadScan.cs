@@ -6,9 +6,9 @@ namespace Models.ScanStrategies
 {
     public class SingleThreadScan : ScanStrategyBase
     {
-        public override bool StartScan(SearchEngine engine)
+        public override bool StartScan(SearchProcess search)
         {
-            _engine = engine;
+            _search = search;
             foreach(var folderName in FoldersToScan)
             {
                 ScanFolder(folderName);

@@ -6,10 +6,10 @@ namespace Searcher
     /// <summary>
     /// Interaction logic for wndDetails.xaml
     /// </summary>
-    public partial class wndDetails : Window
+    public partial class WndDetails : Window
     {
         private ScanDataVM _data;
-        public wndDetails()
+        public WndDetails()
         {
             InitializeComponent();
         }

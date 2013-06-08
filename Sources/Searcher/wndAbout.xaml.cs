@@ -5,9 +5,9 @@ namespace Searcher
     /// <summary>
     /// Interaction logic for wndAbout.xaml
     /// </summary>
-    public partial class wndAbout : Window
+    public partial class WndAbout : Window
     {
-        public wndAbout()
+        public WndAbout()
         {
             InitializeComponent();
            // System.Windows.Controls.Primitives.Thumb.

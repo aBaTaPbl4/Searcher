@@ -13,7 +13,7 @@ namespace SearcherTests.Models
     [TestFixture]
     public abstract class ScanTest
     {
-        private SearchEngine _engine;
+        private SearchProcess Process;
         protected ScanStrategyBase _scan;
         private List<string> _foundFiles;
 
@@ -22,9 +22,9 @@ namespace SearcherTests.Models
         [SetUp]
         public void Setup()
         {
-            _engine = new SearchEngine();
-            _engine.Folder = TestHelper.DeepestFolder;
-            _engine.MatchItem += RegScan_MatchItem;
+            Process = new SearchProcess();
+            Process.Folder = TestHelper.DeepestFolder;
+            Process.MatchItem += RegScan_MatchItem;
             _scan = CreateStrategy();
             _foundFiles = new List<string>();
         }
@@ -43,7 +43,7 @@ namespace SearcherTests.Models
                 new ISearchPlugin[] {AppContext.PluginManager.MainPlugin});
 
             AppContext.RegisterService(settings, typeof (ISearchSettings));
-            _scan.StartScan(_engine);
+            _scan.StartScan(Process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
         
@@ -56,7 +56,7 @@ namespace SearcherTests.Models
                 filePattern,
                 fileContentPattern);
             AppContext.RegisterService(settings, typeof(ISearchSettings));
-            _scan.StartScan(_engine);
+            _scan.StartScan(Process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
 

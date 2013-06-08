@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using CircularProgressBar;
 using Searcher.VM;
 
@@ -7,20 +8,21 @@ namespace Searcher.Panels
     /// <summary>
     /// Interaction logic for TopRightPanel.xaml
     /// </summary>
-    public partial class RegScanActivePanel : UserControl
+    public partial class ActiveScanPanel : UserControl
     {
-        private ScanActivePanelVM _data;
+        private ActiveScanPanelVM _data;
 
-        public RegScanActivePanel()
+        public ActiveScanPanel()
         {
             InitializeComponent();
-            _data = new ScanActivePanelVM();
+            _data = new ActiveScanPanelVM();
             DataContext = _data;
         }
 
-        public ScanActivePanelVM ViewModel
+        public ActiveScanPanelVM ViewModel
         {
             get { return _data; }
         }
+
     }
 }

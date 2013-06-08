@@ -5,9 +5,9 @@ namespace Models.ScanStrategies
 {
     public abstract class ScanStrategyBase
     {
-        protected SearchEngine _engine;
+        protected SearchProcess _search;
 
-        public abstract bool StartScan(SearchEngine engine);
+        public abstract bool StartScan(SearchProcess search);
 
         protected List<string> FoldersToScan
         {
@@ -28,7 +28,7 @@ namespace Models.ScanStrategies
                 {
                     if (plugin.Check(fileName, AppContext.SearchSettings))
                     {
-                        _engine.AddFoundFile(fileName);
+                        _search.AddFoundFile(fileName);
                         break;
                     }
                 }

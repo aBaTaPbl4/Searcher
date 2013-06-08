@@ -6,24 +6,22 @@ using System.Text;
 
 namespace Searcher.VM
 {
-    public class ScanActivePanelVM
+    public class ActiveScanPanelVM
     {
 
-        public ScanActivePanelVM()
+        public ActiveScanPanelVM()
         {
-            MatchesCount = 0;
-            LastMatch = "";
-            FolderCountScanned = 0;
-            CurrentFolder = "";
-            TimeElapsed = TimeSpan.Zero;
             Results = new ObservableCollection<ScanDataVM>();
+            Reset();
         }
 
         public int MatchesCount { get; private set; }
         public string LastMatch { get; private set; }
         public int FolderCountScanned { get; private set; }
         public string CurrentFolder { get; private set; }
-        public TimeSpan TimeElapsed { get; private set; }
+        public double TimeElapsed { get; set; }
+        public int ProgressMax { get; set; }
+        public int Progress { get; set; }
 
         public ObservableCollection<ScanDataVM> Results{ get; private set; }
 
@@ -38,6 +36,25 @@ namespace Searcher.VM
         {
             CurrentFolder = folderName;
             FolderCountScanned++;
+        }
+
+        public void Reset()
+        {
+            MatchesCount = 0;
+            LastMatch = "";
+            FolderCountScanned = 0;
+            CurrentFolder = "";
+            TimeElapsed = 0;
+            ProgressMax = 100;
+            Progress = 0;
+        }
+
+        public void CheckResults(bool value)
+        {
+            foreach (var scanDataVM in Results)
+            {
+                scanDataVM.Check = value;
+            }
         }
 
     }

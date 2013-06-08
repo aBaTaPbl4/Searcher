@@ -27,5 +27,7 @@ namespace Common.Interfaces
         AssemblyName GetAssemblyInfo(string fileName);
         Assembly LoadAssemblyToDomain(AppDomain domain, AssemblyName asmInfo);
         bool FileExtists(string fileName);
+        bool DirectoryExists(string dir);
+        void FileDelete(string fileName);
     }
 }

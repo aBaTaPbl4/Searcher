@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using Common;
@@ -9,12 +10,13 @@ using Common.Interfaces;
 namespace Searcher.VM
 {
     
-    public class ScanPanelVM : ISearchSettings
+    public class ScanSettingsPanelVM : ISearchSettings, IDataErrorInfo
     {
         private string _fileNameSearchPattern;
+        private string _folderToScan;
         private List<ISearchPlugin> _activePlugins;
 
-        public ScanPanelVM()
+        public ScanSettingsPanelVM()
         {
             _activePlugins = new List<ISearchPlugin>();
             OrLink = true;
@@ -51,7 +53,11 @@ namespace Searcher.VM
         }
 
         //todo: нужна валидация на допустимые символы в папках
-        public string FolderToScan { get; set; }
+        public string FolderToScan
+        {
+            get { return _folderToScan; }
+            set { _folderToScan = value; }
+        }
 
         public string FileContentSearchPattern { get; set; }
 
@@ -101,9 +107,42 @@ namespace Searcher.VM
         {
             return
                 string.Format(
-                    "Settings:{0}FileNamePattern='{1}'{0}FileContentPattern='{2}'{0}IsMultithreadRequired='{3}'{0}",
+                    "Settings:{0}FileNamePattern='{1}'{0}FileContentPattern='{2}'{0}IIsMultithreadRequired='{3}'{0}",
                     Environment.NewLine, FileNameSearchPattern, FileContentSearchPattern, IsMultithreadRequired);
         }
 
+        public string this[string name]
+        {
+            get 
+            { 
+                string result = null;
+                if (name == "FileNameSearchPattern")
+                {
+                    foreach (var wrongChar in Path.GetInvalidPathChars())
+                    {
+                        if (_fileNameSearchPattern.Contains(wrongChar))
+                        {
+                            result = string.Format("File name contains wrong character '{0}'!!!", wrongChar);
+                        }
+                    }
+                }
+                else if (name == "FolderToScan")
+                {
+
+                    bool folderIsNotExists = !this._folderToScan.IsNullOrEmpty() &&
+                                             !AppContext.FileSystem.DirectoryExists(this._folderToScan);
+                    if (folderIsNotExists)
+                    {
+                        result = String.Format("Directory '{0}' does not exists!", this._folderToScan);
+                    }               
+                }
+                return result;
+            }
+        }
+
+        public string Error
+        {
+            get { return null; }
+        }
     }
 }

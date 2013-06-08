@@ -53,7 +53,7 @@ namespace SearcherTests.ObjectsFactory
             return strategy;
         }
 
-        public SearchEngine CreateEngine()
+        public SearchProcess CreateEngine()
         {
             throw new NotImplementedException();
         }

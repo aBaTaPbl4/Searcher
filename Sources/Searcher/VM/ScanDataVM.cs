@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -37,6 +38,12 @@ namespace Searcher.VM
                 _folderName = value;
             }
         }
+
+        public string FullName
+        {
+            get { return Path.Combine(FolderName, FileName); }
+        }
+
         public bool Check
         {
             get { return _check; }

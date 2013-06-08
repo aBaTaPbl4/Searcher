@@ -33,7 +33,7 @@ namespace Searcher.Panels
 
         private void btnAbout_Clicked(object sender, System.Windows.RoutedEventArgs e)
         {
-            var wnd = new wndAbout();
+            var wnd = new WndAbout();
             wnd.Show();
         }
     }

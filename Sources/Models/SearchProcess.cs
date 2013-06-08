@@ -8,7 +8,7 @@ using Models.ScanStrategies;
 
 namespace Models
 {
-    public class SearchEngine
+    public class SearchProcess
     {
         private BackgroundWorker _oProcessAsyncBackgroundWorker;
         private List<string> _foundFiles = new List<string>();

@@ -92,7 +92,7 @@ namespace Searcher.Panels
                             }
                         case "Item Details":
                             {
-                                wndDetails w = new wndDetails();
+                                WndDetails w = new WndDetails();
                                 ScanDataVM d = (ScanDataVM)lstResults.Items.CurrentItem;
                                 //w.txtType.Text = d.Name;
                                 //w.txtRoot.Text = d.Root.ToString();

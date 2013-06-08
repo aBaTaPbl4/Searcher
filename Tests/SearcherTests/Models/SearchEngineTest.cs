@@ -10,24 +10,24 @@ namespace SearcherTests.Models
     [TestFixture]
     public class SearchEngineTest
     {
-        private SearchEngine _engine;
+        private SearchProcess _search;
 
         [SetUp]
         public void Setup()
         {
-            _engine = TestsConfiguration.ObjectsFactory.CreateEngine();
+            _search = TestsConfiguration.ObjectsFactory.CreateEngine();
         }
 
         [Test]
         public void StartScanWithUnhandledEventsTest()
         {
-            Assert.IsFalse(_engine.StartScan(), Log.Content);
+            Assert.IsFalse(_search.StartScan(), Log.Content);
         }
 
         [Test, Ignore("Заставить работать тест каогда буду делать UI")]
         public void StartScanWithHandledEventsTest()
         {
-            Assert.IsTrue(_engine.StartScan(), Log.Content);
+            Assert.IsTrue(_search.StartScan(), Log.Content);
         }
     }
 }
