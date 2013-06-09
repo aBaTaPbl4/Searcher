@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Common;
+using Common.Interfaces;
 
 
 namespace SearcherTests
@@ -62,6 +63,25 @@ namespace SearcherTests
                 string dest = Path.Combine(destFolder, name);
                 CopyFolder(folder, dest);
             }
+        }
+
+        public const int FilesInFirstTestDir = 6;
+        public const int DirsInFirstTestFolder = 5;
+
+        public static ISearchPlugin[] CoreAndXmlPlugin()
+        {
+            var lst = new List<ISearchPlugin>();
+            lst.AddRange(AppContext.PluginManager.CorePlugins);
+            lst.Add(AppContext.PluginManager.ExternalPlugins[0]);
+            return lst.ToArray();
+        }
+
+        public static ISearchPlugin[] CoreAndTypePlugin()
+        {
+            var lst = new List<ISearchPlugin>();
+            lst.AddRange(AppContext.PluginManager.CorePlugins);
+            lst.Add(AppContext.PluginManager.ExternalPlugins[1]);
+            return lst.ToArray();
         }
     }
 }

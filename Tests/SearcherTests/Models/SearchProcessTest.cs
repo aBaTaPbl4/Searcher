@@ -15,8 +15,6 @@ namespace SearcherTests.Models
     [TestFixture]
     public class SearchProcessTest
     {
-        public const int FilesInFirstTestDir = 6;
-        public const int DirsInFirstTestFolder = 5;
         private SearchProcess _search;
         private bool _isEventRaised;
         private int _subFolderProcessed;
@@ -67,7 +65,7 @@ namespace SearcherTests.Models
             _search.SubScanComplete += SubScanCompleted;
             _search.StartScan();
             CheckEventRaising();
-            Assert.AreEqual(DirsInFirstTestFolder, _subFolderProcessed, Log.Content);
+            Assert.AreEqual(TestHelper.DirsInFirstTestFolder, _subFolderProcessed, Log.Content);
         }
 
         [Test]
@@ -93,7 +91,7 @@ namespace SearcherTests.Models
 
         private void CheckEventRaising()
         {
-            Assert.AreEqual(FilesInFirstTestDir, _search.FilesProcessed,"Wrong processed files number. {0}", Log.Content);
+            Assert.AreEqual(TestHelper.FilesInFirstTestDir, _search.FilesProcessed,"Wrong processed files number. {0}", Log.Content);
             Assert.IsTrue(_isEventRaised, Log.Content);
         }
 

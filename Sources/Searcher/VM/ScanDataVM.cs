@@ -62,9 +62,5 @@ namespace Searcher.VM
             Data = data;
         }
 
-        public string FoundByPlugin
-        {
-            get { return Data.FoundByPlugin; }
-        }
     }
 }

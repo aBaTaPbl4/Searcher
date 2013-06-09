@@ -69,16 +69,21 @@ namespace Models.ScanStrategies
                 try
                 {
                     _filesProcessed++;
+                    bool isMath = true;
                     foreach (var plugin in SearchSettings.ActivePlugins)
-                    {
-                        if (plugin.Check(fullFileName, SearchSettings))
+                    {                        
+                        if (!plugin.Check(fullFileName, SearchSettings))
                         {
-                            var fileInfo = new ScanData();
-                            fileInfo.FileName = Path.GetFileName(fullFileName);
-                            fileInfo.FolderName = Path.GetDirectoryName(fullFileName);
-                            _search.AddFoundFile(fileInfo);
+                            isMath = false;
                             break;
                         }
+                    }
+                    if (isMath)
+                    {
+                        var fileInfo = new ScanData();
+                        fileInfo.FileName = Path.GetFileName(fullFileName);
+                        fileInfo.FolderName = Path.GetDirectoryName(fullFileName);
+                        _search.AddFoundFile(fileInfo);
                     }
                     if (IsProgressChanged)
                     {

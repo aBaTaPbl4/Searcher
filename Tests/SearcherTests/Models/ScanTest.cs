@@ -35,8 +35,8 @@ namespace SearcherTests.Models
         [TestCase("7z", "", 1)]
         [TestCase("test.txt", "", 2)]
         [TestCase("note", "", 2)]
-        [TestCase("", "", 0)]
-        [TestCase("", "note", 0)]
+        [TestCase("", "", TestHelper.FilesInFirstTestDir)]
+        [TestCase("", "note", TestHelper.FilesInFirstTestDir)]
         public void ScanOnlyByFileNamesTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
             var settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(filePattern, fileContentPattern);
@@ -46,23 +46,27 @@ namespace SearcherTests.Models
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
         
-        [TestCase("", "note", 1)]
-        [TestCase("", "tagotest", 0)]
-        [TestCase("", "NativeError", 1)]
-        public void ScanWithPluginsTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
+        [TestCase("", "note", 1, true)]
+        [TestCase("", "tagotest", 0, true)]
+        [TestCase("", "NativeError", 1, false)]
+        public void ScanWithPluginsTest(string filePattern, string fileContentPattern, int expectedMatchesCount, bool xmlPluginNeeded )
         {
+            ISearchPlugin[] activePlugins;
+            if (xmlPluginNeeded)
+            {
+                activePlugins = TestHelper.CoreAndXmlPlugin();
+            }
+            else
+            {
+                activePlugins = TestHelper.CoreAndTypePlugin();
+            }
+            _scanStrategy.SearchSettings = 
+                TestsConfiguration.ObjectsFactory.CreateSearchSettings(
+                                    filePattern,fileContentPattern, 
+                                    false, activePlugins);
 
-            _scanStrategy.SearchSettings = CreateSettings(filePattern, fileContentPattern);
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
-        }
-
-        private ISearchSettings CreateSettings(string filePattern, string fileContentPattern)
-        {
-            var settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(
-                filePattern,
-                fileContentPattern, false, AppContext.PluginManager.AllPlugins);
-            return settings;
         }
 
         private void RegScan_MatchItem(ScanData file)

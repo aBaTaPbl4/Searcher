@@ -7,7 +7,6 @@ namespace Models
     {
         private string _fileName;
         private string _folderName;
-        private ISearchPlugin _foundBy;
 
         public string FileName
         {
@@ -38,16 +37,5 @@ namespace Models
             get { return Path.Combine(FolderName, FileName); }
         }
 
-        public string FoundByPlugin
-        {
-            get
-            {
-                if (_foundBy == null)
-                {
-                    return string.Empty;
-                }
-                return _foundBy.Name;
-            }
-        }
     }
 }

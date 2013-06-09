@@ -15,8 +15,6 @@
             <TextBlock Name="txtCreationDate" Margin="4" />
             <TextBlock FontWeight="DemiBold" Margin="4" Text="Modification Date" />
             <TextBlock Name="txtModificationDate" Margin="4" />
-            <TextBlock FontWeight="DemiBold" Margin="4" Text="Found by plugin" />
-            <TextBlock Name="txtFoundByPlugin" Margin="4"  TextWrapping="Wrap" Text="{Binding FoundByPlugin, Mode=OneTime}"/>
         </StackPanel>
     </Grid>
 </Window>
