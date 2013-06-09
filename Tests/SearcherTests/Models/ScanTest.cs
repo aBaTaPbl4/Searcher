@@ -7,14 +7,15 @@ using Common.Interfaces;
 using Models;
 using Models.ScanStrategies;
 using NUnit.Framework;
+using Rhino.Mocks;
 
 namespace SearcherTests.Models
 {
     [TestFixture]
     public abstract class ScanTest
     {
-        private SearchProcess Process;
-        protected ScanStrategyBase _scan;
+        private SearchProcess _process;
+        protected ScanStrategyBase _scanStrategy;
         private List<string> _foundFiles;
 
         protected abstract ScanStrategyBase CreateStrategy();
@@ -22,10 +23,12 @@ namespace SearcherTests.Models
         [SetUp]
         public void Setup()
         {
-            Process = AppContext.GetObject<SearchProcess>();
-            Process.Folder = TestHelper.DeepestFolder;
-            Process.FileWasFound += RegScan_MatchItem;
-            _scan = CreateStrategy();
+            _process = TestsConfiguration.ObjectsFactory.CreateSearchProcess();
+            _process.Stub(x => x.IsNeedCancelation).Return(false);
+            _process.Stub(x => x.CancelationOccured());
+            _process.Folder = TestHelper.DeepestFolder;
+            _process.FileWasFound += RegScan_MatchItem;
+            _scanStrategy = CreateStrategy();
             _foundFiles = new List<string>();
         }
 
@@ -38,8 +41,8 @@ namespace SearcherTests.Models
         {
             var settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(filePattern, fileContentPattern);
             
-            _scan.SearchSettings = settings;
-            _scan.StartScan(Process);
+            _scanStrategy.SearchSettings = settings;
+            _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
         
@@ -49,8 +52,8 @@ namespace SearcherTests.Models
         public void ScanWithPluginsTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
 
-            _scan.SearchSettings = CreateSettings(filePattern, fileContentPattern);
-            _scan.StartScan(Process);
+            _scanStrategy.SearchSettings = CreateSettings(filePattern, fileContentPattern);
+            _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
 

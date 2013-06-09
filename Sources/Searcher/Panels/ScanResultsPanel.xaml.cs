@@ -70,7 +70,7 @@ namespace Searcher.Panels
         private void OpenFolder(ScanDataVM dataVM)
         {
             Process.Start("explorer", "\"" +
-                          Path.GetDirectoryName(dataVM.Data.FileName) + "\"");
+                          dataVM.FolderName + "\"");
         }
 
     }

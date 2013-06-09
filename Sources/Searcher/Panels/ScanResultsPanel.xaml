@@ -22,7 +22,7 @@
         <Grid.Resources>
                             
         </Grid.Resources>
-        <ListBox ItemsSource="{Binding}" IsSynchronizedWithCurrentItem="True" SelectionMode="Extended"  Grid.Row="0" Name="lstResults" Margin="4"
+        <ListBox ItemsSource="{Binding Results}" IsSynchronizedWithCurrentItem="True" SelectionMode="Extended"  Grid.Row="0" Name="lstResults" Margin="4"
                  Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -58,12 +58,12 @@
                                             </ControlTemplate>
                                         </ProgressBar.Template>
                                     </ProgressBar>
-                                    <TextBlock Text="Scan Phase: " FontSize="12" FontWeight="DemiBold" Margin="2"/>
-                                    <TextBlock Text="{Binding Name}" FontSize="12" Margin="2,2,0,0"/>
-                                    <TextBlock Text="Root Key: " FontSize="12" FontWeight="DemiBold" Margin="12,2,0,0"/>
-                                    <TextBlock Text="{Binding Root}" FontSize="12" Margin="2,2,0,0"/>
+                                    <TextBlock Text="File name: " FontSize="12" FontWeight="DemiBold" Margin="2"/>
+                                    <TextBlock Text="{Binding FileName}" FontSize="12" Margin="2,2,0,0"/>
+                                    <TextBlock Text="Folder name: " FontSize="12" FontWeight="DemiBold" Margin="12,2,0,0"/>
+                                    <TextBlock Text="{Binding FolderName}" FontSize="12" Margin="2,2,0,0"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                     <TextBlock Text="SubKey: " FontWeight="DemiBold" Margin="2"/>
                                     <TextBlock Text="{Binding Key}" Margin="2,2,0,0"/>
                                 </StackPanel>
@@ -74,7 +74,7 @@
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                     <TextBlock Text="Data: " FontWeight="DemiBold" Margin="2"/>
                                     <TextBlock Text="{Binding Data}" Margin="0,2,0,0"/>
-                                </StackPanel>
+                                </StackPanel>-->
                             </StackPanel>
                         </Grid>
                     </Border>

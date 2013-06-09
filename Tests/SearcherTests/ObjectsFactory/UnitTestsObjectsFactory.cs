@@ -79,6 +79,11 @@ namespace SearcherTests.ObjectsFactory
             throw new NotImplementedException();
         }
 
+        public SearchProcess CreateSearchProcess()
+        {
+            throw new NotImplementedException();
+        }
+
         public IProgramSettings CreateProgramSettings()
         {
             throw new NotImplementedException();

@@ -20,7 +20,7 @@ namespace Models.ScanStrategies
             {
                 if (search.IsNeedCancelation)
                 {
-                    search.Cancel = true;
+                    search.CancelationOccured();
                     return false;
                 }
                 var args = new BuildThreadArgs()

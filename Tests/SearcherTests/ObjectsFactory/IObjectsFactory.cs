@@ -24,5 +24,7 @@ namespace SearcherTests
         ISearchPlugin CreateTypePlugin();
         IProgramSettings CreateProgramSettings(WorkType tp = WorkType.SingleThread, int threadsCount = 0,
                                                       bool logRequired = false, bool verboseLogRequired = false);
+
+        SearchProcess CreateSearchProcess();
     }
 }

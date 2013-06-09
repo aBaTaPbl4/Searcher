@@ -45,6 +45,11 @@ namespace SearcherTests.ObjectsFactory
 
         }
 
+        public SearchProcess CreateSearchProcess()
+        {
+            return MockRepository.GeneratePartialMock<SearchProcess>();
+        }
+
         public  ISearchSettings CreateSearchSettings()
         {
             return CreateSearchSettings("note.");

@@ -143,7 +143,7 @@ namespace Models
             get { return ScanStrategy.FileProcessed; }
         }
 
-        public bool IsNeedCancelation
+        public virtual bool IsNeedCancelation
         {
             get
             {
@@ -181,9 +181,9 @@ namespace Models
 
         private DoWorkEventArgs _currentArgs;
 
-        internal bool Cancel
+        public virtual void CancelationOccured()
         {
-            set { _currentArgs.Cancel = value; }
+            _currentArgs.Cancel = true;
         }
 
         private void DoWork(object sender, DoWorkEventArgs e)

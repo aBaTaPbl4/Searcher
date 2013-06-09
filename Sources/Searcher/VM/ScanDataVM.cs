@@ -49,10 +49,7 @@ namespace Searcher.VM
 
         public ScanData Data
         {
-            get
-            {
-                return _data;
-            }
+            get { return _data; }
             private set
             {
                 _data = value;
@@ -65,5 +62,9 @@ namespace Searcher.VM
             Data = data;
         }
 
+        public string FoundByPlugin
+        {
+            get { return Data.FoundByPlugin; }
+        }
     }
 }

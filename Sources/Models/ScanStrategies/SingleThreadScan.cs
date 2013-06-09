@@ -12,7 +12,7 @@ namespace Models.ScanStrategies
             {
                 if (search.IsNeedCancelation)
                 {
-                    search.Cancel = true;
+                    search.CancelationOccured();
                     return false;
                 }
                 ScanFolder(folderName);

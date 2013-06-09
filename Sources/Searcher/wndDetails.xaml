@@ -8,15 +8,15 @@
     <Grid>
         <StackPanel Orientation="Vertical" Margin="4">
             <TextBlock FontWeight="DemiBold" Margin="4" Text="File name:" />
-            <TextBlock Name="txtFileName" Margin="4"/>
-            <TextBlock FontWeight="DemiBold" Margin="4" Text="Size:" />
-            <TextBlock Name="txtSize" Margin="4"/>
+            <TextBlock Name="txtFileName" Margin="4" Text="{Binding FileName, Mode=OneTime}" />
+            <TextBlock FontWeight="DemiBold" Margin="4" Text="Full name:" />
+            <TextBlock Name="txtFullName" Margin="4" Text="{Binding FullName, Mode=OneTime}"/>
             <TextBlock FontWeight="DemiBold" Margin="4" Text="Creation Date" />
             <TextBlock Name="txtCreationDate" Margin="4" />
             <TextBlock FontWeight="DemiBold" Margin="4" Text="Modification Date" />
             <TextBlock Name="txtModificationDate" Margin="4" />
             <TextBlock FontWeight="DemiBold" Margin="4" Text="Found by plugin" />
-            <TextBlock Name="txtFoundByPlugin" Margin="4"  TextWrapping="Wrap" />
+            <TextBlock Name="txtFoundByPlugin" Margin="4"  TextWrapping="Wrap" Text="{Binding FoundByPlugin, Mode=OneTime}"/>
         </StackPanel>
     </Grid>
 </Window>
