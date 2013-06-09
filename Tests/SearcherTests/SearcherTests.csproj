@@ -103,6 +103,10 @@
       <Project>{F9458F0D-C4E4-47D5-B78B-C7FD07A1616A}</Project>
       <Name>ServiceImpls</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Sources\ViewModels\ViewModels.csproj">
+      <Project>{255B1413-80D9-408E-B4A0-5A56BC4F8CAA}</Project>
+      <Name>ViewModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="TestData\1\2\3\7z.exe">
