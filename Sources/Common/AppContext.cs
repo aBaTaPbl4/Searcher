@@ -18,7 +18,13 @@ namespace Common
 
         static AppContext()
         {
-            _springContext = ContextRegistry.GetContext();
+            string contextName;
+#if UNIT_TESTS
+            contextName = "Isolation";
+#else
+            contextName = "Integration";
+#endif
+            _springContext = ContextRegistry.GetContext(contextName);
         }
 
         /// <summary>
