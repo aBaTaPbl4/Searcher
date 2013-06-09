@@ -20,6 +20,11 @@ namespace SearchByType
         }
 
 
+        public bool IsCorePlugin
+        {
+            get { return false; }
+        }
+
         public bool Check(string fileName, ISearchSettings settings)
         {
             try

@@ -12,21 +12,12 @@ namespace SearcherTests.ObjectsFactory
 {
     public class UnitTestsObjectsFactory : IObjectsFactory
     {
-        /// <summary>
-        /// Инициализация константных тестовых данных на основе жесткого диска
-        /// В дальнейшем эти тестовые данные будут использоваться для конфигурирования моков, возращаемых фабрикой
-        /// </summary>
-        public void Initialize()
-        {
-            throw new NotImplementedException();
-        }
-
         public void RestoreObjects()
         {
             //Так как тестовые данные для конфигурации моков не меняются, метод останется пустым
         }
 
-        public ISearchSettings CreateSettings(string fileNameSearchPattern = "note.*", string fileContentSearchPattern = "note", bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
+        public ISearchSettings CreateSearchSettings(string fileNameSearchPattern, string fileContentSearchPattern, bool isMultithreaded, ISearchPlugin[] activePlugins)
         {
             throw new NotImplementedException();
         }
@@ -79,6 +70,16 @@ namespace SearcherTests.ObjectsFactory
         }
 
         public ISearchPlugin CreateTypePlugin()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IProgramSettings CreateProgramSettings(WorkType tp, int threadsCount, bool logRequired, bool verboseLogRequired)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IProgramSettings CreateProgramSettings()
         {
             throw new NotImplementedException();
         }

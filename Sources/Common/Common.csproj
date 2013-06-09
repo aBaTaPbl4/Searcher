@@ -35,6 +35,9 @@
     <Reference Include="log4net">
       <HintPath>..\..\Libs\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Spring.Core">
+      <HintPath>..\..\Libs\Spring.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,6 +50,7 @@
     <Compile Include="AppContext.cs" />
     <Compile Include="Interfaces\IFileSystem.cs" />
     <Compile Include="Interfaces\IPluginManager.cs" />
+    <Compile Include="Interfaces\IProgramSettings.cs" />
     <Compile Include="Interfaces\ISearchPlugin.cs" />
     <Compile Include="Interfaces\ISearchSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

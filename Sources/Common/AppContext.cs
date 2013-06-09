@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Common.Interfaces;
+using Spring.Context;
+using Spring.Context.Support;
 using log4net;
 using System.Linq;
 
@@ -12,11 +14,11 @@ namespace Common
     /// </summary>
     public static class AppContext
     {
-        private static readonly Dictionary<Type, object> _services;
+        private static IApplicationContext _springContext;
 
         static AppContext()
         {
-            _services = new Dictionary<Type, object>();
+            _springContext = ContextRegistry.GetContext();
         }
 
         /// <summary>
@@ -26,8 +28,16 @@ namespace Common
         {
             get
             {
-                return _services[typeof (ISearchSettings)] as ISearchSettings;
+                return _springContext.GetObject<ISearchSettings>();
             }
+        }
+
+        /// <summary>
+        /// Настройки программы
+        /// </summary>
+        public static IProgramSettings ProgramSettings
+        {
+            get { return _springContext.GetObject<IProgramSettings>(); }
         }
 
         /// <summary>
@@ -35,7 +45,7 @@ namespace Common
         /// </summary>
         public static IFileSystem FileSystem
         {
-            get { return _services[typeof(IFileSystem)] as IFileSystem; }
+            get { return _springContext.GetObject<IFileSystem>(); }
         }
 
         /// <summary>
@@ -43,59 +53,18 @@ namespace Common
         /// </summary>
         public static IPluginManager PluginManager
         {
-            get { return _services[typeof(IPluginManager)] as IPluginManager; }
+            get { return _springContext.GetObject<IPluginManager>(); }
         }
 
-        /// <summary>
-        /// Регистрация сервиса приложения
-        /// </summary>
-        /// <param name="serviceInstance">Экземпляр сервиса</param>
-        /// <param name="type">Тип сервиса через который тащить экземпляр</param>
-        public static void RegisterService(object serviceInstance, Type type)
-        {
-            if (_services.ContainsKey(type) &&
-                _services[type] != serviceInstance)
-            {
-                ReleaseExistingInstance(type);
-            }
-            _services[type] = serviceInstance;
-            var concreteType = serviceInstance.GetType();
-            if (type != concreteType)
-            {
-                _services[concreteType] = serviceInstance;
-            }
 
-        }
-
-        /// <summary>
-        /// Check if needed to call Dispose
-        /// </summary>
-        /// <param name="serviceInstance"></param>
-        /// <param name="type"></param>
-        private static void ReleaseExistingInstance(Type type)
-        {
-            //release old service instance
-            var serv = _services[type];
-            _services.Remove(type);
-            Type concreteType = serv.GetType();
-            if (_services.ContainsKey(concreteType))
-            {
-                _services.Remove(concreteType);
-            }
-            if (concreteType.GetInterfaces().Contains(typeof(IDisposable)))
-            {
-                var servDisposible = serv as IDisposable;
-                servDisposible.Dispose();
-            }
-        }
         /// <summary>
         /// Получить экземпляр сервиса
         /// </summary>
         /// <param name="type">Тип экземпляра сервиса, который хотим получить</param>
         /// <returns></returns>
-        public static Object GetServiceInstance(Type type)
+        public static T GetObject<T>()
         {
-            return _services[type];
+            return _springContext.GetObject<T>();
         }
 
         public static ILog Logger

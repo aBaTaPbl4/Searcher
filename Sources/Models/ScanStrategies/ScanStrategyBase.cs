@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Common;
+using Common.Interfaces;
 
 namespace Models.ScanStrategies
 {
@@ -12,13 +13,22 @@ namespace Models.ScanStrategies
         private volatile int _filesProcessed;
         protected SearchProcess _search;
 
+        public IFileSystem FileSystem { get; set; }
+        public ISearchSettings SearchSettings { get; set; }
+        public IProgramSettings ProgramSettings { get; set; }
+
         public bool StartScan(SearchProcess search)
         {
             _filesProcessed = 0;
             _search = search;
-            _totalFilesCount = AppContext.FileSystem.GetFilesCountToScan();
+            _totalFilesCount = FileSystem.GetFilesCountToScan();
             _filesPerOnePercent = _totalFilesCount/100.0000;
             return StartScanInner(search);            
+        }
+
+        public int FileProcessed
+        {
+            get { return _filesProcessed; }
         }
 
         protected abstract bool StartScanInner(SearchProcess search);
@@ -28,10 +38,10 @@ namespace Models.ScanStrategies
             get
             {
                 var foldersToScan = new List<string>();
-                foldersToScan.Add(AppContext.SearchSettings.FolderToScan);
-                if (AppContext.SearchSettings.RecursiveScan)
+                foldersToScan.Add(SearchSettings.FolderToScan);
+                if (SearchSettings.RecursiveScan)
                 {
-                    foldersToScan.AddRange(AppContext.FileSystem.GetAllSubfolders(AppContext.SearchSettings.FolderToScan));
+                    foldersToScan.AddRange(FileSystem.GetAllSubfolders(SearchSettings.FolderToScan));
                 }                    
                 return foldersToScan;
             }
@@ -51,15 +61,15 @@ namespace Models.ScanStrategies
 
         protected void ScanFolder(string folderName)
         {
-            var files = AppContext.FileSystem.GetFiles(folderName);
+            var files = FileSystem.GetFiles(folderName);
             foreach (var fullFileName in files)
             {
                 try
                 {
                     _filesProcessed++;
-                    foreach (var plugin in AppContext.SearchSettings.ActivePlugins)
+                    foreach (var plugin in SearchSettings.ActivePlugins)
                     {
-                        if (plugin.Check(fullFileName, AppContext.SearchSettings))
+                        if (plugin.Check(fullFileName, SearchSettings))
                         {
                             var fileInfo = new ScanData();
                             fileInfo.FileName = Path.GetFileName(fullFileName);
@@ -86,11 +96,11 @@ namespace Models.ScanStrategies
 
         public static ScanStrategyBase CreateInstance()
         {
-            if (AppContext.SearchSettings.IsMultithreadRequired)
+            if (AppContext.ProgramSettings.WorkType == WorkType.SingleThread)
             {
-                return new MultiThreadScan();
+                return new SingleThreadScan();                
             }
-            return new SingleThreadScan();
+            return new MultiThreadScan();
         }
     }
 }

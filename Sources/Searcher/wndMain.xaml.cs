@@ -35,7 +35,7 @@ namespace Searcher
         BitmapImage _bmpMonitor;
         BitmapImage _bmpOptions;
         BitmapImage _bmpAbout;        
-        private ILog _cLog;
+        private readonly ILog _logger;
         
         #endregion
         
@@ -43,7 +43,7 @@ namespace Searcher
         public WndMain()
         {
             InitializeComponent();
-            _cLog = AppContext.Logger;
+            _logger = AppContext.Logger;
             InitFields();            
         }
         #endregion
@@ -85,7 +85,7 @@ namespace Searcher
                     {
                         if (_pnlScanSettings.AllDataValid())
                         {
-                            LogEntry("Scan Started...");
+                            LogInfo("Scan Started...");
                             StartScanning();
                         }
                         else
@@ -98,7 +98,7 @@ namespace Searcher
                 case "btnScanCancel":
                     if ((string)btn.Content == "Cancel")
                     {
-                        LogEntry("Scan Aborted by User.");
+                        LogInfo("Scan Aborted by User.");
                         StopScanning();
                     }
                     else
@@ -147,9 +147,6 @@ namespace Searcher
 
         private void Link_Click(object sender, MouseButtonEventArgs e)
         {
-            ToggleScanSettingsButton();
-            ToggleScanSettingsPanel();
-            
             Image lnk = (Image)sender;
 
             if (lnk.Name == "imgAbout" )
@@ -211,9 +208,9 @@ namespace Searcher
         }
 
 
-        private void LogEntry(string entry)
+        private void LogInfo(string entry)
         {
-            _cLog.Info(entry);
+            _logger.Info(entry);
         }
 
 

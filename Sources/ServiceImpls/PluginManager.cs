@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Common;
 using Common.Interfaces;
+using log4net;
 
 namespace ServiceImpls
 {
@@ -18,13 +19,14 @@ namespace ServiceImpls
     public class PluginManager : IPluginManager, IDisposable
     {
         private List<ISearchPlugin> _externalPlugins;
-        private ISearchPlugin _mainPlugin;
+        private List<ISearchPlugin> _corePlugins;
         private AppDomain _privateDomain;
 
         public PluginManager()
         {
             _externalPlugins = new List<ISearchPlugin>();
-            _mainPlugin = new SearchByFileNamePlugin();
+            _corePlugins = new List<ISearchPlugin>();
+            _corePlugins.Add(new SearchByFileNamePlugin());
         }
 
         public AppDomain PrivateDomain
@@ -56,21 +58,23 @@ namespace ServiceImpls
             get { return _externalPlugins.ToArray(); }
         }
 
+        public ISearchPlugin[] CorePlugins
+        {
+            get { return _corePlugins.ToArray(); }
+        }
+
         public ISearchPlugin[] AllPlugins
         {
             get
             {
                 var list = new List<ISearchPlugin>();
-                list.Add(_mainPlugin);
+                list.AddRange(_corePlugins);
                 list.AddRange(_externalPlugins);
                 return list.ToArray();
             }
         }
 
-        public ISearchPlugin MainPlugin
-        {
-            get { return _mainPlugin; }
-        }
+        public IFileSystem FileSystem { get; set; }
 
         Assembly LoadAssemblyToDomainIfNeeded(AppDomain domain, AssemblyName asmInfo)
         {
@@ -79,14 +83,14 @@ namespace ServiceImpls
             Assembly asm = null;
             if (!loadedAssemblyNames.Contains(asmInfo.FullName))
             {
-                asm = AppContext.FileSystem.LoadAssemblyToDomain(domain, asmInfo);
+                asm = FileSystem.LoadAssemblyToDomain(domain, asmInfo);
             }
             return asm;
         }
 
         public void ScanPluginsFolder()
         {
-            var pluginFiles = AppContext.FileSystem.GetFiles("Plugins");
+            var pluginFiles = FileSystem.GetFiles("Plugins");
             
             foreach (var pluginFileName in pluginFiles)
             {
@@ -96,7 +100,7 @@ namespace ServiceImpls
                     {
                         continue;
                     }
-                    var asmInfo = AppContext.FileSystem.GetAssemblyInfo(pluginFileName);
+                    var asmInfo = FileSystem.GetAssemblyInfo(pluginFileName);
                     if (asmInfo == null)
                     {
                         continue;
@@ -114,7 +118,16 @@ namespace ServiceImpls
                                       select t).ToArray();
                     foreach (var pluginType in pluginTypes)
                     {
-                        _externalPlugins.Add((ISearchPlugin)Activator.CreateInstance(pluginType));
+                        var plug = (ISearchPlugin) Activator.CreateInstance(pluginType);
+                        if (plug.IsCorePlugin)
+                        {
+                            _corePlugins.Add(plug);
+                        }
+                        else
+                        {
+                            _externalPlugins.Add(plug);    
+                        }
+                        
                     }
 
                 }

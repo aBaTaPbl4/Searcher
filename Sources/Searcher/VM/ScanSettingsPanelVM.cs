@@ -14,6 +14,9 @@ namespace Searcher.VM
     {
         private string _fileNameSearchPattern;
         private string _folderToScan;
+        private IPluginManager _pluginManager;
+        private IFileSystem _fileSystem;
+        private ObservableCollection<PluginDecoratorVM> _plugins;
 
         public ScanSettingsPanelVM()
         {
@@ -26,7 +29,6 @@ namespace Searcher.VM
             RecursiveScan = true;
             FolderToScan = @"H:\docs";
             FileNameSearchPattern = "L4D2";
-
         }
 
         public bool OrLink { get; set; }
@@ -35,30 +37,23 @@ namespace Searcher.VM
         public bool? IsReadOnly{ get; set; }
         public bool RecursiveScan { get; set; }
 
-        public DateTime MinModificationDate { get; set; }
+        public virtual DateTime MinModificationDate { get; set; }
 
         /// <summary>
         /// Минимальный размер файла в кб
         /// </summary>
         public int MinFileSize { get; set; }
-        //todo: продумать как бы сделать валидацию покорретней
-        public string FileNameSearchPattern
+
+        public virtual string FileNameSearchPattern
         {
             get { return _fileNameSearchPattern; }
             set
             {
-                char emptyChar = '\0';
-                foreach (var badChar in Path.GetInvalidFileNameChars())
-                {
-                    value = value.Replace(badChar, emptyChar);
-                }
-
                 _fileNameSearchPattern = value;
             }
         }
 
-        //todo: нужна валидация на допустимые символы в папках
-        public string FolderToScan
+        public virtual string FolderToScan
         {
             get
             {
@@ -70,7 +65,7 @@ namespace Searcher.VM
             }
         }
 
-        public string FileContentSearchPattern { get; set; }
+        public virtual string FileContentSearchPattern { get; set; }
 
         public void SetActivePlugin(PluginDecoratorVM activePlugin)
         {
@@ -91,18 +86,48 @@ namespace Searcher.VM
         {
             get
             {
-                return Plugins.Where(x => x.IsActive).Select(x=>x.Plugin).ToArray();
+                return Plugins.Where(x => x.IsActive || x.Plugin.IsCorePlugin).Select(x=>x.Plugin).ToArray();
             }
         }
-        
-        public ObservableCollection<PluginDecoratorVM> Plugins { get; private set; }
+
+        public ObservableCollection<PluginDecoratorVM> Plugins
+        {
+            get
+            {
+                if (_plugins == null)
+                {
+                    InitPlugins();
+                }
+                return _plugins;
+            }
+            private set { _plugins = value; }
+        }
+
+        public IPluginManager PluginManager
+        {
+            get
+            {
+                if (_pluginManager == null)
+                {
+                    _pluginManager = AppContext.PluginManager;
+                }
+                return _pluginManager;
+            }
+            set { _pluginManager = value; }
+        }
 
         public void InitPlugins()
         {
-            Plugins = new ObservableCollection<PluginDecoratorVM>();
-            foreach (var plugin in AppContext.PluginManager.ExternalPlugins)
+            _plugins = new ObservableCollection<PluginDecoratorVM>();
+            var corePlugins = PluginManager.AllPlugins.Where(x => x.IsCorePlugin).ToArray();
+            foreach (var plugin in corePlugins)
             {
-                Plugins.Add(new PluginDecoratorVM()
+                _plugins.Add(new PluginDecoratorVM() { IsActive = true, Plugin = plugin });                
+            }
+
+            foreach (var plugin in PluginManager.ExternalPlugins)
+            {
+                _plugins.Add(new PluginDecoratorVM()
                 {
                     IsActive = false,
                     Plugin = plugin
@@ -110,14 +135,25 @@ namespace Searcher.VM
             }    
         }
 
-        public bool IsMultithreadRequired { get; set; }
-
         public override string ToString()
         {
             return
                 string.Format(
-                    "Settings:{0}FileNamePattern='{1}'{0}FileContentPattern='{2}'{0}IIsMultithreadRequired='{3}'{0}",
-                    Environment.NewLine, FileNameSearchPattern, FileContentSearchPattern, IsMultithreadRequired);
+                    "Settings:{0}FileNamePattern='{1}'{0}FileContentPattern='{2}'{0}",
+                    Environment.NewLine, FileNameSearchPattern, FileContentSearchPattern);
+        }
+
+        public IFileSystem FileSystem
+        {
+            get
+            {
+                if (_fileSystem == null)
+                {
+                    _fileSystem = AppContext.FileSystem;
+                }
+                return _fileSystem;
+            }
+            set { _fileSystem = value; }
         }
 
         public string this[string name]
@@ -147,7 +183,7 @@ namespace Searcher.VM
                     }
 
                     bool folderIsNotExists = !this._folderToScan.IsNullOrEmpty() &&
-                                             !AppContext.FileSystem.DirectoryExists(this._folderToScan);
+                                             !FileSystem.DirectoryExists(this._folderToScan);
                     if (folderIsNotExists)
                     {
                         result = String.Format("Directory '{0}' does not exists!", this._folderToScan);

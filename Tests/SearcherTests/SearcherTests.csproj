@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>..\..\Libs\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\Libs\log4net.dll</HintPath>
     </Reference>
@@ -42,6 +45,9 @@
     <Reference Include="Rhino.Mocks">
       <HintPath>..\..\Libs\Rhino.Mocks.dll</HintPath>
     </Reference>
+    <Reference Include="Spring.Core">
+      <HintPath>..\..\Libs\Spring.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -51,7 +57,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\AppContextTest.cs" />
     <Compile Include="ObjectsFactory\IObjectsFactory.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Models\MultiThreadScanTest.cs" />
@@ -71,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestData\6\" />
+    <Folder Include="VM\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\Common\Common.csproj">
@@ -122,7 +128,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="TestData\7\gitscc.log">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

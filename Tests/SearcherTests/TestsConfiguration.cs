@@ -15,14 +15,11 @@ using log4net.Config;
 [SetUpFixture]
 public class TestsConfiguration
 {
+    private static readonly string _pluginsFolder = Path.Combine(Environment.CurrentDirectory, "Plugins");
 
     public static IObjectsFactory ObjectsFactory
     {
-        get 
-        { 
-            return AppContext.GetServiceInstance(
-                    typeof (IObjectsFactory)) as IObjectsFactory; 
-        }
+        get { return AppContext.GetObject<IObjectsFactory>(); }
     }
 
     [SetUp]
@@ -31,13 +28,11 @@ public class TestsConfiguration
         try
         {
             XmlConfigurator.Configure();
-            RegisterServices();
-            RestoreTestData();
             TestHelper.CopyFolder(
                 Path.GetFullPath(@"..\..\..\..\Bin\Plugins"), 
-                Path.Combine(Environment.CurrentDirectory, "Plugins"));
-            var pm = AppContext.PluginManager as PluginManager;
-            pm.ScanPluginsFolder();
+                _pluginsFolder
+                );
+            RestoreTestData();
         }
         catch (Exception ex)
         {
@@ -46,38 +41,25 @@ public class TestsConfiguration
         }
     }
 
-
-    public static void RegisterServices()
-    {
-
-        IObjectsFactory factory = null;
-
-#if (ISOLATION_REQUIRED)//aBaTaPbl4:unit tests => register fake services(using by local build at developer workstation)
-                
-        factory = new UnitTestsObjectsFactory();
-                
-#else//aBaTaPbl4:system tests => register real services(using by nighty build, to check compatiblity with net-services, db etc)
-
-        factory = new SystemTestsObjectsFactory();
-
-#endif
-        factory.Initialize();
-        AppContext.RegisterService(factory, typeof(IObjectsFactory));
-        AppContext.RegisterService(factory.CreateFileSystem(), typeof(IFileSystem));
-        AppContext.RegisterService(factory.CreatePluginManager(), typeof(IPluginManager));
-        AppContext.RegisterService(factory.CreateSettings(), typeof(ISearchSettings));
-
-    }
-
     public static void RestoreTestData()
     {
         ObjectsFactory.RestoreObjects();
     }
 
 
-    //[TearDown]
-    //public static void RunAfterAnyTests()
-    //{
-        
-    //}
+    [TearDown]
+    public static void RunAfterAnyTests()
+    {
+        UnlockPluginFolder();
+        Directory.Delete(_pluginsFolder, true);
+    }
+
+    private static void UnlockPluginFolder()
+    {
+        var pm = AppContext.PluginManager as IDisposable;
+        if (pm != null)
+        {
+            pm.Dispose();
+        }   
+    }
 }

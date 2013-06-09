@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Common;
 using Models.ScanStrategies;
 using NUnit.Framework;
 
@@ -12,7 +13,7 @@ namespace SearcherTests.Models
     {
         protected override ScanStrategyBase CreateStrategy()
         {
-            return TestsConfiguration.ObjectsFactory.CreateSingleThreadStrategy();
+            return AppContext.GetObject<SingleThreadScan>();
         }
     }
 }

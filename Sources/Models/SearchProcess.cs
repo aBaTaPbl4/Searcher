@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Common;
+using Common.Interfaces;
 using Models.ScanStrategies;
 
 namespace Models
@@ -12,8 +14,7 @@ namespace Models
     {
         private BackgroundWorker _worker;
         private readonly List<ScanData> _foundFiles = new List<ScanData>();
-        private ScanStrategyBase _scanStrategy;
-
+        private ManualResetEvent _completionSignal = new ManualResetEvent(false);
         #region Delegates
         public delegate void ReportProgressDelegate(int percentsComplete);
         public delegate void FileFoundDelegate(ScanData foundInfo);        
@@ -45,7 +46,7 @@ namespace Models
 
         internal void RaiseSubScanCompleted(string folderName)
         {
-            if (ScanComplete != null)
+            if (SubScanComplete != null)
             {
                 SubScanComplete(folderName);
             }
@@ -59,12 +60,14 @@ namespace Models
             }
         }
 
+
         private void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (ScanComplete != null)
             {
                 ScanComplete(this, e);
             }
+            _completionSignal.Set();
         }
         #endregion
 
@@ -85,21 +88,7 @@ namespace Models
         }
 
 
-        public ScanStrategyBase ScanStrategy
-        {
-            get
-            {
-                if (_scanStrategy == null)
-                {
-                    _scanStrategy = ScanStrategyBase.CreateInstance();
-                }
-                return _scanStrategy;
-            }
-            set
-            {
-                _scanStrategy = value;
-            }
-        }
+        public ScanStrategyBase ScanStrategy { get; set; }
 
         public void AsyncScan()
         {
@@ -107,7 +96,7 @@ namespace Models
             {
                 ResetAsync();
             }
-
+            _completionSignal.Reset();
             _worker = new BackgroundWorker();
             _worker.WorkerSupportsCancellation = true;
             _worker.DoWork += DoWork;
@@ -116,6 +105,10 @@ namespace Models
             _worker.RunWorkerAsync();
         }
 
+        public int FilesProcessed
+        {
+            get { return ScanStrategy.FileProcessed; }
+        }
 
         public void CancelProcessAsync()
         {
@@ -126,18 +119,26 @@ namespace Models
             }
         }
 
+        /// <summary>
+        /// Метод нужен тольк для удобства тестирования
+        /// </summary>
+        /// <returns></returns>
         public bool StartScan()
         {
-
-            var result = ScanStrategy.StartScan(this);
-            return result;
+            AsyncScan();
+            _completionSignal.WaitOne();
+            return LastScanResult;
         }
+
+        public bool LastScanResult { get; private set; }
 
         private void DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
-                if (!StartScan())
+                LastScanResult = false;
+                LastScanResult = ScanStrategy.StartScan(this);
+                if (!LastScanResult)
                 {
                     CancelProcessAsync();
                 }
@@ -162,6 +163,11 @@ namespace Models
             _worker.DoWork -= DoWork;
             _worker.RunWorkerCompleted -= RaiseScanCompleted;
             _worker = null;
+        }
+
+        public ISearchSettings Settings
+        {
+            get { return ScanStrategy.SearchSettings; }
         }
 
         private class StopProcessingException : Exception

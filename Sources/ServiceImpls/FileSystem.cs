@@ -89,10 +89,12 @@ namespace ServiceImpls
 
         }
 
+        public ISearchSettings SearchSettings { get; set; }
+
         public int GetFilesCountToScan()
         {
-            string folderName = AppContext.SearchSettings.FolderToScan;
-            if (AppContext.SearchSettings.RecursiveScan)
+            string folderName = SearchSettings.FolderToScan;
+            if (SearchSettings.RecursiveScan)
             {
                 return Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).Length;
             }

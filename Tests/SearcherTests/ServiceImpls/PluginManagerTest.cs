@@ -24,7 +24,7 @@ namespace SearcherTests.ServiceImpls
         {
             _manager.ScanPluginsFolder();
             Assert.AreEqual(3, _manager.AllPlugins.Count(), Log.Content);
-            Assert.IsNotNull(_manager.MainPlugin);
+            Assert.IsNotNull(_manager.CorePlugins[0]);
 
         }
 

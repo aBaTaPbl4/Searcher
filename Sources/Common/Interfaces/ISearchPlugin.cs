@@ -18,6 +18,7 @@ namespace Common.Interfaces
         string Name { get; }
         List<string> AssociatedFileExtensions { get; }
         bool IsForAnyFileExtension { get; }
+        bool IsCorePlugin { get; }
 
         /// <summary>
         /// Проверить удовлетворяет ли файл условию поиска

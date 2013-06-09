@@ -20,7 +20,6 @@ namespace Searcher
         protected override void OnStartup(StartupEventArgs e)
         {
             XmlConfigurator.Configure();
-            RegisterServices();
             var pm = AppContext.PluginManager as PluginManager;
             pm.PrivateDomain = AppDomain.CurrentDomain;
             pm.ScanPluginsFolder();
@@ -28,15 +27,5 @@ namespace Searcher
             base.OnStartup(e);
         }
 
-        protected void RegisterServices()
-        {
-            AppContext.RegisterService(new FileSystem(), typeof(IFileSystem));
-            AppContext.RegisterService(new PluginManager(), typeof(IPluginManager));
-            var searchSettings = new ScanSettingsPanelVM();
-            searchSettings.InitPlugins();
-            AppContext.RegisterService(searchSettings,typeof(ISearchSettings));
-            
-            
-        }
     }
 }

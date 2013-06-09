@@ -9,8 +9,9 @@ using SearchByTag;
 using SearchByType;
 using Searcher.VM;
 using ServiceImpls;
+using Spring.Objects.Factory.Attributes;
 
-namespace SearcherTests
+namespace SearcherTests.ObjectsFactory
 {
     /// <summary>
     /// Фабрика объектов для системных тестов = присутвсую зависимости от сетевых сервисов, жесткого диска, базы данных и т.д.
@@ -20,11 +21,6 @@ namespace SearcherTests
     /// </summary>
     public class SystemTestsObjectsFactory : IObjectsFactory
     {
-        public void Initialize()
-        {
-            
-        }
-
         public void RestoreObjects()
         {
             var sourcePath = Path.Combine(Environment.CurrentDirectory, "TestData");
@@ -32,34 +28,61 @@ namespace SearcherTests
             TestHelper.CopyFolder(sourcePath, destPath);
         }
 
-        public ISearchSettings CreateSettings(string fileNameSearchPattern = "note.*", string fileContentSearchPattern = "note", bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
+        public IProgramSettings CreateProgramSettings()
+        {
+            return CreateProgramSettings(WorkType.SingleThread);
+        }
+
+        public IProgramSettings CreateProgramSettings(WorkType tp = WorkType.SingleThread, int threadsCount = 0,
+                                                      bool logRequired = false, bool verboseLogRequired = false)
+        {
+            var settings = MockRepository.GenerateMock<IProgramSettings>();
+            settings.Stub(x => x.WorkType).Return(tp);
+            settings.Stub(x => x.ThreadsNumber).Return(threadsCount);
+            settings.Stub(x => x.EnableLogging).Return(logRequired);
+            settings.Stub(x => x.VerboseLogging).Return(verboseLogRequired);
+            return settings;
+
+        }
+
+        public  ISearchSettings CreateSearchSettings()
+        {
+            return CreateSearchSettings("note.");
+        }
+
+        public  ISearchSettings CreateSearchSettings(string fileNameSearchPattern = "note.",
+                                                    string fileContentSearchPattern = "note",
+                                                    bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
         {
 
             var settings = MockRepository.GeneratePartialMock<ScanSettingsPanelVM>();
             settings.FolderToScan = TestHelper.DeepestFolder;
-            settings.IsMultithreadRequired = isMultithreaded;
             settings.FileNameSearchPattern = fileNameSearchPattern;
             settings.FileContentSearchPattern = fileContentSearchPattern;
-            settings.InitPlugins();
-            activePlugins = activePlugins ?? AppContext.PluginManager.AllPlugins;
-            settings.Stub(x => x.ActivePlugins).Return(activePlugins);                
+            if (activePlugins != null)
+            {
+                settings.Stub(x => x.ActivePlugins).Return(activePlugins);    
+            }
+            
             return settings;            
         }
 
+        [Required]
+        public IPluginManager PluginManager { get; set; }
         
         public IFileSystem CreateFileSystem()
         {
-            return new FileSystem();
+            return AppContext.FileSystem;
         }
 
         public IPluginManager CreatePluginManager()
         {
-            return new PluginManager();
+            return AppContext.PluginManager;
         }
 
         public PluginManager CreatePluginManagerConcrete()
         {
-            return new PluginManager();
+            return AppContext.PluginManager as PluginManager;
         }
 
         public ScanStrategyBase CreateStrategy()
@@ -69,19 +92,17 @@ namespace SearcherTests
 
         public ScanStrategyBase CreateMultiThreadStrategy()
         {
-            return new MultiThreadScan();
+            return AppContext.GetObject<MultiThreadScan>();
         }
 
         public ScanStrategyBase CreateSingleThreadStrategy()
         {
-            return new SingleThreadScan();
+            return AppContext.GetObject<SingleThreadScan>();
         }
 
         public SearchProcess CreateEngine()
         {
-            var engine = new SearchProcess();
-            engine.ScanStrategy = CreateStrategy();
-            return engine;
+            return AppContext.GetObject<SearchProcess>();
         }
 
         public ISearchPlugin CreateFileNamePlugin()

@@ -51,6 +51,11 @@ namespace ServiceImpls
             }
         }
 
+        public bool IsCorePlugin
+        {
+            get { return true; }
+        }
+
         public bool IsForAnyFileExtension
         {
             get

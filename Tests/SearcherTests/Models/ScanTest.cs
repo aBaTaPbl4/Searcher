@@ -36,13 +36,9 @@ namespace SearcherTests.Models
         [TestCase("", "note", 0)]
         public void ScanOnlyByFileNamesTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            var settings = TestsConfiguration.ObjectsFactory.CreateSettings(
-                filePattern,
-                fileContentPattern,
-                false,
-                new ISearchPlugin[] {AppContext.PluginManager.MainPlugin});
-
-            AppContext.RegisterService(settings, typeof (ISearchSettings));
+            var settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(filePattern, fileContentPattern);
+            
+            _scan.SearchSettings = settings;
             _scan.StartScan(Process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
@@ -52,12 +48,18 @@ namespace SearcherTests.Models
         [TestCase("", "NativeError", 1)]
         public void ScanWithPluginsTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            var settings = TestsConfiguration.ObjectsFactory.CreateSettings(
-                filePattern,
-                fileContentPattern);
-            AppContext.RegisterService(settings, typeof(ISearchSettings));
+
+            _scan.SearchSettings = CreateSettings(filePattern, fileContentPattern);
             _scan.StartScan(Process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
+        }
+
+        private ISearchSettings CreateSettings(string filePattern, string fileContentPattern)
+        {
+            var settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(
+                filePattern,
+                fileContentPattern, false, AppContext.PluginManager.AllPlugins);
+            return settings;
         }
 
         private void RegScan_MatchItem(ScanData file)
