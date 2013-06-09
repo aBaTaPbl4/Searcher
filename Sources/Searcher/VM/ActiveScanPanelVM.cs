@@ -141,7 +141,7 @@ namespace Searcher.VM
         {
             foreach (var scanDataVM in Results)
             {
-                scanDataVM.Check = value;
+                scanDataVM.Checked = value;
             }
         }
 

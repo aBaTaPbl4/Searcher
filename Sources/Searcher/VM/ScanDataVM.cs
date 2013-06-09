@@ -9,26 +9,26 @@ using Models;
 namespace Searcher.VM
 {
     /// <summary>
-    /// Обертка над ScanData. Добавляет свойство Check и уведомления интерфейса.
+    /// Обертка над ScanData. Добавляет свойство Checked и уведомления интерфейса.
     /// </summary>
     public class ScanDataVM : ViewModel, INotifyPropertyChanged
     {
-        private bool _check;
+        private bool _checked;
         private ScanData _data;
 
         public ScanDataVM()
         {
             _data = new ScanData();
-            _check = false;
+            _checked = false;
         }
 
-        public bool Check
+        public bool Checked
         {
-            get { return _check; }
+            get { return _checked; }
             set
             {
-                _check = value;
-                OnPropertyChanged("Check");
+                _checked = value;
+                OnPropertyChanged("Checked");
             }
         }
 

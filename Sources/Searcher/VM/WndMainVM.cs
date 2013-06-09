@@ -88,7 +88,7 @@ namespace Searcher.VM
         {
             CurrentState = CurrentAppState.Scanning;
             StatusBarMessage = "Scanning directory..";
-            ActivityData.FinishedFolderScan(SearchOptions.FolderToScan);
+            //ActivityData.FinishedFolderScan(SearchOptions.FolderToScan);
         }
 
         private void ScanCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -158,11 +158,17 @@ namespace Searcher.VM
 
         public void RemoveResults()
         {
-            foreach (var scanData in Results)
+            var resultArray = Results.ToArray();
+            foreach (var data in resultArray)
             {
                 try
                 {
-                    AppContext.FileSystem.FileDelete(scanData.FullName);
+                    if (data.Checked)
+                    {
+                        AppContext.FileSystem.FileDelete(data.FullName);
+                        ActivityData.Results.Remove(data);                        
+                    }
+
                 }
                 catch (Exception ex)
                 {

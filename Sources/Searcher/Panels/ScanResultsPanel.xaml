@@ -24,7 +24,7 @@
         </Grid.Resources>
         <ListBox ItemsSource="{Binding Results}" IsSynchronizedWithCurrentItem="True" SelectionMode="Extended"  Grid.Row="0" Name="lstResults" Margin="4"
                  Height="Auto" Width="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
-            <ListBox.ItemTemplate>
+            <ListBox.ItemTemplate >
                 <DataTemplate>
                     <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                             BorderThickness="0.5" BorderBrush="#66111199">
@@ -34,7 +34,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal" Width="Auto" Height="Auto">
-                                <CheckBox IsChecked="{Binding Check}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <CheckBox IsChecked="{Binding Checked, Mode=TwoWay}" Margin="8,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                 <Image Width="40" Height="40" Source="{Binding ImagePath}" Margin="4" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Margin="2" Height="Auto" Orientation="Vertical">
@@ -60,21 +60,9 @@
                                     </ProgressBar>
                                     <TextBlock Text="File name: " FontSize="12" FontWeight="DemiBold" Margin="2"/>
                                     <TextBlock Text="{Binding FileName}" FontSize="12" Margin="2,2,0,0"/>
-                                    <TextBlock Text="Folder name: " FontSize="12" FontWeight="DemiBold" Margin="12,2,0,0"/>
-                                    <TextBlock Text="{Binding FolderName}" FontSize="12" Margin="2,2,0,0"/>
+                                    <TextBlock Text="Full name: " FontSize="12" FontWeight="DemiBold" Margin="12,2,0,0"/>
+                                    <TextBlock Text="{Binding FullName}" FontSize="12" Margin="2,2,0,0"/>
                                 </StackPanel>
-                                <!--<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <TextBlock Text="SubKey: " FontWeight="DemiBold" Margin="2"/>
-                                    <TextBlock Text="{Binding Key}" Margin="2,2,0,0"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <TextBlock Text="Value: " FontWeight="DemiBold" Margin="2"/>
-                                    <TextBlock Text="{Binding Value}" Margin="0,2,0,0"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <TextBlock Text="Data: " FontWeight="DemiBold" Margin="2"/>
-                                    <TextBlock Text="{Binding Data}" Margin="0,2,0,0"/>
-                                </StackPanel>-->
                             </StackPanel>
                         </Grid>
                     </Border>
@@ -87,11 +75,8 @@
                     <MenuItem Header="Select All" Click="MenuItem_Clicked"/>
                     <MenuItem Header="Deselect All" Click="MenuItem_Clicked"/>
                     <Separator/>
-                    <MenuItem Header="Go to Key" Click="MenuItem_Clicked"/>
                     <MenuItem Header="Go to Folder" Click="MenuItem_Clicked"/>
                     <MenuItem Header="Item Details" Click="MenuItem_Clicked"/>
-                    <Separator/>
-                    <MenuItem Header="Help" Click="MenuItem_Clicked"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

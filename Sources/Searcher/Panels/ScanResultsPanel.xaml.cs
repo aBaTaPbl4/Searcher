@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Common;
 using Searcher.VM;
 
 namespace Searcher.Panels
@@ -31,12 +32,12 @@ namespace Searcher.Panels
                     {
                         case "Select Item":
                             {
-                                s.Check = true;
+                                s.Checked = true;
                                 break;
                             }
                         case "Deselect Item":
                             {
-                                s.Check = false;
+                                s.Checked = false;
                                 break;
                             }
                         case "Select All":
@@ -69,8 +70,20 @@ namespace Searcher.Panels
 
         private void OpenFolder(ScanDataVM dataVM)
         {
-            Process.Start("explorer", "\"" +
-                          dataVM.FolderName + "\"");
+            string argument;
+            if (AppContext.FileSystem.FileExtists(dataVM.FullName))
+            {
+                argument = string.Format("/select, \"{0}\"", dataVM.FullName);
+            }
+            else if (AppContext.FileSystem.DirectoryExists(dataVM.FolderName))
+            {
+                argument = string.Format("\"{0}\"", dataVM.FolderName);
+            }
+            else
+            {
+                return;
+            }
+            Process.Start("explorer.exe", argument);
         }
 
     }
