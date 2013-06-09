@@ -15,7 +15,7 @@ namespace Searcher.Panels
         public OptionsPanel()
         {
             InitializeComponent();
-            _data = AppContext.ProgramSettings as OptionsPanelVM;
+            _data = AppContext.GetObject<OptionsPanelVM>();
             DataContext = _data;
         }
 

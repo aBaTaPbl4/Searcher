@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text;
+using Common;
+using NUnit.Framework;
 using log4net;
 using log4net.Appender;
 using log4net.Repository.Hierarchy;
@@ -8,7 +10,7 @@ public static class Log
 {
     public static void Clear()
     {
-        var memoryAppender = GetAppender();
+        MemoryAppender memoryAppender = GetAppender();
         memoryAppender.Clear();
     }
 
@@ -25,6 +27,11 @@ public static class Log
             }
             return ResultBuffer.ToString();
         }
+    }
+
+    public static void NoErrorsCheck()
+    {
+        Assert.IsFalse(Content.ContainsIgnoreCase("error"), "Log contains error, but should not. {0}", Content);
     }
 
     private static MemoryAppender GetAppender()

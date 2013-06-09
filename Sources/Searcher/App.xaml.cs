@@ -20,12 +20,10 @@ namespace Searcher
         protected override void OnStartup(StartupEventArgs e)
         {
             XmlConfigurator.Configure();
-            var pm = AppContext.PluginManager as PluginManager;
-            pm.PrivateDomain = AppDomain.CurrentDomain;
-            pm.ScanPluginsFolder();
             StartupUri = new Uri("WndMain.xaml", UriKind.Relative);
             base.OnStartup(e);
         }
+
 
     }
 }

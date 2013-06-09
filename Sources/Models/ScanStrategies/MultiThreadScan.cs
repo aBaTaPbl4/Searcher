@@ -18,6 +18,11 @@ namespace Models.ScanStrategies
             var waitHandles = new List<WaitHandle>();
             foreach(var folderName in FoldersToScan)
             {
+                if (search.IsNeedCancelation)
+                {
+                    search.Cancel = true;
+                    return false;
+                }
                 var args = new BuildThreadArgs()
                                {
                                    Handler = new ManualResetEvent(false),

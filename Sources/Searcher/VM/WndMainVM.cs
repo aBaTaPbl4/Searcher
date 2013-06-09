@@ -10,6 +10,15 @@ using Models;
 
 namespace Searcher.VM
 {
+
+    public enum CurrentAppState
+    {
+        PendingScanning,
+        CountingFiles,
+        Scanning,
+        ScanCompleted
+    }
+
     public class WndMainVM : ViewModel
     {
         SearchProcess _scan;
@@ -17,19 +26,33 @@ namespace Searcher.VM
         static DateTime _startScanningTime;
         private string _statusBarMessage;
         private IWndMain _mainWindow;
+        private CurrentAppState _currentState;
 
         public WndMainVM(IWndMain wnd)
         {
             _mainWindow = wnd;
-            _scan = new SearchProcess();
-            _scan.ScanComplete += ScanCompleted;
-            _scan.ProgressChanged += ProgressChanged;
-            _scan.SubScanComplete += SubScanCompleted;
-            _scan.FileWasFound += FileWasFound;
+            Reset();
             _elapsedTimer = new DispatcherTimer();
             _elapsedTimer.Interval = new TimeSpan(1000);
             _elapsedTimer.IsEnabled = false;
             _elapsedTimer.Tick += new EventHandler(ElapsedTimer_Tick);
+        }
+
+        public void Reset()
+        {
+            _scan = AppContext.GetObject<SearchProcess>();
+            _scan.ScanComplete += ScanCompleted;
+            _scan.ProgressChanged += ProgressChanged;
+            _scan.SubScanComplete += SubScanCompleted;
+            _scan.FileWasFound += FileWasFound;
+            _scan.CountingFiles += CountingFiles;
+            _scan.ScanStarted += ScanStarted;
+            CurrentState = CurrentAppState.PendingScanning;
+            StatusBarMessage = "Status: File Scan Pending..";
+            if (ActivityData != null)
+            {
+                ActivityData.Reset();    
+            }            
         }
 
         public ScanSettingsPanelVM SearchOptions
@@ -38,6 +61,16 @@ namespace Searcher.VM
         }
         public OptionsPanelVM ProgramOptions { get; set; }
         public ActiveScanPanelVM ActivityData { get; set; }
+        
+        public CurrentAppState CurrentState
+        {
+            get { return _currentState; }
+            set
+            {
+                _currentState = value;
+                RefreshActiveScanPanel();
+            }
+        }
 
         public bool IsTimerOn
         {
@@ -45,11 +78,34 @@ namespace Searcher.VM
         }
 
         #region Events Processing
+        private void CountingFiles()
+        {
+            CurrentState = CurrentAppState.CountingFiles;
+            StatusBarMessage = "Counting files in directory..";
+        }
+
+        private void ScanStarted()
+        {
+            CurrentState = CurrentAppState.Scanning;
+            StatusBarMessage = "Scanning directory..";
+            ActivityData.FinishedFolderScan(SearchOptions.FolderToScan);
+        }
+
         private void ScanCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             StatusBarMessage = "Scan Complete!";
+            CurrentState = CurrentAppState.ScanCompleted;
+            ActivityData.Progress=100;
             _elapsedTimer.IsEnabled = false;
-            _mainWindow.ScanningCompleted();
+            if (e.Cancelled)
+            {
+                _mainWindow.ScanningCanceled();
+            }
+            else
+            {
+                _mainWindow.ScanningCompleted();    
+            }
+            
         }
 
         private void ProgressChanged(int progress)
@@ -75,7 +131,8 @@ namespace Searcher.VM
         {
             _startScanningTime = DateTime.Now;
             _elapsedTimer.IsEnabled = true;
-            _scan.AsyncScan();
+            ActivityData.Reset();
+            _scan.StartScanAsync();
         }
 
         public void StopScanning()
@@ -114,6 +171,35 @@ namespace Searcher.VM
                 }
             }
 
+        }
+        public const string Cancel = "Cancel";
+        public const string Next = "Next";
+        public const string Prev = "Prev";
+
+        private void RefreshActiveScanPanel()
+        {
+            if (ActivityData == null)
+            {
+                return;
+            }
+            switch (CurrentState)
+            {
+                case CurrentAppState.CountingFiles:
+                case CurrentAppState.PendingScanning:
+                case CurrentAppState.Scanning:
+                    ActivityData.ActionButtonText = Cancel;
+                    break;
+                case CurrentAppState.ScanCompleted:
+                    if (Results.Count > 0)
+                    {
+                        ActivityData.ActionButtonText = Next;
+                    }
+                    else
+                    {
+                        ActivityData.ActionButtonText = Prev;
+                    }
+                    break;
+            }
         }
 
         public void CheckAllResults()

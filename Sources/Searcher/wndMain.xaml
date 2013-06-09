@@ -59,9 +59,7 @@
                 <GroupBox Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="Black" Style="{StaticResource GroupBoxStyle}">
                     <StackPanel Orientation="Horizontal" Margin="2">
                         <Image Name="imgStatusBar" Source="/Images/monitor.png" Margin="4" Height="40" Width="40" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        <TextBlock Name="txtStatusBar" Width="Auto" FontSize="12" FontWeight="Normal" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Status: File Scan Pending..
-                        </TextBlock>
+                        <TextBlock Name="txtStatusBar" Width="Auto" FontSize="12" FontWeight="Normal" Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=StatusBarMessage, Mode=TwoWay}" />
                     </StackPanel>
                 </GroupBox>
             </Grid>

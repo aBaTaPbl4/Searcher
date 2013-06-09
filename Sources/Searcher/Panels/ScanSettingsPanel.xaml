@@ -73,7 +73,7 @@
                 </TextBox>
                 <UniformGrid Rows="2" Columns="2" Margin="8 8 8 8">
                     <TextBlock Margin="2 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Changed after:" />
-                    <TextBlock Margin="2 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Attributes:" />                    
+                    <TextBlock Margin="2 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Attributes:" />
                     <DatePicker Height="25" HorizontalAlignment="Left" Margin="2 0 8 0" Name="dtpMinModificationDate" VerticalAlignment="Stretch" Width="115" Text="{Binding Path=MinModificationDate}"/>
                     <WrapPanel>
                         <CheckBox Name="chkHidden" Margin="2,2,2,2" IsChecked= "{Binding Path=IsHidden}" >Hidden</CheckBox>
@@ -86,7 +86,7 @@
                 
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Plugin to use:" />
                 <StackPanel Margin="8 0 8 0" HorizontalAlignment="Stretch" >
-                    <ListBox Name="lstPlugins" Style="{StaticResource RadioButtonListStyle}" ItemsSource="{Binding Path=Plugins}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">
+                    <ListBox Name="lstPlugins" Style="{StaticResource RadioButtonListStyle}" ItemsSource="{Binding Path=ExternalPlugins}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">
                     </ListBox>
                 </StackPanel>
             </StackPanel>

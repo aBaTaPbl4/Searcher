@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using Common;
+using Common.Interfaces;
 using Models;
 using NUnit.Framework;
 using Rhino.Mocks;
@@ -18,13 +21,21 @@ namespace SearcherTests.Models
         private bool _isEventRaised;
         private int _subFolderProcessed;
         private int _lastProgressValue;
+
         [SetUp]
         public void Setup()
         {
+            Log.Clear();
             _search = TestsConfiguration.ObjectsFactory.CreateEngine();
             _isEventRaised = false;
             _subFolderProcessed = 0;
             _lastProgressValue = 0;
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            //
         }
 
         [Test, NUnit.Framework.Description("Если не подписались на события поиска, то все равно поиск должен успешно проходить")]
@@ -66,6 +77,18 @@ namespace SearcherTests.Models
             _search.FileWasFound += FileWasFound;
             _search.StartScan();
             CheckEventRaising();
+        }
+
+        [Test]
+        public void CancelationTest()
+        {
+            
+            //Нужна была директория с большим кол-вом файлов, поэтому тестовая директория для данного теста не подошла
+            _search.Settings.Stub(x => x.FolderToScan).Return(Environment.SystemDirectory);
+            _search.StartScanAsync();
+            _search.CancelProcessAsync();
+            Assert.IsFalse(_search.LastScanResult, Log.Content);
+            Log.NoErrorsCheck();            
         }
 
         private void CheckEventRaising()

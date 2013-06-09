@@ -9,7 +9,7 @@ namespace SearchByTag
 {
     public class SearchByTagPlugin : ISearchPlugin
     {
-        public const string PluginName = "SearchByTagPlugin";
+        public const string PluginName = "Search by tag in xml files";
 
         public SearchType Type
         {

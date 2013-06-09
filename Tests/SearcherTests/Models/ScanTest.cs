@@ -22,7 +22,7 @@ namespace SearcherTests.Models
         [SetUp]
         public void Setup()
         {
-            Process = new SearchProcess();
+            Process = AppContext.GetObject<SearchProcess>();
             Process.Folder = TestHelper.DeepestFolder;
             Process.FileWasFound += RegScan_MatchItem;
             _scan = CreateStrategy();

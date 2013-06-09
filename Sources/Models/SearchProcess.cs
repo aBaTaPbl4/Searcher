@@ -15,11 +15,16 @@ namespace Models
         private BackgroundWorker _worker;
         private readonly List<ScanData> _foundFiles = new List<ScanData>();
         private ManualResetEvent _completionSignal = new ManualResetEvent(false);
+        private bool _lastScanResult;
         #region Delegates
         public delegate void ReportProgressDelegate(int percentsComplete);
         public delegate void FileFoundDelegate(ScanData foundInfo);        
         public delegate void SubScanCompleteDelegate(string folderName);
         public delegate void ProcessCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
+
+        public delegate void ScanStartedHandler();
+
+        public delegate void CountingFilesHandler();
         #endregion
 
         #region Events
@@ -35,6 +40,14 @@ namespace Models
 
         [Description("Occurs when scan Completed")]
         public event ProcessCompletedEventHandler ScanComplete;
+
+        [Description("Occurs on pre scan stage")]
+        public event CountingFilesHandler CountingFiles;
+
+        [Description("Occurs when scan fisicaly begins")]
+        public event ScanStartedHandler ScanStarted;
+
+#region call by strategy to notify ui
 
         internal void RaiseProgressChanged(int currentProgress)
         {
@@ -52,6 +65,24 @@ namespace Models
             }
         }
 
+        internal void RaiseCountingFiles()
+        {
+            if (CountingFiles != null)
+            {
+                CountingFiles();
+            }
+        }
+
+        internal void RaiseScanStarted()
+        {
+            if (ScanStarted != null)
+            {
+                ScanStarted();
+            }
+        }
+
+#endregion
+
         private void RaiseFileWasFound(ScanData fileInfo)
         {
             if (FileWasFound != null)
@@ -67,6 +98,7 @@ namespace Models
             {
                 ScanComplete(this, e);
             }
+            //IsNeedCancelation = false;
             _completionSignal.Set();
         }
         #endregion
@@ -90,8 +122,9 @@ namespace Models
 
         public ScanStrategyBase ScanStrategy { get; set; }
 
-        public void AsyncScan()
+        public void StartScanAsync()
         {
+            //IsNeedCancelation = false;
             if (_worker != null)
             {
                 ResetAsync();
@@ -110,12 +143,22 @@ namespace Models
             get { return ScanStrategy.FileProcessed; }
         }
 
+        public bool IsNeedCancelation
+        {
+            get
+            {
+                return _worker.CancellationPending;
+            }
+        }
+
         public void CancelProcessAsync()
         {
             if (_worker != null)
             {
+                //IsNeedCancelation = true;
                 _worker.CancelAsync();
-                ResetAsync();
+                //RaiseScanCompleted(null, null);
+                //ResetAsync();
             }
         }
 
@@ -125,17 +168,29 @@ namespace Models
         /// <returns></returns>
         public bool StartScan()
         {
-            AsyncScan();
+            StartScanAsync();
             _completionSignal.WaitOne();
             return LastScanResult;
         }
 
-        public bool LastScanResult { get; private set; }
+        public bool LastScanResult
+        {
+            get { return _lastScanResult; }
+            private set { _lastScanResult = value; }
+        }
+
+        private DoWorkEventArgs _currentArgs;
+
+        internal bool Cancel
+        {
+            set { _currentArgs.Cancel = value; }
+        }
 
         private void DoWork(object sender, DoWorkEventArgs e)
         {
             try
             {
+                _currentArgs = e;
                 LastScanResult = false;
                 LastScanResult = ScanStrategy.StartScan(this);
                 if (!LastScanResult)
@@ -145,7 +200,11 @@ namespace Models
             }
             catch (StopProcessingException)
             {
-                // end
+                AppContext.Logger.InfoFormat("Scan process was stoped.");
+            }
+            catch (Exception ex)
+            {
+                AppContext.Logger.ErrorFormat("In scan thread error occured. {0}", ex);
             }
         }
 
@@ -168,6 +227,7 @@ namespace Models
         public ISearchSettings Settings
         {
             get { return ScanStrategy.SearchSettings; }
+            set { ScanStrategy.SearchSettings = value; }
         }
 
         private class StopProcessingException : Exception

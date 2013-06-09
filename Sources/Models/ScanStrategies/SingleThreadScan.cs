@@ -10,6 +10,11 @@ namespace Models.ScanStrategies
         {
             foreach(var folderName in FoldersToScan)
             {
+                if (search.IsNeedCancelation)
+                {
+                    search.Cancel = true;
+                    return false;
+                }
                 ScanFolder(folderName);
             }
             return true;

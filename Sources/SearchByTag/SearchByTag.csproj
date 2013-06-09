@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="log4net">
       <HintPath>..\..\Libs\log4net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -51,6 +52,7 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{7DF6CCDE-ACE4-46C2-887C-852D7A03C69E}</Project>
       <Name>Common</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

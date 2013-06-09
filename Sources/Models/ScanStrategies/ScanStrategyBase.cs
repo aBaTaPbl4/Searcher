@@ -21,8 +21,10 @@ namespace Models.ScanStrategies
         {
             _filesProcessed = 0;
             _search = search;
+            search.RaiseCountingFiles();
             _totalFilesCount = FileSystem.GetFilesCountToScan();
             _filesPerOnePercent = _totalFilesCount/100.0000;
+            search.RaiseScanStarted();
             return StartScanInner(search);            
         }
 

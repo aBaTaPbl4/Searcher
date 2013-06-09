@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -15,6 +16,7 @@ namespace Searcher.VM
         private int _progressMax;
         private double _timeElapsed;
         private string _lastScanedFolder;
+        private string _actionButtonText;
 
         public ActiveScanPanelVM()
         {
@@ -63,6 +65,16 @@ namespace Searcher.VM
             }
         }
 
+        public string ActionButtonText
+        {
+            get { return _actionButtonText; }
+            set
+            {
+                _actionButtonText = value;
+                OnPropertyChanged("ActionButtonText");
+            }
+        }
+
         public double TimeElapsed
         {
             get { return _timeElapsed; }
@@ -97,9 +109,13 @@ namespace Searcher.VM
 
         public void AddFoundData(ScanDataVM data)
         {
-            Results.Add(data);
-            MatchesCount++;
-            LastMatch = data.FileName;
+            Action act = () =>
+                          {
+                              Results.Add(data);
+                              MatchesCount++;
+                              LastMatch = data.FileName;
+                          };
+            InvokeInUIThread(act);
         }
 
         public void FinishedFolderScan(string folderName)
@@ -118,6 +134,7 @@ namespace Searcher.VM
             ProgressMax = 100;
             Progress = 0;
             Results.Clear();
+            ActionButtonText = WndMainVM.Cancel;
         }
 
         public void CheckResults(bool value)

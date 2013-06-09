@@ -12,7 +12,7 @@ namespace SearchByType
     public class SearchByTypePlugin : ISearchPlugin
     {
 
-        public const string PluginName = "SearchByTypePlugin";
+        public const string PluginName = "Search by type in .net assemblies";
 
         public SearchType Type
         {

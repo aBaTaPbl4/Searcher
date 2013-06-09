@@ -16,7 +16,7 @@ namespace Searcher.VM
         private string _folderToScan;
         private IPluginManager _pluginManager;
         private IFileSystem _fileSystem;
-        private ObservableCollection<PluginDecoratorVM> _plugins;
+        private ObservableCollection<PluginDecoratorVM> _externalPlugins;
 
         public ScanSettingsPanelVM()
         {
@@ -28,7 +28,7 @@ namespace Searcher.VM
             MinFileSize = 0;
             RecursiveScan = true;
             FolderToScan = @"H:\docs";
-            FileNameSearchPattern = "L4D2";
+            FileNameSearchPattern = "Story";
         }
 
         public bool OrLink { get; set; }
@@ -69,7 +69,7 @@ namespace Searcher.VM
 
         public void SetActivePlugin(PluginDecoratorVM activePlugin)
         {
-            foreach (var curPlugin in Plugins)
+            foreach (var curPlugin in ExternalPlugins)
             {
                 if (curPlugin == activePlugin)
                 {
@@ -86,21 +86,21 @@ namespace Searcher.VM
         {
             get
             {
-                return Plugins.Where(x => x.IsActive || x.Plugin.IsCorePlugin).Select(x=>x.Plugin).ToArray();
+                return ExternalPlugins.Where(x => x.IsActive).Select(x=>x.Plugin).Union(PluginManager.CorePlugins).ToArray();
             }
         }
 
-        public ObservableCollection<PluginDecoratorVM> Plugins
+        public ObservableCollection<PluginDecoratorVM> ExternalPlugins
         {
             get
             {
-                if (_plugins == null)
+                if (_externalPlugins == null)
                 {
                     InitPlugins();
                 }
-                return _plugins;
+                return _externalPlugins;
             }
-            private set { _plugins = value; }
+            private set { _externalPlugins = value; }
         }
 
         public IPluginManager PluginManager
@@ -118,16 +118,11 @@ namespace Searcher.VM
 
         public void InitPlugins()
         {
-            _plugins = new ObservableCollection<PluginDecoratorVM>();
-            var corePlugins = PluginManager.AllPlugins.Where(x => x.IsCorePlugin).ToArray();
-            foreach (var plugin in corePlugins)
-            {
-                _plugins.Add(new PluginDecoratorVM() { IsActive = true, Plugin = plugin });                
-            }
+            _externalPlugins = new ObservableCollection<PluginDecoratorVM>();
 
             foreach (var plugin in PluginManager.ExternalPlugins)
             {
-                _plugins.Add(new PluginDecoratorVM()
+                _externalPlugins.Add(new PluginDecoratorVM()
                 {
                     IsActive = false,
                     Plugin = plugin

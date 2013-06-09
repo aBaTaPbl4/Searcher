@@ -44,7 +44,8 @@ namespace Searcher
         {
             InitializeComponent();
             _logger = AppContext.Logger;
-            InitFields();            
+            InitFields();
+            DataContext = _vm;
         }
         #endregion
 
@@ -96,14 +97,20 @@ namespace Searcher
                     }
                     break;
                 case "btnScanCancel":
-                    if ((string)btn.Content == "Cancel")
+                    var btnContent = (string) btn.Content;
+
+                    if (btnContent == WndMainVM.Next)
                     {
-                        LogInfo("Scan Aborted by User.");
-                        StopScanning();
+                        ToggleResultsPanel();
+                    }
+                    else if (btnContent == WndMainVM.Prev)
+                    {
+                        ToggleScanSettingsPanel(); 
                     }
                     else
                     {
-                        ToggleResultsPanel();
+                        LogInfo("Scan Aborted by User.");
+                        StopScanning();   
                     }
                     break;
                 case "btnSelectAll":
@@ -213,28 +220,31 @@ namespace Searcher
             _logger.Info(entry);
         }
 
-
         public void ScanningCompleted()
         {
+            _pnlActiveScan.btnScanCancel.IsEnabled = true;
             UnLockControls(true);
-            ToggleResultsPanel();
+        }
+
+        public void ScanningCanceled()
+        {
+            _pnlActiveScan.btnScanCancel.IsEnabled = true;
+            UnLockControls(true);
+            
         }
 
         public void StopScanning()
         {
+            _pnlActiveScan.btnScanCancel.IsEnabled = false;
             _vm.StopScanning();
-            UnLockControls(true);
-            if (_vm.Results.Count > 0)
-            {
-                _pnlActiveScan.btnScanCancel.Content = "Next";    
-            }
-            else
-            {
-                _vm.ActivityData.Reset();
-                ToggleScanSettingsButton();
-                ToggleScanSettingsPanel();
-            }
-            
+            UnLockControls(true);      
+        }
+
+        public void ToggleScanSettingsPanel()
+        {
+            _vm.Reset();
+            ToggleScanSettingsButton();
+            TogglePanels("btnRegscan");            
         }
 
         private void StartScanning()
@@ -245,15 +255,9 @@ namespace Searcher
             _vm.StartScanning();
         }
 
-
         private void ToggleResultsPanel()
         {
             TogglePanels("Results");
-        }
-
-        private void ToggleScanSettingsPanel()
-        {
-            TogglePanels("btnRegscan");
         }
 
         private void ToggleActiveScanPanel()

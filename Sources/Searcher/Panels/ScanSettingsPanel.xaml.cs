@@ -19,7 +19,7 @@ namespace Searcher.Panels
             InitializeComponent();
             if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
             {
-                _data = AppContext.SearchSettings as ScanSettingsPanelVM;
+                _data = AppContext.GetObject<ScanSettingsPanelVM>();
                 _data.InitPlugins();
             }
             DataContext = _data;
