@@ -133,7 +133,7 @@ namespace ServiceImpls
                 }
                 catch (Exception ex)
                 {
-                    AppContext.Logger.ErrorFormat("ScanPluginsFolder:Duringload plugin from assembly '{0}', error occured: {1}",
+                    AppContext.Logger.ErrorFormat("ScanPluginsFolder:During load plugin from assembly '{0}', error occured: {1}",
                         pluginFileName, ex);
                 }
             }
