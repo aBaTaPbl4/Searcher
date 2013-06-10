@@ -54,13 +54,7 @@
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File name:" />
                 <TextBox Name="txtFileName" Margin="8 0 8 8" FontFamily="Arial" FontWeight="Bold"
                          Text="{Binding Path=FileNameSearchPattern, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
-                <DockPanel Margin="8 0 8 0" LastChildFill="False">
-                    <RadioButton Name="rbnOR" Margin="20 0" GroupName="Cond" Content="OR" IsThreeState="False"
-                                 DockPanel.Dock="Left" IsChecked="{Binding Path=OrLink}" />
-                    <RadioButton Name="rbnAND" Margin="20 0" GroupName="Cond" Content="AND" IsThreeState="False"
-                                 IsEnabled="False" DockPanel.Dock="Right" />
-                </DockPanel>
-                <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File content:" />
+                <TextBlock Margin="8 0 8 0" FontFamily="Arial" FontWeight="Bold" Text="File content:" />
                 <TextBox Name="txtFileContent" Margin="8 0 8 0" FontFamily="Arial" FontWeight="Bold"
                          Text="{Binding Path=FileContentSearchPattern}" />
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File min size(KB):" />
@@ -90,7 +84,7 @@
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Plugin to use:" />
                 <StackPanel Margin="8 0 8 0" HorizontalAlignment="Stretch">
                     <ListBox Name="lstPlugins" Style="{StaticResource RadioButtonListStyle}"
-                             ItemsSource="{Binding Path=ExternalPlugins}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">
+                             ItemsSource="{Binding Path=PluginListsForUser}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">
                     </ListBox>
                 </StackPanel>
             </StackPanel>

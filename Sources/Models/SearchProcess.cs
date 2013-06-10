@@ -165,7 +165,6 @@ namespace Models
         {
             if (_worker != null)
             {
-                //IsNeedCancelation = true;
                 _worker.CancelAsync();
                 //RaiseScanCompleted(null, null);
                 //ResetAsync();

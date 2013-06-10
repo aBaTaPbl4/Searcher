@@ -22,7 +22,16 @@ namespace Searcher.VM
         public const string Next = "Next";
         public const string Prev = "Prev";
         private static DateTime _startScanningTime;
+        /// <summary>
+        /// Таймер по которому подсчитаевается время сканирования.
+        /// Работает только пока панель процесса сканирования активна
+        /// </summary>
         private readonly DispatcherTimer _elapsedTimer;
+        /// <summary>
+        /// Таймер для обновления плагинов в режиме realtime. Работает пока 
+        /// активна форма задания настроек поиска.
+        /// </summary>
+        private readonly DispatcherTimer _pluginCheckTimer;
         private readonly IWndMain _mainWindow;
         private CurrentAppState _currentState;
         private SearchProcess _scan;
@@ -36,6 +45,11 @@ namespace Searcher.VM
             _elapsedTimer.Interval = new TimeSpan(1000);
             _elapsedTimer.IsEnabled = false;
             _elapsedTimer.Tick += ElapsedTimer_Tick;
+
+            _pluginCheckTimer = new DispatcherTimer();
+            _pluginCheckTimer.Interval = new TimeSpan(10000);
+            _pluginCheckTimer.IsEnabled = true;
+            _pluginCheckTimer.Tick += PluginCheckTimer_Tick;
         }
 
         public ScanSettingsPanelVM SearchOptions
@@ -86,8 +100,12 @@ namespace Searcher.VM
 
         private void ScanStarted()
         {
-            CurrentState = CurrentAppState.Scanning;
-            StatusBarMessage = "Scanning directory..";
+            _pluginCheckTimer.IsEnabled = false;
+            if (!_scan.IsNeedCancelation)
+            {
+                CurrentState = CurrentAppState.Scanning;
+                StatusBarMessage = "Scanning directory..";                
+            }
             //ActivityData.FinishedFolderScan(SearchOptions.FolderToScan);
         }
 
@@ -153,6 +171,7 @@ namespace Searcher.VM
 
         public void StopScanning()
         {
+            StatusBarMessage = "Status: File scan is stopping...";
             _elapsedTimer.IsEnabled = false;
             _scan.CancelProcessAsync();
         }
@@ -186,8 +205,11 @@ namespace Searcher.VM
             }
             switch (CurrentState)
             {
-                case CurrentAppState.CountingFiles:
                 case CurrentAppState.PendingScanning:
+                    _pluginCheckTimer.IsEnabled = true;
+                    ActivityData.ActionButtonText = Cancel;
+                    break;
+                case CurrentAppState.CountingFiles:
                 case CurrentAppState.Scanning:
                     ActivityData.ActionButtonText = Cancel;
                     break;
@@ -216,8 +238,19 @@ namespace Searcher.VM
 
         private void ElapsedTimer_Tick(object sender, EventArgs e)
         {
-            TimeSpan _timeElapsed = DateTime.Now.Subtract(_startScanningTime);
-            ActivityData.TimeElapsed = _timeElapsed.TotalSeconds;
+            TimeSpan timeElapsed = DateTime.Now.Subtract(_startScanningTime);
+            ActivityData.TimeElapsed = timeElapsed.TotalSeconds;
+        }
+
+        /// <summary>
+        /// Событие срабатывает только если активна форма настроек поиска
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void PluginCheckTimer_Tick(object sender, EventArgs e)
+        {
+            AppContext.PluginManager.ScanPluginsFolder();
+            SearchOptions.InitPlugins();//reinit plugins in ListBox in UI
         }
     }
 }

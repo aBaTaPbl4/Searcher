@@ -10,7 +10,7 @@ namespace Searcher.VM
 {
     public class ScanSettingsPanelVM : ISearchSettings, IDataErrorInfo
     {
-        private ObservableCollection<PluginDecoratorVM> _externalPlugins;
+        private ObservableCollection<PluginDecoratorVM> _pluginListsForUser;
         private string _fileNameSearchPattern;
         private IFileSystem _fileSystem;
         private string _folderToScan;
@@ -18,30 +18,29 @@ namespace Searcher.VM
 
         public ScanSettingsPanelVM()
         {
-            OrLink = true;
             IsHidden = null;
             IsArch = null;
             IsReadOnly = null;
             MinModificationDate = new DateTime(1955, 1, 1);
             MinFileSize = 0;
             RecursiveScan = true;
+            _pluginListsForUser = new ObservableCollection<PluginDecoratorVM>();
             FolderToScan = @"H:\docs";
             FileNameSearchPattern = "Story";
         }
 
-        public bool OrLink { get; set; }
 
-        public ObservableCollection<PluginDecoratorVM> ExternalPlugins
+        public ObservableCollection<PluginDecoratorVM> PluginListsForUser
         {
             get
             {
-                if (_externalPlugins == null)
+                if (_pluginListsForUser.Count == 0)
                 {
                     InitPlugins();
                 }
-                return _externalPlugins;
+                return _pluginListsForUser;
             }
-            private set { _externalPlugins = value; }
+            private set { _pluginListsForUser = value; }
         }
 
         public IPluginManager PluginManager
@@ -149,7 +148,7 @@ namespace Searcher.VM
             get
             {
                 return
-                    ExternalPlugins.Where(x => x.IsActive).Select(x => x.Plugin).Union(PluginManager.CorePlugins).
+                    PluginListsForUser.Where(x => x.IsActive).Select(x => x.Plugin).Union(PluginManager.CorePlugins).
                         ToArray();
             }
         }
@@ -158,7 +157,7 @@ namespace Searcher.VM
 
         public void SetActivePlugin(PluginDecoratorVM activePlugin)
         {
-            foreach (PluginDecoratorVM curPlugin in ExternalPlugins)
+            foreach (PluginDecoratorVM curPlugin in PluginListsForUser)
             {
                 if (curPlugin == activePlugin)
                 {
@@ -173,15 +172,17 @@ namespace Searcher.VM
 
         public void InitPlugins()
         {
-            _externalPlugins = new ObservableCollection<PluginDecoratorVM>();
-
-            foreach (ISearchPlugin plugin in PluginManager.ExternalPlugins)
+            foreach (ISearchPlugin loadedPlugin in PluginManager.ExternalPlugins)
             {
-                _externalPlugins.Add(new PluginDecoratorVM
-                                         {
-                                             IsActive = false,
-                                             Plugin = plugin
-                                         });
+                bool isPluginAlredyAdded = _pluginListsForUser.Where(x => x.Name == loadedPlugin.Name).Any();
+                if (!isPluginAlredyAdded)
+                {
+                    _pluginListsForUser.Add(new PluginDecoratorVM
+                    {
+                        IsActive = false,
+                        Plugin = loadedPlugin
+                    });                    
+                }
             }
         }
 

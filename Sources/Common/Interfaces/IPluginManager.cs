@@ -5,5 +5,6 @@ namespace Common.Interfaces
         ISearchPlugin[] AllPlugins { get; }
         ISearchPlugin[] ExternalPlugins { get; }
         ISearchPlugin[] CorePlugins { get; }
+        void ScanPluginsFolder();
     }
 }
