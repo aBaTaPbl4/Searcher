@@ -24,7 +24,7 @@ namespace ServiceImpls
         {
             _externalPlugins = new List<ISearchPlugin>();
             _corePlugins = new List<ISearchPlugin>();
-            _corePlugins.Add(new SearchByFileNamePlugin());
+            _corePlugins.Add(new SearchByFileAttributesPlugin());
         }
 
         public AppDomain PrivateDomain

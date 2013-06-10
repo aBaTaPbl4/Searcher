@@ -6,7 +6,7 @@ using Common.Interfaces;
 
 namespace ServiceImpls
 {
-    public class SearchByFileNamePlugin : ISearchPlugin
+    public class SearchByFileAttributesPlugin : ISearchPlugin
     {
         #region ISearchPlugin Members
 

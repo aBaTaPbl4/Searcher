@@ -101,7 +101,7 @@ namespace SearcherTests.ObjectsFactory
 
         public ISearchPlugin CreateFileNamePlugin()
         {
-            return new SearchByFileNamePlugin();
+            return new SearchByFileAttributesPlugin();
         }
 
         public ISearchPlugin CreateTagPlugin()
