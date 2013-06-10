@@ -4,9 +4,8 @@ namespace Common.Interfaces
 {
     public enum SearchType
     {
-        ByFileName,
-        ByFileContent,
-        ByFileNameOrContent
+        ByFileAttibutes,
+        ByFileContent
     }
 
     public interface ISearchPlugin

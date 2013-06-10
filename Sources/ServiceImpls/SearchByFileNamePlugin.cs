@@ -12,7 +12,7 @@ namespace ServiceImpls
 
         public SearchType Type
         {
-            get { return SearchType.ByFileName; }
+            get { return SearchType.ByFileAttibutes; }
         }
 
         /// <summary>
@@ -25,11 +25,40 @@ namespace ServiceImpls
         {
             try
             {
-                if (settings.FileNameSearchPattern.IsNullOrEmpty())
+                bool fileNameCheckRequired = !settings.FileNameSearchPattern.IsNullOrEmpty();
+                bool fileNameMatchToPattern = Path.GetFileName(fileName).ContainsIgnoreCase(settings.FileNameSearchPattern);
+
+                if (fileNameCheckRequired && !fileNameMatchToPattern)
                 {
-                    return true;
+                    return false;
                 }
-                return Path.GetFileName(fileName).ContainsIgnoreCase(settings.FileNameSearchPattern);
+                var fileInfo = AppContext.FileSystem.GetFileInfo(fileName);
+                if (settings.MinFileSize > 0 && fileInfo.FileSize < settings.MinFileSize)
+                {
+                    return false;
+                }
+
+                if (settings.MinModificationDate != null && fileInfo.ModificationDate < settings.MinModificationDate)
+                {
+                    return false;
+                }
+
+                if (settings.IsReadOnly != null && settings.IsReadOnly != fileInfo.IsReadOnly)
+                {
+                    return false;
+                }
+
+                if (settings.IsHidden != null && settings.IsHidden!= fileInfo.IsHidden)
+                {
+                    return false;
+                }
+
+                if (settings.IsArch != null && settings.IsArch != fileInfo.IsArch)
+                {
+                    return false;
+                }
+
+                return true;
             }
             catch (Exception ex)
             {
@@ -41,7 +70,7 @@ namespace ServiceImpls
 
         public string Name
         {
-            get { return "SearchByFileNamePlugin"; }
+            get { return "Search by file attributes"; }
         }
 
         public List<string> AssociatedFileExtensions

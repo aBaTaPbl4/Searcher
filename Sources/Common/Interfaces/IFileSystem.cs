@@ -1,10 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
 
 namespace Common.Interfaces
 {
+    /// <summary>
+    /// ¬вел структуру в качестве dto, ввиду того, 
+    /// что стандартный FileInfo позвол€етс€ слишком много
+    /// </summary>
+    public struct FileInfoShort
+    {
+        public bool IsHidden;
+        public bool IsArch;
+        public bool IsReadOnly;
+        public DateTime ModificationDate;
+        public long FileSize;
+    }
+
     public interface IFileSystem
     {
         string FixFolderName(string folderName);
@@ -30,5 +44,6 @@ namespace Common.Interfaces
         bool DirectoryExists(string dir);
         void FileDelete(string fileName);
         int GetFilesCountToScan();
+        FileInfoShort GetFileInfo(string fileName);
     }
 }

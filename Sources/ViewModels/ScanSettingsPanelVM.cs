@@ -21,7 +21,7 @@ namespace Searcher.VM
             IsHidden = null;
             IsArch = null;
             IsReadOnly = null;
-            MinModificationDate = new DateTime(1955, 1, 1);
+            MinModificationDate = null;
             MinFileSize = 0;
             RecursiveScan = true;
             _pluginListsForUser = new ObservableCollection<PluginDecoratorVM>();
@@ -122,12 +122,12 @@ namespace Searcher.VM
         public bool? IsReadOnly { get; set; }
         public bool RecursiveScan { get; set; }
 
-        public virtual DateTime MinModificationDate { get; set; }
+        public virtual DateTime? MinModificationDate { get; set; }
 
         /// <summary>
         /// Минимальный размер файла в кб
         /// </summary>
-        public int MinFileSize { get; set; }
+        public long MinFileSize { get; set; }
 
         public virtual string FileNameSearchPattern
         {

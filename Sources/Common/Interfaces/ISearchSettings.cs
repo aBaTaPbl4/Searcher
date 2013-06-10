@@ -16,11 +16,11 @@ namespace Common.Interfaces
         bool? IsHidden { get; }
         bool? IsArch { get; }
         bool? IsReadOnly { get; }
-        DateTime MinModificationDate { get; }
+        DateTime? MinModificationDate { get; }
 
         /// <summary>
         /// Минимальный размер файла в кб
         /// </summary>
-        int MinFileSize { get; }
+        long MinFileSize { get; }
     }
 }

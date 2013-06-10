@@ -105,6 +105,18 @@ namespace ServiceImpls
             }
         }
 
+        public FileInfoShort GetFileInfo(string fileName)
+        {
+            var info = new FileInfo(fileName);
+            var result = new FileInfoShort();
+            result.IsReadOnly = info.IsReadOnly;
+            result.ModificationDate = info.LastWriteTime;
+            result.IsArch = (FileAttributes.Archive & info.Attributes) == FileAttributes.Archive;
+            result.IsHidden = (FileAttributes.Hidden & info.Attributes) == FileAttributes.Hidden;
+            result.FileSize = info.Length/1024;
+            return result;
+        }
+
         public XDocument LoadXmlFile(string fileName)
         {
             XDocument doc = XDocument.Load(fileName);
