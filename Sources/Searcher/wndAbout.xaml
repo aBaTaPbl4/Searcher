@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Searcher.WndAbout"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About Seacher-X" Height="239" Width="322"
+        Title="About Seacher-X" Height="246" Width="377"
         Icon="/Images/monitor.png" 
         ResizeMode="NoResize"  WindowStartupLocation="CenterScreen" 
         SnapsToDevicePixels="True" FontFamily="Arial">
@@ -19,9 +19,17 @@
                 <TextBlock Foreground="{StaticResource GlossBackgroundGradient}" FontSize="32" FontWeight="Bold" FontFamily="Tahoma" Text="Searcher 1.0"/>
             </StackPanel>
             <TextBlock TextWrapping="Wrap" Margin="12">
-            <TextBlock.Text>
-                This is a test application. The purpose of the application demonstrate the benefits of SOA architecture in terms of flexibility, development and testing. Author: Morozov Pavel.
-            </TextBlock.Text>
+            <TextBlock>
+                <TextBlock>
+                This is a test application.
+                The purpose of the application<LineBreak/>
+                demonstrate the benefits of SOA architecture in terms<LineBreak/>
+                of flexibility, development and testing.
+                </TextBlock>
+                <LineBreak/>Author: Morozov Pavel
+                <LineBreak/>Have questions?
+                <LineBreak/>Skype:mAcTeP.aBaTaPbl4
+            </TextBlock>
         </TextBlock>
             <Button Foreground="White" Name="btnClose" Margin="4" Content="Close" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                     Click="btnClose_Click" Height="31" Width="82" />

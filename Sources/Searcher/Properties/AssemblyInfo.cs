@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Searcher")]
-[assembly: AssemblyCopyright("Copyright ©  aBaTaPbl4 2013")]
+[assembly: AssemblyCopyright("Copyright ©  None 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
