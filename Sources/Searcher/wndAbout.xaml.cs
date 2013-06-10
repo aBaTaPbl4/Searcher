@@ -10,12 +10,12 @@ namespace Searcher
         public WndAbout()
         {
             InitializeComponent();
-           // System.Windows.Controls.Primitives.Thumb.
+            // System.Windows.Controls.Primitives.Thumb.
         }
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

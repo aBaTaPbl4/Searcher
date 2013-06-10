@@ -8,6 +8,8 @@ namespace ServiceImpls
 {
     public class SearchByFileNamePlugin : ISearchPlugin
     {
+        #region ISearchPlugin Members
+
         public SearchType Type
         {
             get { return SearchType.ByFileName; }
@@ -30,12 +32,11 @@ namespace ServiceImpls
                 return Path.GetFileName(fileName).ContainsIgnoreCase(settings.FileNameSearchPattern);
             }
             catch (Exception ex)
-            {                
+            {
                 AppContext.Logger.ErrorFormat("{3}.Check: FileName: '{0}', Settings: '{1}'. Exception occured: {2}",
-                    fileName, settings, ex, Name);
+                                              fileName, settings, ex, Name);
                 return false;
             }
-            
         }
 
         public string Name
@@ -45,10 +46,7 @@ namespace ServiceImpls
 
         public List<string> AssociatedFileExtensions
         {
-            get
-            {
-                return new List<string>();
-            }
+            get { return new List<string>(); }
         }
 
         public bool IsCorePlugin
@@ -58,10 +56,9 @@ namespace ServiceImpls
 
         public bool IsForAnyFileExtension
         {
-            get
-            {
-                return true;
-            }
+            get { return true; }
         }
+
+        #endregion
     }
 }

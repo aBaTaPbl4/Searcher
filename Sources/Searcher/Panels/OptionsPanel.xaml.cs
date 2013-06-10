@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Common;
 using Searcher.VM;
@@ -10,7 +10,7 @@ namespace Searcher.Panels
     /// </summary>
     public partial class OptionsPanel : UserControl
     {
-        private OptionsPanelVM _data;
+        private readonly OptionsPanelVM _data;
 
         public OptionsPanel()
         {
@@ -19,21 +19,21 @@ namespace Searcher.Panels
             DataContext = _data;
         }
 
-        private void Chk_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            CheckBox chk = e.OriginalSource as CheckBox;
-            if (chk == null)
-                return;
-            if (chk.Name == "chkAsync")
-            {
-                txtThreadsNum.IsEnabled = chk.IsChecked ?? false;                
-            }
-        }
-
 
         public OptionsPanelVM ViewModel
         {
             get { return _data; }
+        }
+
+        private void Chk_Click(object sender, RoutedEventArgs e)
+        {
+            var chk = e.OriginalSource as CheckBox;
+            if (chk == null)
+                return;
+            if (chk.Name == "chkAsync")
+            {
+                txtThreadsNum.IsEnabled = chk.IsChecked ?? false;
+            }
         }
     }
 }

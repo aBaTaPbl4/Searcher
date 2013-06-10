@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using Common;
@@ -15,23 +14,28 @@ namespace ServiceImpls
     [Serializable]
     public class FileSystem : IFileSystem
     {
-
         public FileSystem()
         {
             AppDomain.CurrentDomain.AssemblyResolve += DependenciesResolver;
         }
+
+        public ISearchSettings SearchSettings { get; set; }
+
+        #region IFileSystem Members
+
         public string FixFolderName(string folderName)
         {
             if (folderName.IsNullOrEmpty())
             {
                 return null;
-            }            
+            }
             if (!Path.IsPathRooted(folderName))
             {
                 folderName = Path.GetFullPath(folderName);
             }
             return folderName;
         }
+
         /// <summary>
         /// Получает список файлов лежащих в каталоге(не рекурсивно)
         /// </summary>
@@ -46,7 +50,7 @@ namespace ServiceImpls
                 folderName = FixFolderName(folderName);
                 if (folderName.IsNullOrEmpty())
                 {
-                    AppContext.Logger.ErrorFormat("GetFiles:Incorrect folder name:'{0}'",folderName);
+                    AppContext.Logger.ErrorFormat("GetFiles:Incorrect folder name:'{0}'", folderName);
                     return files;
                 }
                 return new List<string>(Directory.GetFiles(folderName));
@@ -68,7 +72,7 @@ namespace ServiceImpls
         public List<string> GetAllSubfolders(string folderName)
         {
             var folders = new List<string>();
-            
+
             try
             {
                 folderName = FixFolderName(folderName);
@@ -86,10 +90,7 @@ namespace ServiceImpls
                     folderName, Environment.NewLine, ex);
                 return folders;
             }
-
         }
-
-        public ISearchSettings SearchSettings { get; set; }
 
         public int GetFilesCountToScan()
         {
@@ -106,7 +107,7 @@ namespace ServiceImpls
 
         public XDocument LoadXmlFile(string fileName)
         {
-            var doc = XDocument.Load(fileName);
+            XDocument doc = XDocument.Load(fileName);
             return doc;
         }
 
@@ -118,19 +119,39 @@ namespace ServiceImpls
                 asmInfo = AssemblyName.GetAssemblyName(fileName);
                 return asmInfo;
             }
-            catch (System.IO.FileNotFoundException)
-            {}
-            catch (System.BadImageFormatException)
-            {}
-            catch (System.IO.FileLoadException)
-            {}
+            catch (FileNotFoundException)
+            {
+            }
+            catch (BadImageFormatException)
+            {
+            }
+            catch (FileLoadException)
+            {
+            }
             return asmInfo;
         }
 
         public Assembly LoadAssemblyToDomain(AppDomain domain, AssemblyName asmInfo)
         {
-             return domain.Load(asmInfo);            
+            return domain.Load(asmInfo);
         }
+
+        public bool FileExtists(string fileName)
+        {
+            return File.Exists(fileName);
+        }
+
+        public void FileDelete(string fileName)
+        {
+            File.Delete(fileName);
+        }
+
+        public bool DirectoryExists(string dir)
+        {
+            return Directory.Exists(dir);
+        }
+
+        #endregion
 
         public Assembly DependenciesResolver(object sender, ResolveEventArgs args)
         {
@@ -156,21 +177,5 @@ namespace ServiceImpls
         {
             throw new NotImplementedException("");
         }
-
-        public bool FileExtists(string fileName)
-        {
-            return File.Exists(fileName);
-        }
-
-        public void FileDelete(string fileName)
-        {
-            File.Delete(fileName);
-        }
-
-        public bool DirectoryExists(string dir)
-        {
-            return Directory.Exists(dir);
-        }
-
     }
 }

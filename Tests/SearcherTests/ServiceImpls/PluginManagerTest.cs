@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using NUnit.Framework;
 using SearchByTag;
 using SearchByType;
@@ -9,7 +6,7 @@ using ServiceImpls;
 
 namespace SearcherTests.ServiceImpls
 {
-    class PluginManagerTest
+    internal class PluginManagerTest
     {
         private PluginManager _manager;
 
@@ -25,15 +22,14 @@ namespace SearcherTests.ServiceImpls
             _manager.ScanPluginsFolder();
             Assert.AreEqual(3, _manager.AllPlugins.Count(), Log.Content);
             Assert.IsNotNull(_manager.CorePlugins[0]);
-
         }
 
         [Test]
         public void ScanPluginsFolderContentTest()
         {
             _manager.ScanPluginsFolder();
-            var pluginNames = (from p in _manager.AllPlugins
-                               select p.Name).ToArray();
+            string[] pluginNames = (from p in _manager.AllPlugins
+                                    select p.Name).ToArray();
             Assert.Contains(SearchByTagPlugin.PluginName, pluginNames, Log.Content);
             Assert.Contains(SearchByTypePlugin.PluginName, pluginNames, Log.Content);
         }

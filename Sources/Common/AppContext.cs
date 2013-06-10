@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using Common.Interfaces;
 using Spring.Context;
 using Spring.Context.Support;
 using log4net;
-using System.Linq;
 
 namespace Common
 {
@@ -18,7 +16,7 @@ namespace Common
     /// </summary>
     public static class AppContext
     {
-        private static IApplicationContext _springContext;
+        private static readonly IApplicationContext _springContext;
 
         static AppContext()
         {
@@ -36,10 +34,7 @@ namespace Common
         /// </summary>
         public static ISearchSettings SearchSettings
         {
-            get
-            {
-                return _springContext.GetObject<ISearchSettings>();
-            }
+            get { return _springContext.GetObject<ISearchSettings>(); }
         }
 
         /// <summary>
@@ -67,6 +62,11 @@ namespace Common
         }
 
 
+        public static ILog Logger
+        {
+            get { return LogManager.GetLogger(Guid.NewGuid().ToString()); }
+        }
+
         /// <summary>
         /// Получить экземпляр сервиса
         /// </summary>
@@ -76,11 +76,5 @@ namespace Common
         {
             return _springContext.GetObject<T>();
         }
-
-        public static ILog Logger
-        {
-            get { return LogManager.GetLogger(Guid.NewGuid().ToString()); }
-        }
-
     }
 }

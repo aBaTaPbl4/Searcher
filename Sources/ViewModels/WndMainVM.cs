@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Windows.Threading;
 using Common;
 using Models;
 
 namespace Searcher.VM
 {
-
     public enum CurrentAppState
     {
         PendingScanning,
@@ -21,12 +18,15 @@ namespace Searcher.VM
 
     public class WndMainVM : ViewModel
     {
-        SearchProcess _scan;
-        private DispatcherTimer _elapsedTimer;
-        static DateTime _startScanningTime;
-        private string _statusBarMessage;
-        private IWndMain _mainWindow;
+        public const string Cancel = "Cancel";
+        public const string Next = "Next";
+        public const string Prev = "Prev";
+        private static DateTime _startScanningTime;
+        private readonly DispatcherTimer _elapsedTimer;
+        private readonly IWndMain _mainWindow;
         private CurrentAppState _currentState;
+        private SearchProcess _scan;
+        private string _statusBarMessage;
 
         public WndMainVM(IWndMain wnd)
         {
@@ -35,33 +35,17 @@ namespace Searcher.VM
             _elapsedTimer = new DispatcherTimer();
             _elapsedTimer.Interval = new TimeSpan(1000);
             _elapsedTimer.IsEnabled = false;
-            _elapsedTimer.Tick += new EventHandler(ElapsedTimer_Tick);
-        }
-
-        public void Reset()
-        {
-            _scan = AppContext.GetObject<SearchProcess>();
-            _scan.ScanComplete += ScanCompleted;
-            _scan.ProgressChanged += ProgressChanged;
-            _scan.SubScanComplete += SubScanCompleted;
-            _scan.FileWasFound += FileWasFound;
-            _scan.CountingFiles += CountingFiles;
-            _scan.ScanStarted += ScanStarted;
-            CurrentState = CurrentAppState.PendingScanning;
-            StatusBarMessage = "Status: File Scan Pending..";
-            if (ActivityData != null)
-            {
-                ActivityData.Reset();    
-            }            
+            _elapsedTimer.Tick += ElapsedTimer_Tick;
         }
 
         public ScanSettingsPanelVM SearchOptions
         {
             get { return AppContext.SearchSettings as ScanSettingsPanelVM; }
         }
+
         public OptionsPanelVM ProgramOptions { get; set; }
         public ActiveScanPanelVM ActivityData { get; set; }
-        
+
         public CurrentAppState CurrentState
         {
             get { return _currentState; }
@@ -77,7 +61,23 @@ namespace Searcher.VM
             get { return _elapsedTimer.IsEnabled; }
         }
 
+        public ObservableCollection<ScanDataVM> Results
+        {
+            get { return ActivityData.Results; }
+        }
+
+        public string StatusBarMessage
+        {
+            get { return _statusBarMessage; }
+            set
+            {
+                _statusBarMessage = value;
+                OnPropertyChanged("StatusBarMessage");
+            }
+        }
+
         #region Events Processing
+
         private void CountingFiles()
         {
             CurrentState = CurrentAppState.CountingFiles;
@@ -95,7 +95,7 @@ namespace Searcher.VM
         {
             StatusBarMessage = "Scan Complete!";
             CurrentState = CurrentAppState.ScanCompleted;
-            ActivityData.Progress=100;
+            ActivityData.Progress = 100;
             _elapsedTimer.IsEnabled = false;
             if (e.Cancelled)
             {
@@ -103,9 +103,8 @@ namespace Searcher.VM
             }
             else
             {
-                _mainWindow.ScanningCompleted();    
+                _mainWindow.ScanningCompleted();
             }
-            
         }
 
         private void ProgressChanged(int progress)
@@ -127,6 +126,23 @@ namespace Searcher.VM
 
         #endregion
 
+        public void Reset()
+        {
+            _scan = AppContext.GetObject<SearchProcess>();
+            _scan.ScanComplete += ScanCompleted;
+            _scan.ProgressChanged += ProgressChanged;
+            _scan.SubScanComplete += SubScanCompleted;
+            _scan.FileWasFound += FileWasFound;
+            _scan.CountingFiles += CountingFiles;
+            _scan.ScanStarted += ScanStarted;
+            CurrentState = CurrentAppState.PendingScanning;
+            StatusBarMessage = "Status: File Scan Pending..";
+            if (ActivityData != null)
+            {
+                ActivityData.Reset();
+            }
+        }
+
         public void StartScanning()
         {
             _startScanningTime = DateTime.Now;
@@ -141,46 +157,26 @@ namespace Searcher.VM
             _scan.CancelProcessAsync();
         }
 
-        public ObservableCollection<ScanDataVM> Results
-        {
-            get { return ActivityData.Results; }
-        }
-
-        public string StatusBarMessage
-        {
-            get { return _statusBarMessage; }
-            set
-            {
-                _statusBarMessage = value;
-                OnPropertyChanged("StatusBarMessage");
-            }
-        }
-
         public void RemoveResults()
         {
-            var resultArray = Results.ToArray();
-            foreach (var data in resultArray)
+            ScanDataVM[] resultArray = Results.ToArray();
+            foreach (ScanDataVM data in resultArray)
             {
                 try
                 {
                     if (data.Checked)
                     {
                         AppContext.FileSystem.FileDelete(data.FullName);
-                        ActivityData.Results.Remove(data);                        
+                        ActivityData.Results.Remove(data);
                     }
-
                 }
                 catch (Exception ex)
                 {
-                    AppContext.Logger.ErrorFormat("During file deleting error occured!{1}{0}", 
-                        ex, Environment.NewLine);
+                    AppContext.Logger.ErrorFormat("During file deleting error occured!{1}{0}",
+                                                  ex, Environment.NewLine);
                 }
             }
-
         }
-        public const string Cancel = "Cancel";
-        public const string Next = "Next";
-        public const string Prev = "Prev";
 
         private void RefreshActiveScanPanel()
         {
@@ -220,7 +216,7 @@ namespace Searcher.VM
 
         private void ElapsedTimer_Tick(object sender, EventArgs e)
         {
-            var _timeElapsed = DateTime.Now.Subtract(_startScanningTime);
+            TimeSpan _timeElapsed = DateTime.Now.Subtract(_startScanningTime);
             ActivityData.TimeElapsed = _timeElapsed.TotalSeconds;
         }
     }

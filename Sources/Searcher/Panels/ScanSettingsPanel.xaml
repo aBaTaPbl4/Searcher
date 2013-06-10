@@ -1,11 +1,9 @@
 ﻿<UserControl x:Class="Searcher.Panels.ScanSettingsPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             xmlns:vldn="clr-namespace:Searcher.ValidationRules"
-             Height="Auto" Width="Auto" SnapsToDevicePixels="True" 
-             HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:vldn="clr-namespace:Searcher.ValidationRules"
+             Height="Auto" Width="Auto" SnapsToDevicePixels="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
              FontFamily="Arial">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -13,7 +11,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250" />
@@ -25,46 +23,51 @@
                     Computer Scan
                 </TextBlock>
                 <Image Margin="10,20" Width="160" Height="160" Source="/Images/monitor.png" />
-                <TextBlock FontSize="13" FontWeight="Normal" 
-                           Width="Auto" Margin="10" TextAlignment="Left" 
+                <TextBlock FontSize="13" FontWeight="Normal" Width="Auto" Margin="10" TextAlignment="Left"
                            VerticalAlignment="Top" TextWrapping="WrapWithOverflow">
                     After some time the use of a computer, the hard drive becomes haphazard file storage. In such circumstances it is very difficult to find anything. But there is a way out of this difficult situation. Searcher helps you! Just sit back, sipping a Coke, and at this time Secher will work for you.
                 </TextBlock>
             </StackPanel>
-            <Line DockPanel.Dock="Right" Y1="0" Y2="500" 
-                  Stroke="DarkGray" Width="0.5" 
-                  VerticalAlignment="Stretch" />
+            <Line DockPanel.Dock="Right" Y1="0" Y2="500" Stroke="DarkGray" Width="0.5" VerticalAlignment="Stretch" />
         </DockPanel>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="44" />
             </Grid.RowDefinitions>
-            <StackPanel Name="stkCheckPanel" Grid.Row="0" Margin="30,6" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <StackPanel Name="stkCheckPanel" Grid.Row="0" Margin="30,6" VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch">
                 <TextBlock Margin="8" FontFamily="Arial" FontSize="20" FontWeight="Bold" Text="Scan Options" />
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Folder:" />
-                <DockPanel Margin ="8 0 8 0" LastChildFill="True">
-                    <Button Name="btnChoseFolder"  MaxHeight="20" 
-                            HorizontalAlignment="Right" Style="{StaticResource ResourceKey=SquareButton}" DockPanel.Dock="Right" Click="btnChoseFolder_Click" >
-                        <TextBlock VerticalAlignment="Center">...</TextBlock></Button>
-                    <TextBox Name="txtFolder" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Stretch" Text="{Binding Path=FolderToScan, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" DockPanel.Dock="Left" />
+                <DockPanel Margin="8 0 8 0" LastChildFill="True">
+                    <Button Name="btnChoseFolder" MaxHeight="20" HorizontalAlignment="Right"
+                            Style="{StaticResource ResourceKey=SquareButton}" DockPanel.Dock="Right" Click="btnChoseFolder_Click">
+                        <TextBlock VerticalAlignment="Center">...</TextBlock>
+                    </Button>
+                    <TextBox Name="txtFolder" FontFamily="Arial" FontWeight="Bold" HorizontalAlignment="Stretch"
+                             Text="{Binding Path=FolderToScan, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                             DockPanel.Dock="Left" />
                 </DockPanel>
-                <CheckBox Name="chkRecursive" Margin="8, 8, 8, 0" IsChecked= "{Binding Path=RecursiveScan}" >Seach in subdirectories</CheckBox>
+                <CheckBox Name="chkRecursive" Margin="8, 8, 8, 0" IsChecked="{Binding Path=RecursiveScan}">
+                    Seach in subdirectories
+                </CheckBox>
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File name:" />
-                <TextBox Name="txtFileName" Margin="8 0 8 8" FontFamily="Arial" FontWeight="Bold"  Text="{Binding Path=FileNameSearchPattern, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"  />
-                <DockPanel Margin ="8 0 8 0" LastChildFill="False">
-                    <RadioButton Name="rbnOR"  Margin="20 0" GroupName="Cond" Content="OR" IsThreeState="False" DockPanel.Dock="Left" IsChecked="{Binding Path=OrLink}"/>
-                    <RadioButton Name="rbnAND" Margin="20 0" GroupName="Cond" Content="AND" IsThreeState="False" IsEnabled="False" DockPanel.Dock="Right"/>
+                <TextBox Name="txtFileName" Margin="8 0 8 8" FontFamily="Arial" FontWeight="Bold"
+                         Text="{Binding Path=FileNameSearchPattern, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" />
+                <DockPanel Margin="8 0 8 0" LastChildFill="False">
+                    <RadioButton Name="rbnOR" Margin="20 0" GroupName="Cond" Content="OR" IsThreeState="False"
+                                 DockPanel.Dock="Left" IsChecked="{Binding Path=OrLink}" />
+                    <RadioButton Name="rbnAND" Margin="20 0" GroupName="Cond" Content="AND" IsThreeState="False"
+                                 IsEnabled="False" DockPanel.Dock="Right" />
                 </DockPanel>
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File content:" />
-                <TextBox Name="txtFileContent" Margin="8 0 8 0" FontFamily="Arial" FontWeight="Bold" Text="{Binding Path=FileContentSearchPattern}"  />
+                <TextBox Name="txtFileContent" Margin="8 0 8 0" FontFamily="Arial" FontWeight="Bold"
+                         Text="{Binding Path=FileContentSearchPattern}" />
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="File min size(KB):" />
                 <TextBox Name="txtFileSize" Margin="8 0 8 0" FontFamily="Arial" FontWeight="Bold">
                     <TextBox.Text>
-                        <Binding Path="MinFileSize"
-                                         ValidatesOnExceptions="True"
-                                         UpdateSourceTrigger="PropertyChanged"
-                                         ValidatesOnDataErrors="True">
+                        <Binding Path="MinFileSize" ValidatesOnExceptions="True" UpdateSourceTrigger="PropertyChanged"
+                                 ValidatesOnDataErrors="True">
                             <Binding.ValidationRules>
                                 <vldn:NaturalNumberRule />
                             </Binding.ValidationRules>
@@ -74,23 +77,25 @@
                 <UniformGrid Rows="2" Columns="2" Margin="8 8 8 8">
                     <TextBlock Margin="2 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Changed after:" />
                     <TextBlock Margin="2 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Attributes:" />
-                    <DatePicker Height="25" HorizontalAlignment="Left" Margin="2 0 8 0" Name="dtpMinModificationDate" VerticalAlignment="Stretch" Width="115" Text="{Binding Path=MinModificationDate}"/>
+                    <DatePicker Height="25" HorizontalAlignment="Left" Margin="2 0 8 0" Name="dtpMinModificationDate"
+                                VerticalAlignment="Stretch" Width="115" Text="{Binding Path=MinModificationDate}" />
                     <WrapPanel>
-                        <CheckBox Name="chkHidden" Margin="2,2,2,2" IsChecked= "{Binding Path=IsHidden}" >Hidden</CheckBox>
-                        <CheckBox Name="chkArchieve" Margin="2,2,2,2" IsChecked= "{Binding Path=IsArch}" >Archieve</CheckBox>
-                        <CheckBox Name="chkReadOnly" Margin="2,2,2,2" IsChecked= "{Binding Path=IsReadOnly}" >Read only</CheckBox>
+                        <CheckBox Name="chkHidden" Margin="2,2,2,2" IsChecked="{Binding Path=IsHidden}">Hidden</CheckBox>
+                        <CheckBox Name="chkArchieve" Margin="2,2,2,2" IsChecked="{Binding Path=IsArch}">Archieve</CheckBox>
+                        <CheckBox Name="chkReadOnly" Margin="2,2,2,2" IsChecked="{Binding Path=IsReadOnly}">Read only</CheckBox>
                     </WrapPanel>
                 </UniformGrid>
-                
 
-                
+
                 <TextBlock Margin="8 8 8 0" FontFamily="Arial" FontWeight="Bold" Text="Plugin to use:" />
-                <StackPanel Margin="8 0 8 0" HorizontalAlignment="Stretch" >
-                    <ListBox Name="lstPlugins" Style="{StaticResource RadioButtonListStyle}" ItemsSource="{Binding Path=ExternalPlugins}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">
+                <StackPanel Margin="8 0 8 0" HorizontalAlignment="Stretch">
+                    <ListBox Name="lstPlugins" Style="{StaticResource RadioButtonListStyle}"
+                             ItemsSource="{Binding Path=ExternalPlugins}" DisplayMemberPath="Name" SelectionChanged="lstPlugins_SelectionChanged">
                     </ListBox>
                 </StackPanel>
             </StackPanel>
-            <Button Name="btnScanStart" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right" Margin="2,2,25,2" Foreground="#FCFCFC" >
+            <Button Name="btnScanStart" Grid.Row="1" Width="100" Height="30" HorizontalAlignment="Right"
+                    Margin="2,2,25,2" Foreground="#FCFCFC">
                 Start
             </Button>
         </Grid>

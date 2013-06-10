@@ -2,12 +2,15 @@
 using System.ComponentModel;
 using System.Windows;
 
-
 namespace Searcher.VM
 {
     public abstract class ViewModel : INotifyPropertyChanged
     {
+        #region INotifyPropertyChanged Members
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
 
         protected void OnPropertyChanged(String info)
         {

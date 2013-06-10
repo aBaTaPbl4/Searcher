@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Controls;
-using CircularProgressBar;
+﻿using System.Windows.Controls;
 using Searcher.VM;
 
 namespace Searcher.Panels
@@ -10,7 +8,7 @@ namespace Searcher.Panels
     /// </summary>
     public partial class ActiveScanPanel : UserControl
     {
-        private ActiveScanPanelVM _data;
+        private readonly ActiveScanPanelVM _data;
 
         public ActiveScanPanel()
         {
@@ -23,6 +21,5 @@ namespace Searcher.Panels
         {
             get { return _data; }
         }
-
     }
 }

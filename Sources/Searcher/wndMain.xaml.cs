@@ -1,18 +1,13 @@
 ﻿#region Directives
+
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
-using Common;
-using Models;
-using System.Windows.Controls.Primitives;
 using System.Windows.Controls;
-using System.Windows.Media.Imaging;
-using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.ComponentModel;
-using System.Windows.Threading;
-using System.Threading;
+using System.Windows.Media.Imaging;
+using Common;
 using Searcher.Implementation;
 using Searcher.Panels;
 using Searcher.VM;
@@ -24,22 +19,23 @@ namespace Searcher
 {
     public partial class WndMain : Window, IWndMain
     {
-
         #region Fields
-        ScanSettingsPanel _pnlScanSettings;
-        OptionsPanel _pnlOptions;
-        HelpPanel _pnlHelp;
-        ActiveScanPanel _pnlActiveScan;
-        ScanResultsPanel _pnlScanResults;
-        WndMainVM _vm;
-        BitmapImage _bmpMonitor;
-        BitmapImage _bmpOptions;
-        BitmapImage _bmpAbout;        
+
         private readonly ILog _logger;
-        
+        private BitmapImage _bmpAbout;
+        private BitmapImage _bmpMonitor;
+        private BitmapImage _bmpOptions;
+        private ActiveScanPanel _pnlActiveScan;
+        private HelpPanel _pnlHelp;
+        private OptionsPanel _pnlOptions;
+        private ScanResultsPanel _pnlScanResults;
+        private ScanSettingsPanel _pnlScanSettings;
+        private WndMainVM _vm;
+
         #endregion
-        
+
         #region Constructor
+
         public WndMain()
         {
             InitializeComponent();
@@ -47,9 +43,9 @@ namespace Searcher
             InitFields();
             DataContext = _vm;
         }
+
         #endregion
 
-         
         #region Overrides
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -71,10 +67,11 @@ namespace Searcher
         #endregion
 
         #region Control Events
+
         private void Button_Clicked(object sender, RoutedEventArgs e)
         {
             // panel button actions
-            Button btn = e.OriginalSource as Button;
+            var btn = e.OriginalSource as Button;
             if (btn == null)
                 return;
 
@@ -82,7 +79,7 @@ namespace Searcher
             switch (btn.Name)
             {
                 case "btnScanStart":
-                    if ((string)btn.Content == "Start")
+                    if ((string) btn.Content == "Start")
                     {
                         if (_pnlScanSettings.AllDataValid())
                         {
@@ -92,7 +89,7 @@ namespace Searcher
                         else
                         {
                             MessageBox.Show("Some data is not valid. Folder path is correct?", "Validation Errors",
-                                MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                                            MessageBoxButton.OK, MessageBoxImage.Exclamation);
                         }
                     }
                     break;
@@ -105,12 +102,12 @@ namespace Searcher
                     }
                     else if (btnContent == WndMainVM.Prev)
                     {
-                        ToggleScanSettingsPanel(); 
+                        ToggleScanSettingsPanel();
                     }
                     else
                     {
                         LogInfo("Scan Aborted by User.");
-                        StopScanning();   
+                        StopScanning();
                     }
                     break;
                 case "btnSelectAll":
@@ -133,14 +130,13 @@ namespace Searcher
                     break;
                 case "btnAbout":
                     ShowAboutWindow();
-                    break;                    
+                    break;
             }
-            
         }
 
         private static void OpenLogInNotepad()
         {
-            var logFileName = "log.txt";
+            string logFileName = "log.txt";
             if (AppContext.FileSystem.FileExtists(logFileName))
             {
                 Process.Start("notepad.exe", logFileName);
@@ -154,9 +150,9 @@ namespace Searcher
 
         private void Link_Click(object sender, MouseButtonEventArgs e)
         {
-            Image lnk = (Image)sender;
+            var lnk = (Image) sender;
 
-            if (lnk.Name == "imgAbout" )
+            if (lnk.Name == "imgAbout")
             {
                 // load about form
                 ShowAboutWindow();
@@ -165,13 +161,13 @@ namespace Searcher
 
         private static void ShowAboutWindow()
         {
-            WndAbout w = new WndAbout();
+            var w = new WndAbout();
             w.ShowDialog();
         }
 
         private void ToggleButton_Checked(object sender, RoutedEventArgs e)
         {
-            ToggleButton tb = (ToggleButton)sender;
+            var tb = (ToggleButton) sender;
             if (!tb.IsChecked == true)
             {
                 tb.IsChecked = true;
@@ -180,45 +176,10 @@ namespace Searcher
             ToggleToolBarButtons(tb.Name);
             TogglePanels(tb.Name);
         }
+
         #endregion
 
         #region Helpers
-
-        private void InitFields()
-        {
-            //панель уже добавлена в разметке
-            _pnlScanSettings = (ScanSettingsPanel)grdContainer.Children[0];
-            _pnlOptions = new OptionsPanel();
-            _pnlHelp = new HelpPanel();
-            _pnlActiveScan = new ActiveScanPanel();
-            _pnlScanResults = new ScanResultsPanel(_pnlActiveScan.ViewModel);
-            _vm = new WndMainVM(this);
-            _vm.ActivityData = _pnlActiveScan.ViewModel;
-            _vm.ProgramOptions = _pnlOptions.ViewModel;
-            _bmpMonitor = new BitmapImage(new Uri("/Images/monitor.png", UriKind.Relative));
-            _bmpOptions = new BitmapImage(new Uri("/Images/options.png", UriKind.Relative));
-            _bmpAbout = new BitmapImage(new Uri("/Images/about.png", UriKind.Relative));
-            
-
-            btnRegscan.IsChecked = true;
-            // add the panels
-            grdContainer.Children.Add(_pnlActiveScan);
-            grdContainer.Children.Add(_pnlScanResults);
-            grdContainer.Children.Add(_pnlOptions);
-            grdContainer.Children.Add(_pnlHelp);
-        }
-
-        private void UnLockControls(bool unlocked)
-        {
-            this.stkToolBarPanel.IsEnabled = unlocked;
-            this.grdNonClient.IsEnabled = unlocked;
-        }
-
-
-        private void LogInfo(string entry)
-        {
-            _logger.Info(entry);
-        }
 
         public void ScanningCompleted()
         {
@@ -230,27 +191,61 @@ namespace Searcher
         {
             _pnlActiveScan.btnScanCancel.IsEnabled = true;
             UnLockControls(true);
-            
+        }
+
+        private void InitFields()
+        {
+            //панель уже добавлена в разметке
+            _pnlScanSettings = (ScanSettingsPanel) grdContainer.Children[0];
+            _pnlOptions = new OptionsPanel();
+            _pnlHelp = new HelpPanel();
+            _pnlActiveScan = new ActiveScanPanel();
+            _pnlScanResults = new ScanResultsPanel(_pnlActiveScan.ViewModel);
+            _vm = new WndMainVM(this);
+            _vm.ActivityData = _pnlActiveScan.ViewModel;
+            _vm.ProgramOptions = _pnlOptions.ViewModel;
+            _bmpMonitor = new BitmapImage(new Uri("/Images/monitor.png", UriKind.Relative));
+            _bmpOptions = new BitmapImage(new Uri("/Images/options.png", UriKind.Relative));
+            _bmpAbout = new BitmapImage(new Uri("/Images/about.png", UriKind.Relative));
+
+
+            btnRegscan.IsChecked = true;
+            // add the panels
+            grdContainer.Children.Add(_pnlActiveScan);
+            grdContainer.Children.Add(_pnlScanResults);
+            grdContainer.Children.Add(_pnlOptions);
+            grdContainer.Children.Add(_pnlHelp);
+        }
+
+        private void UnLockControls(bool unlocked)
+        {
+            stkToolBarPanel.IsEnabled = unlocked;
+            grdNonClient.IsEnabled = unlocked;
+        }
+
+
+        private void LogInfo(string entry)
+        {
+            _logger.Info(entry);
         }
 
         public void StopScanning()
         {
             _pnlActiveScan.btnScanCancel.IsEnabled = false;
             _vm.StopScanning();
-            UnLockControls(true);      
+            UnLockControls(true);
         }
 
         public void ToggleScanSettingsPanel()
         {
             _vm.Reset();
             ToggleScanSettingsButton();
-            TogglePanels("btnRegscan");            
+            TogglePanels("btnRegscan");
         }
 
         private void StartScanning()
         {
-            
-            UnLockControls(false);            
+            UnLockControls(false);
             ToggleActiveScanPanel();
             _vm.StartScanning();
         }
@@ -278,7 +273,7 @@ namespace Searcher
                 case "btnRegscan":
                     _pnlScanSettings.Visibility = Visibility.Visible;
                     imgStatusBar.Source = _bmpMonitor;
-                    txtStatusBar.Text = "Status: Scan Pending..";                    
+                    txtStatusBar.Text = "Status: Scan Pending..";
                     break;
                 case "Active":
                     _pnlActiveScan.Visibility = Visibility.Visible;
@@ -310,11 +305,11 @@ namespace Searcher
 
         private void ToggleToolBarButtons(string button)
         {
-            foreach (Object o in this.stkToolBarPanel.Children)
+            foreach (Object o in stkToolBarPanel.Children)
             {
-                if (o.GetType() == typeof(ToggleButton))
+                if (o.GetType() == typeof (ToggleButton))
                 {
-                    ToggleButton t = o as ToggleButton;
+                    var t = o as ToggleButton;
                     if (t.Name != button)
                     {
                         t.IsChecked = false;
@@ -326,6 +321,7 @@ namespace Searcher
                 }
             }
         }
+
         #endregion
     }
 }

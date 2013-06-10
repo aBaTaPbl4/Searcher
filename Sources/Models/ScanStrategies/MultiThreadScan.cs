@@ -1,35 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
-using Common;
 
 namespace Models.ScanStrategies
 {
     public class MultiThreadScan : ScanStrategyBase
     {
-        private class BuildThreadArgs
-        {
-            public ManualResetEvent Handler;
-            public string FolderName;
-        }
-
         protected override bool StartScanInner(SearchProcess search)
         {
             var waitHandles = new List<WaitHandle>();
-            foreach(var folderName in FoldersToScan)
+            foreach (string folderName in FoldersToScan)
             {
                 if (search.IsNeedCancelation)
                 {
                     search.CancelationOccured();
                     return false;
                 }
-                var args = new BuildThreadArgs()
+                var args = new BuildThreadArgs
                                {
                                    Handler = new ManualResetEvent(false),
                                    FolderName = folderName
                                };
                 waitHandles.Add(args.Handler);
-                ThreadPool.QueueUserWorkItem(new WaitCallback(ScanFolderInSeperateThread), args);
+                ThreadPool.QueueUserWorkItem(ScanFolderInSeperateThread, args);
             }
             if (waitHandles.Count > 0)
             {
@@ -46,13 +38,23 @@ namespace Models.ScanStrategies
                 args = buildArgs as BuildThreadArgs;
                 ScanFolder(args.FolderName);
             }
-            finally 
-            {                
+            finally
+            {
                 if (args != null)
                 {
                     args.Handler.Set();
                 }
             }
         }
+
+        #region Nested type: BuildThreadArgs
+
+        private class BuildThreadArgs
+        {
+            public string FolderName;
+            public ManualResetEvent Handler;
+        }
+
+        #endregion
     }
 }

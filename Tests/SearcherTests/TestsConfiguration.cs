@@ -2,15 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using Common;
-using Common.Interfaces;
 using NUnit.Framework;
-using Searcher.VM;
 using SearcherTests;
-using SearcherTests.ObjectsFactory;
-using SearcherTests.ServiceImpls;
-using ServiceImpls;
 using log4net.Config;
-
 
 [SetUpFixture]
 public class TestsConfiguration
@@ -29,7 +23,7 @@ public class TestsConfiguration
         {
             XmlConfigurator.Configure();
             TestHelper.CopyFolder(
-                Path.GetFullPath(@"..\..\..\..\Bin\Plugins"), 
+                Path.GetFullPath(@"..\..\..\..\Bin\Plugins"),
                 _pluginsFolder
                 );
             RestoreTestData();
@@ -60,6 +54,6 @@ public class TestsConfiguration
         if (pm != null)
         {
             pm.Dispose();
-        }   
+        }
     }
 }

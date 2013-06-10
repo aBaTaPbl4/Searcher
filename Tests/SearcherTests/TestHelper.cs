@@ -1,26 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Common;
 using Common.Interfaces;
-
 
 namespace SearcherTests
 {
     public static class TestHelper
     {
-        
-        public static bool ContainsSimilarElement(this ICollection<string> collection, string element)
-        {
-            foreach (var el in collection)
-            {
-                if (el.ContainsIgnoreCase(element))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        public const int FilesInFirstTestDir = 6;
+        public const int DirsInFirstTestFolder = 5;
 
         public static string XmlFileName
         {
@@ -39,10 +27,19 @@ namespace SearcherTests
 
         public static string DeepestFolder
         {
-            get
+            get { return Path.GetFullPath("1"); }
+        }
+
+        public static bool ContainsSimilarElement(this ICollection<string> collection, string element)
+        {
+            foreach (string el in collection)
             {
-                return Path.GetFullPath("1");
+                if (el.ContainsIgnoreCase(element))
+                {
+                    return true;
+                }
             }
+            return false;
         }
 
         public static void CopyFolder(string sourceFolder, string destFolder)
@@ -64,9 +61,6 @@ namespace SearcherTests
                 CopyFolder(folder, dest);
             }
         }
-
-        public const int FilesInFirstTestDir = 6;
-        public const int DirsInFirstTestFolder = 5;
 
         public static ISearchPlugin[] CoreAndXmlPlugin()
         {

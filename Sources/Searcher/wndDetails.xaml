@@ -1,16 +1,13 @@
-﻿<Window x:Class="Searcher.WndDetails"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="wndDetails" Height="400" Width="400"
-        Icon="/Images/monitor.png" 
-        ResizeMode="NoResize"  WindowStartupLocation="CenterScreen" 
-        SnapsToDevicePixels="True" FontFamily="Arial">
+﻿<Window x:Class="Searcher.WndDetails" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="wndDetails" Height="400" Width="400"
+        Icon="/Images/monitor.png" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" SnapsToDevicePixels="True"
+        FontFamily="Arial">
     <Grid>
         <StackPanel Orientation="Vertical" Margin="4">
             <TextBlock FontWeight="DemiBold" Margin="4" Text="File name:" />
             <TextBlock Name="txtFileName" Margin="4" Text="{Binding FileName, Mode=OneTime}" />
             <TextBlock FontWeight="DemiBold" Margin="4" Text="Full name:" />
-            <TextBlock Name="txtFullName" Margin="4" Text="{Binding FullName, Mode=OneTime}"/>
+            <TextBlock Name="txtFullName" Margin="4" Text="{Binding FullName, Mode=OneTime}" />
             <TextBlock FontWeight="DemiBold" Margin="4" Text="Creation Date" />
             <TextBlock Name="txtCreationDate" Margin="4" />
             <TextBlock FontWeight="DemiBold" Margin="4" Text="Modification Date" />

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -9,14 +8,13 @@ using Common.Interfaces;
 
 namespace Searcher.VM
 {
-    
     public class ScanSettingsPanelVM : ISearchSettings, IDataErrorInfo
     {
+        private ObservableCollection<PluginDecoratorVM> _externalPlugins;
         private string _fileNameSearchPattern;
+        private IFileSystem _fileSystem;
         private string _folderToScan;
         private IPluginManager _pluginManager;
-        private IFileSystem _fileSystem;
-        private ObservableCollection<PluginDecoratorVM> _externalPlugins;
 
         public ScanSettingsPanelVM()
         {
@@ -32,63 +30,6 @@ namespace Searcher.VM
         }
 
         public bool OrLink { get; set; }
-        public bool? IsHidden { get; set; }
-        public bool? IsArch { get; set; }
-        public bool? IsReadOnly{ get; set; }
-        public bool RecursiveScan { get; set; }
-
-        public virtual DateTime MinModificationDate { get; set; }
-
-        /// <summary>
-        /// Минимальный размер файла в кб
-        /// </summary>
-        public int MinFileSize { get; set; }
-
-        public virtual string FileNameSearchPattern
-        {
-            get { return _fileNameSearchPattern; }
-            set
-            {
-                _fileNameSearchPattern = value;
-            }
-        }
-
-        public virtual string FolderToScan
-        {
-            get
-            {
-                return _folderToScan;
-            }
-            set
-            {
-                _folderToScan = value;
-            }
-        }
-
-        public virtual string FileContentSearchPattern { get; set; }
-
-        public void SetActivePlugin(PluginDecoratorVM activePlugin)
-        {
-            foreach (var curPlugin in ExternalPlugins)
-            {
-                if (curPlugin == activePlugin)
-                {
-                    curPlugin.IsActive = true;
-                }
-                else
-                {
-                    curPlugin.IsActive = false;
-                }
-            }
-        }
-
-        public virtual ISearchPlugin[] ActivePlugins
-        {
-            get
-            {
-                return ExternalPlugins.Where(x => x.IsActive).Select(x=>x.Plugin).Union(PluginManager.CorePlugins).ToArray();
-            }
-        }
 
         public ObservableCollection<PluginDecoratorVM> ExternalPlugins
         {
@@ -116,28 +57,6 @@ namespace Searcher.VM
             set { _pluginManager = value; }
         }
 
-        public void InitPlugins()
-        {
-            _externalPlugins = new ObservableCollection<PluginDecoratorVM>();
-
-            foreach (var plugin in PluginManager.ExternalPlugins)
-            {
-                _externalPlugins.Add(new PluginDecoratorVM()
-                {
-                    IsActive = false,
-                    Plugin = plugin
-                });
-            }    
-        }
-
-        public override string ToString()
-        {
-            return
-                string.Format(
-                    "Settings:{0}FileNamePattern='{1}'{0}FileContentPattern='{2}'{0}",
-                    Environment.NewLine, FileNameSearchPattern, FileContentSearchPattern);
-        }
-
         public IFileSystem FileSystem
         {
             get
@@ -151,14 +70,16 @@ namespace Searcher.VM
             set { _fileSystem = value; }
         }
 
+        #region IDataErrorInfo Members
+
         public string this[string name]
         {
-            get 
-            { 
+            get
+            {
                 string result = null;
                 if (name == "FileNameSearchPattern")
                 {
-                    foreach (var wrongChar in Path.GetInvalidPathChars())
+                    foreach (char wrongChar in Path.GetInvalidPathChars())
                     {
                         if (_fileNameSearchPattern.IsNullOrEmpty())
                         {
@@ -177,12 +98,12 @@ namespace Searcher.VM
                         return null;
                     }
 
-                    bool folderIsNotExists = !this._folderToScan.IsNullOrEmpty() &&
-                                             !FileSystem.DirectoryExists(this._folderToScan);
+                    bool folderIsNotExists = !_folderToScan.IsNullOrEmpty() &&
+                                             !FileSystem.DirectoryExists(_folderToScan);
                     if (folderIsNotExists)
                     {
-                        result = String.Format("Directory '{0}' does not exists!", this._folderToScan);
-                    }               
+                        result = String.Format("Directory '{0}' does not exists!", _folderToScan);
+                    }
                 }
                 return result;
             }
@@ -191,6 +112,85 @@ namespace Searcher.VM
         public string Error
         {
             get { return null; }
+        }
+
+        #endregion
+
+        #region ISearchSettings Members
+
+        public bool? IsHidden { get; set; }
+        public bool? IsArch { get; set; }
+        public bool? IsReadOnly { get; set; }
+        public bool RecursiveScan { get; set; }
+
+        public virtual DateTime MinModificationDate { get; set; }
+
+        /// <summary>
+        /// Минимальный размер файла в кб
+        /// </summary>
+        public int MinFileSize { get; set; }
+
+        public virtual string FileNameSearchPattern
+        {
+            get { return _fileNameSearchPattern; }
+            set { _fileNameSearchPattern = value; }
+        }
+
+        public virtual string FolderToScan
+        {
+            get { return _folderToScan; }
+            set { _folderToScan = value; }
+        }
+
+        public virtual string FileContentSearchPattern { get; set; }
+
+        public virtual ISearchPlugin[] ActivePlugins
+        {
+            get
+            {
+                return
+                    ExternalPlugins.Where(x => x.IsActive).Select(x => x.Plugin).Union(PluginManager.CorePlugins).
+                        ToArray();
+            }
+        }
+
+        #endregion
+
+        public void SetActivePlugin(PluginDecoratorVM activePlugin)
+        {
+            foreach (PluginDecoratorVM curPlugin in ExternalPlugins)
+            {
+                if (curPlugin == activePlugin)
+                {
+                    curPlugin.IsActive = true;
+                }
+                else
+                {
+                    curPlugin.IsActive = false;
+                }
+            }
+        }
+
+        public void InitPlugins()
+        {
+            _externalPlugins = new ObservableCollection<PluginDecoratorVM>();
+
+            foreach (ISearchPlugin plugin in PluginManager.ExternalPlugins)
+            {
+                _externalPlugins.Add(new PluginDecoratorVM
+                                         {
+                                             IsActive = false,
+                                             Plugin = plugin
+                                         });
+            }
+        }
+
+        public override string ToString()
+        {
+            return
+                string.Format(
+                    "Settings:{0}FileNamePattern='{1}'{0}FileContentPattern='{2}'{0}",
+                    Environment.NewLine, FileNameSearchPattern, FileContentSearchPattern);
         }
     }
 }

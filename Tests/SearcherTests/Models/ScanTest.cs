@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common;
+﻿using System.Collections.Generic;
 using Common.Interfaces;
 using Models;
 using Models.ScanStrategies;
@@ -14,11 +10,7 @@ namespace SearcherTests.Models
     [TestFixture]
     public abstract class ScanTest
     {
-        private SearchProcess _process;
-        protected ScanStrategyBase _scanStrategy;
-        private List<string> _foundFiles;
-
-        protected abstract ScanStrategyBase CreateStrategy();
+        #region Setup/Teardown
 
         [SetUp]
         public void Setup()
@@ -32,6 +24,14 @@ namespace SearcherTests.Models
             _foundFiles = new List<string>();
         }
 
+        #endregion
+
+        private SearchProcess _process;
+        protected ScanStrategyBase _scanStrategy;
+        private List<string> _foundFiles;
+
+        protected abstract ScanStrategyBase CreateStrategy();
+
         [TestCase("7z", "", 1)]
         [TestCase("test.txt", "", 2)]
         [TestCase("note", "", 2)]
@@ -39,17 +39,19 @@ namespace SearcherTests.Models
         [TestCase("", "note", TestHelper.FilesInFirstTestDir)]
         public void ScanOnlyByFileNamesTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            var settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(filePattern, fileContentPattern);
-            
+            ISearchSettings settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(filePattern,
+                                                                                              fileContentPattern);
+
             _scanStrategy.SearchSettings = settings;
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
-        
+
         [TestCase("", "note", 1, true)]
         [TestCase("", "tagotest", 0, true)]
         [TestCase("", "NativeError", 1, false)]
-        public void ScanWithPluginsTest(string filePattern, string fileContentPattern, int expectedMatchesCount, bool xmlPluginNeeded )
+        public void ScanWithPluginsTest(string filePattern, string fileContentPattern, int expectedMatchesCount,
+                                        bool xmlPluginNeeded)
         {
             ISearchPlugin[] activePlugins;
             if (xmlPluginNeeded)
@@ -60,10 +62,10 @@ namespace SearcherTests.Models
             {
                 activePlugins = TestHelper.CoreAndTypePlugin();
             }
-            _scanStrategy.SearchSettings = 
+            _scanStrategy.SearchSettings =
                 TestsConfiguration.ObjectsFactory.CreateSearchSettings(
-                                    filePattern,fileContentPattern, 
-                                    false, activePlugins);
+                    filePattern, fileContentPattern,
+                    false, activePlugins);
 
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);

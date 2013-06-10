@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Common.Interfaces;
 using Models;
 using Models.ScanStrategies;
@@ -12,12 +9,15 @@ namespace SearcherTests.ObjectsFactory
 {
     public class UnitTestsObjectsFactory : IObjectsFactory
     {
+        #region IObjectsFactory Members
+
         public void RestoreObjects()
         {
             //Так как тестовые данные для конфигурации моков не меняются, метод останется пустым
         }
 
-        public ISearchSettings CreateSearchSettings(string fileNameSearchPattern, string fileContentSearchPattern, bool isMultithreaded, ISearchPlugin[] activePlugins)
+        public ISearchSettings CreateSearchSettings(string fileNameSearchPattern, string fileContentSearchPattern,
+                                                    bool isMultithreaded, ISearchPlugin[] activePlugins)
         {
             throw new NotImplementedException();
         }
@@ -74,7 +74,8 @@ namespace SearcherTests.ObjectsFactory
             throw new NotImplementedException();
         }
 
-        public IProgramSettings CreateProgramSettings(WorkType tp, int threadsCount, bool logRequired, bool verboseLogRequired)
+        public IProgramSettings CreateProgramSettings(WorkType tp, int threadsCount, bool logRequired,
+                                                      bool verboseLogRequired)
         {
             throw new NotImplementedException();
         }
@@ -83,6 +84,8 @@ namespace SearcherTests.ObjectsFactory
         {
             throw new NotImplementedException();
         }
+
+        #endregion
 
         public IProgramSettings CreateProgramSettings()
         {

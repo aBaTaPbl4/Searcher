@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using Common;
 using Common.Interfaces;
@@ -12,29 +10,30 @@ namespace Models
 {
     public class SearchProcess
     {
-        private BackgroundWorker _worker;
-        private readonly List<ScanData> _foundFiles = new List<ScanData>();
-        private ManualResetEvent _completionSignal = new ManualResetEvent(false);
-        private bool _lastScanResult;
         #region Delegates
-        public delegate void ReportProgressDelegate(int percentsComplete);
-        public delegate void FileFoundDelegate(ScanData foundInfo);        
-        public delegate void SubScanCompleteDelegate(string folderName);
+
+        public delegate void CountingFilesHandler();
+
+        public delegate void FileFoundDelegate(ScanData foundInfo);
+
         public delegate void ProcessCompletedEventHandler(object sender, RunWorkerCompletedEventArgs e);
+
+        public delegate void ReportProgressDelegate(int percentsComplete);
 
         public delegate void ScanStartedHandler();
 
-        public delegate void CountingFilesHandler();
+        public delegate void SubScanCompleteDelegate(string folderName);
+
         #endregion
 
         #region Events
 
         [Description("Occures when progress is changed")]
         public event ReportProgressDelegate ProgressChanged;
-        
+
         [Description("Occurs when file matched to condition has found")]
         public event FileFoundDelegate FileWasFound;
-        
+
         [Description("Occurs when subfolder scan completed")]
         public event SubScanCompleteDelegate SubScanComplete;
 
@@ -47,7 +46,26 @@ namespace Models
         [Description("Occurs when scan fisicaly begins")]
         public event ScanStartedHandler ScanStarted;
 
-#region call by strategy to notify ui
+        private void RaiseFileWasFound(ScanData fileInfo)
+        {
+            if (FileWasFound != null)
+            {
+                FileWasFound(fileInfo);
+            }
+        }
+
+
+        private void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (ScanComplete != null)
+            {
+                ScanComplete(this, e);
+            }
+            //IsNeedCancelation = false;
+            _completionSignal.Set();
+        }
+
+        #region call by strategy to notify ui
 
         internal void RaiseProgressChanged(int currentProgress)
         {
@@ -81,46 +99,51 @@ namespace Models
             }
         }
 
-#endregion
-
-        private void RaiseFileWasFound(ScanData fileInfo)
-        {
-            if (FileWasFound != null)
-            {
-                FileWasFound(fileInfo);
-            }
-        }
-
-
-        private void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (ScanComplete != null)
-            {
-                ScanComplete(this, e);
-            }
-            //IsNeedCancelation = false;
-            _completionSignal.Set();
-        }
         #endregion
 
-        public string Folder{ get; set; }
+        #endregion
+
+        private readonly ManualResetEvent _completionSignal = new ManualResetEvent(false);
+        private readonly List<ScanData> _foundFiles = new List<ScanData>();
+        private DoWorkEventArgs _currentArgs;
+        private BackgroundWorker _worker;
+
+        public string Folder { get; set; }
 
         public ScanData[] FoundFiles
         {
             get { return _foundFiles.ToArray(); }
         }
 
+
+        public ScanStrategyBase ScanStrategy { get; set; }
+
+        public int FilesProcessed
+        {
+            get { return ScanStrategy.FileProcessed; }
+        }
+
+        public virtual bool IsNeedCancelation
+        {
+            get { return _worker.CancellationPending; }
+        }
+
+        public bool LastScanResult { get; private set; }
+
+        public ISearchSettings Settings
+        {
+            get { return ScanStrategy.SearchSettings; }
+            set { ScanStrategy.SearchSettings = value; }
+        }
+
         internal void AddFoundFile(ScanData fileInfo)
         {
-            lock(_foundFiles)
+            lock (_foundFiles)
             {
                 _foundFiles.Add(fileInfo);
                 RaiseFileWasFound(fileInfo);
             }
         }
-
-
-        public ScanStrategyBase ScanStrategy { get; set; }
 
         public void StartScanAsync()
         {
@@ -134,21 +157,8 @@ namespace Models
             _worker.WorkerSupportsCancellation = true;
             _worker.DoWork += DoWork;
             _worker.RunWorkerCompleted += RaiseScanCompleted;
-            _worker.Disposed += new EventHandler(WorkerDisposed);
+            _worker.Disposed += WorkerDisposed;
             _worker.RunWorkerAsync();
-        }
-
-        public int FilesProcessed
-        {
-            get { return ScanStrategy.FileProcessed; }
-        }
-
-        public virtual bool IsNeedCancelation
-        {
-            get
-            {
-                return _worker.CancellationPending;
-            }
         }
 
         public void CancelProcessAsync()
@@ -172,14 +182,6 @@ namespace Models
             _completionSignal.WaitOne();
             return LastScanResult;
         }
-
-        public bool LastScanResult
-        {
-            get { return _lastScanResult; }
-            private set { _lastScanResult = value; }
-        }
-
-        private DoWorkEventArgs _currentArgs;
 
         public virtual void CancelationOccured()
         {
@@ -214,7 +216,6 @@ namespace Models
             {
                 _worker.Dispose();
             }
-            
         }
 
         private void WorkerDisposed(object sender, EventArgs e)
@@ -224,15 +225,12 @@ namespace Models
             _worker = null;
         }
 
-        public ISearchSettings Settings
-        {
-            get { return ScanStrategy.SearchSettings; }
-            set { ScanStrategy.SearchSettings = value; }
-        }
+        #region Nested type: StopProcessingException
 
         private class StopProcessingException : Exception
         {
         }
 
+        #endregion
     }
 }

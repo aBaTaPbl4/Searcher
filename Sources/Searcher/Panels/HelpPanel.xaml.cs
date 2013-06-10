@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows.Controls;
-using Common;
+﻿using System.Windows.Controls;
 
 namespace Searcher.Panels
 {
@@ -13,6 +11,5 @@ namespace Searcher.Panels
         {
             InitializeComponent();
         }
-
     }
 }

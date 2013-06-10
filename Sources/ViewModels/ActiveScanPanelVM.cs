@@ -1,22 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace Searcher.VM
 {
     public class ActiveScanPanelVM : ViewModel
     {
-        private int _matchesCount;
-        private string _lastMatch;
+        private string _actionButtonText;
         private int _folderCountScanned;
+        private string _lastMatch;
+        private string _lastScanedFolder;
+        private int _matchesCount;
         private int _progress;
         private int _progressMax;
         private double _timeElapsed;
-        private string _lastScanedFolder;
-        private string _actionButtonText;
 
         public ActiveScanPanelVM()
         {
@@ -44,7 +40,7 @@ namespace Searcher.VM
             }
         }
 
-        
+
         public int FolderCountScanned
         {
             get { return _folderCountScanned; }
@@ -105,16 +101,16 @@ namespace Searcher.VM
             }
         }
 
-        public ObservableCollection<ScanDataVM> Results{ get; private set; }
+        public ObservableCollection<ScanDataVM> Results { get; private set; }
 
         public void AddFoundData(ScanDataVM data)
         {
             Action act = () =>
-                          {
-                              Results.Add(data);
-                              MatchesCount++;
-                              LastMatch = data.FileName;
-                          };
+                             {
+                                 Results.Add(data);
+                                 MatchesCount++;
+                                 LastMatch = data.FileName;
+                             };
             InvokeInUIThread(act);
         }
 
@@ -139,11 +135,10 @@ namespace Searcher.VM
 
         public void CheckResults(bool value)
         {
-            foreach (var scanDataVM in Results)
+            foreach (ScanDataVM scanDataVM in Results)
             {
                 scanDataVM.Checked = value;
             }
         }
-
     }
 }

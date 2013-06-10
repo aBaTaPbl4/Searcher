@@ -20,16 +20,16 @@ namespace SearcherTests.ObjectsFactory
     /// </summary>
     public class SystemTestsObjectsFactory : IObjectsFactory
     {
+        [Required]
+        public IPluginManager PluginManager { get; set; }
+
+        #region IObjectsFactory Members
+
         public void RestoreObjects()
         {
-            var sourcePath = Path.Combine(Environment.CurrentDirectory, "TestData");
-            var destPath = Environment.CurrentDirectory;
+            string sourcePath = Path.Combine(Environment.CurrentDirectory, "TestData");
+            string destPath = Environment.CurrentDirectory;
             TestHelper.CopyFolder(sourcePath, destPath);
-        }
-
-        public IProgramSettings CreateProgramSettings()
-        {
-            return CreateProgramSettings(WorkType.SingleThread);
         }
 
         public IProgramSettings CreateProgramSettings(WorkType tp = WorkType.SingleThread, int threadsCount = 0,
@@ -41,7 +41,6 @@ namespace SearcherTests.ObjectsFactory
             settings.Stub(x => x.EnableLogging).Return(logRequired);
             settings.Stub(x => x.VerboseLogging).Return(verboseLogRequired);
             return settings;
-
         }
 
         public SearchProcess CreateSearchProcess()
@@ -49,31 +48,22 @@ namespace SearcherTests.ObjectsFactory
             return MockRepository.GeneratePartialMock<SearchProcess>();
         }
 
-        public  ISearchSettings CreateSearchSettings()
-        {
-            return CreateSearchSettings("note.");
-        }
-
-        public  ISearchSettings CreateSearchSettings(string fileNameSearchPattern = "note.",
+        public ISearchSettings CreateSearchSettings(string fileNameSearchPattern = "note.",
                                                     string fileContentSearchPattern = "note",
                                                     bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
         {
-
             var settings = MockRepository.GeneratePartialMock<ScanSettingsPanelVM>();
             settings.FolderToScan = TestHelper.DeepestFolder;
             settings.FileNameSearchPattern = fileNameSearchPattern;
             settings.FileContentSearchPattern = fileContentSearchPattern;
             if (activePlugins != null)
             {
-                settings.Stub(x => x.ActivePlugins).Return(activePlugins);    
+                settings.Stub(x => x.ActivePlugins).Return(activePlugins);
             }
-            
-            return settings;            
+
+            return settings;
         }
 
-        [Required]
-        public IPluginManager PluginManager { get; set; }
-        
         public IFileSystem CreateFileSystem()
         {
             return AppContext.FileSystem;
@@ -124,5 +114,16 @@ namespace SearcherTests.ObjectsFactory
             return new SearchByTypePlugin();
         }
 
+        #endregion
+
+        public IProgramSettings CreateProgramSettings()
+        {
+            return CreateProgramSettings(WorkType.SingleThread);
+        }
+
+        public ISearchSettings CreateSearchSettings()
+        {
+            return CreateSearchSettings("note.");
+        }
     }
 }

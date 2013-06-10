@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Common.Interfaces;
+﻿using Common.Interfaces;
 
 namespace Searcher.VM
 {
@@ -13,7 +9,7 @@ namespace Searcher.VM
     {
         private bool _isActive;
         public ISearchPlugin Plugin { get; set; }
-        
+
         public bool IsActive
         {
             get { return _isActive; }
@@ -28,6 +24,5 @@ namespace Searcher.VM
         {
             get { return Plugin.Name; }
         }
-        
     }
 }

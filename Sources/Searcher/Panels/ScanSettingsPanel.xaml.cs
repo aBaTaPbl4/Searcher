@@ -1,8 +1,9 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using Searcher.VM;
 using Common;
+using Searcher.VM;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace Searcher.Panels
@@ -17,7 +18,7 @@ namespace Searcher.Panels
         public ScanSettingsPanel()
         {
             InitializeComponent();
-            if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(this))
+            if (!DesignerProperties.GetIsInDesignMode(this))
             {
                 _data = AppContext.GetObject<ScanSettingsPanelVM>();
                 _data.InitPlugins();
@@ -25,9 +26,14 @@ namespace Searcher.Panels
             DataContext = _data;
         }
 
+        public ScanSettingsPanelVM ViewModel
+        {
+            get { return _data; }
+        }
+
         private void btnChoseFolder_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            var dialog = new FolderBrowserDialog();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 txtFolder.Text = dialog.SelectedPath;
@@ -40,15 +46,9 @@ namespace Searcher.Panels
             _data.SetActivePlugin(itm);
         }
 
-        public ScanSettingsPanelVM ViewModel
-        {
-            get { return _data; }
-        }
-
         public bool AllDataValid()
         {
             return this.IsValid() && !_data.FolderToScan.IsNullOrEmpty();
         }
-
     }
 }

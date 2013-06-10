@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Common;
 using Common.Interfaces;
-using log4net;
 
 namespace ServiceImpls
 {
@@ -18,8 +16,8 @@ namespace ServiceImpls
     /// </summary>
     public class PluginManager : IPluginManager, IDisposable
     {
-        private List<ISearchPlugin> _externalPlugins;
-        private List<ISearchPlugin> _corePlugins;
+        private readonly List<ISearchPlugin> _corePlugins;
+        private readonly List<ISearchPlugin> _externalPlugins;
         private AppDomain _privateDomain;
 
         public PluginManager()
@@ -53,6 +51,23 @@ namespace ServiceImpls
             }
         }
 
+        public IFileSystem FileSystem { get; set; }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            if (_privateDomain != null)
+            {
+                AppDomain.Unload(_privateDomain);
+                _privateDomain = null;
+            }
+        }
+
+        #endregion
+
+        #region IPluginManager Members
+
         public ISearchPlugin[] ExternalPlugins
         {
             get { return _externalPlugins.ToArray(); }
@@ -74,12 +89,12 @@ namespace ServiceImpls
             }
         }
 
-        public IFileSystem FileSystem { get; set; }
+        #endregion
 
-        Assembly LoadAssemblyToDomainIfNeeded(AppDomain domain, AssemblyName asmInfo)
+        private Assembly LoadAssemblyToDomainIfNeeded(AppDomain domain, AssemblyName asmInfo)
         {
-            var loadedAssemblyNames = (from a in domain.GetAssemblies()
-                                       select a.FullName).ToArray();
+            string[] loadedAssemblyNames = (from a in domain.GetAssemblies()
+                                            select a.FullName).ToArray();
             Assembly asm = null;
             if (!loadedAssemblyNames.Contains(asmInfo.FullName))
             {
@@ -90,9 +105,9 @@ namespace ServiceImpls
 
         public void ScanPluginsFolder()
         {
-            var pluginFiles = FileSystem.GetFiles("Plugins");
-            
-            foreach (var pluginFileName in pluginFiles)
+            List<string> pluginFiles = FileSystem.GetFiles("Plugins");
+
+            foreach (string pluginFileName in pluginFiles)
             {
                 try
                 {
@@ -100,23 +115,23 @@ namespace ServiceImpls
                     {
                         continue;
                     }
-                    var asmInfo = FileSystem.GetAssemblyInfo(pluginFileName);
+                    AssemblyName asmInfo = FileSystem.GetAssemblyInfo(pluginFileName);
                     if (asmInfo == null)
                     {
                         continue;
                     }
-                    
-                    var asm = LoadAssemblyToDomainIfNeeded(PrivateDomain, asmInfo);
+
+                    Assembly asm = LoadAssemblyToDomainIfNeeded(PrivateDomain, asmInfo);
                     bool pluginAlredyLoaded = asm == null;
                     if (pluginAlredyLoaded)
                     {
                         continue;
                     }
 
-                    var pluginTypes = (from t in asm.GetTypes()
-                                      where t.IsClass && t.GetInterfaces().Contains(typeof (ISearchPlugin))
-                                      select t).ToArray();
-                    foreach (var pluginType in pluginTypes)
+                    Type[] pluginTypes = (from t in asm.GetTypes()
+                                          where t.IsClass && t.GetInterfaces().Contains(typeof (ISearchPlugin))
+                                          select t).ToArray();
+                    foreach (Type pluginType in pluginTypes)
                     {
                         var plug = (ISearchPlugin) Activator.CreateInstance(pluginType);
                         if (plug.IsCorePlugin)
@@ -125,28 +140,17 @@ namespace ServiceImpls
                         }
                         else
                         {
-                            _externalPlugins.Add(plug);    
+                            _externalPlugins.Add(plug);
                         }
-                        
                     }
-
                 }
                 catch (Exception ex)
                 {
-                    AppContext.Logger.ErrorFormat("ScanPluginsFolder:During load plugin from assembly '{0}', error occured: {1}",
+                    AppContext.Logger.ErrorFormat(
+                        "ScanPluginsFolder:During load plugin from assembly '{0}', error occured: {1}",
                         pluginFileName, ex);
                 }
             }
         }
-
-        public void Dispose()
-        {            
-            if (_privateDomain != null )
-            {
-                AppDomain.Unload(_privateDomain);
-                _privateDomain = null;
-            }
-        }
-
     }
 }

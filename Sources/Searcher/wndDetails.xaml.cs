@@ -9,12 +9,13 @@ namespace Searcher
     public partial class WndDetails : Window
     {
         private ScanDataVM _data;
+
         public WndDetails()
         {
             InitializeComponent();
         }
 
-        
+
         public ScanDataVM Data
         {
             get { return _data; }

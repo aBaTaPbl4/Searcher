@@ -10,7 +10,7 @@ namespace Searcher.Implementation
             FilePath = path;
         }
 
-        public string FilePath {get; set;}
+        public string FilePath { get; set; }
 
         public void WriteLine(string message)
         {
@@ -21,7 +21,9 @@ namespace Searcher.Implementation
                 writeStream.Flush();
                 writeStream.Close();
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public void WriteLog(string message)
@@ -39,8 +41,11 @@ namespace Searcher.Implementation
                 writeStream.Flush();
                 writeStream.Close();
             }
-            catch { }
+            catch
+            {
+            }
         }
+
         public string FetchLog()
         {
             string line = String.Empty;
@@ -57,7 +62,9 @@ namespace Searcher.Implementation
                 }
                 readStream.Close();
             }
-            catch { }
+            catch
+            {
+            }
             return line;
         }
     }

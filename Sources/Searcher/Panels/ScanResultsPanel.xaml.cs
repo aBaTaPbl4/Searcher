@@ -1,9 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using Common;
 using Searcher.VM;
 
@@ -11,7 +8,7 @@ namespace Searcher.Panels
 {
     public partial class ScanResultsPanel : UserControl
     {
-        private ActiveScanPanelVM _scanData;
+        private readonly ActiveScanPanelVM _scanData;
 
         public ScanResultsPanel(ActiveScanPanelVM scanData)
         {
@@ -21,10 +18,10 @@ namespace Searcher.Panels
 
         private void MenuItem_Clicked(object sender, RoutedEventArgs e)
         {
-            MenuItem m = (MenuItem)sender;
+            var m = (MenuItem) sender;
             if (m != null)
             {
-                ScanDataVM s = (ScanDataVM)lstResults.Items.CurrentItem;
+                var s = (ScanDataVM) lstResults.Items.CurrentItem;
                 if (s != null)
                 {
                     //todo:add delete files
@@ -57,8 +54,8 @@ namespace Searcher.Panels
                             }
                         case "Item Details":
                             {
-                                WndDetails wndData = new WndDetails();
-                                wndData.Data = (ScanDataVM)lstResults.Items.CurrentItem;
+                                var wndData = new WndDetails();
+                                wndData.Data = (ScanDataVM) lstResults.Items.CurrentItem;
                                 wndData.ShowDialog();
                                 break;
                             }
@@ -85,6 +82,5 @@ namespace Searcher.Panels
             }
             Process.Start("explorer.exe", argument);
         }
-
     }
 }

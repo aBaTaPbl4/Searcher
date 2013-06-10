@@ -6,7 +6,6 @@ namespace Searcher.ValidationRules
 {
     public class NaturalNumberRule : ValidationRule
     {
-
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             int num = 0;
@@ -16,8 +15,7 @@ namespace Searcher.ValidationRules
 
             if (num < 0)
                 return new ValidationResult(false, "Only positive numbers are valid!");
-            return  new ValidationResult(true, null);
-
+            return new ValidationResult(true, null);
         }
     }
 }

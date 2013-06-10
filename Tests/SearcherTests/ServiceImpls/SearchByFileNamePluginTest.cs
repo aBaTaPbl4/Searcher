@@ -1,20 +1,22 @@
 ﻿using Common.Interfaces;
-using Rhino.Mocks;
 using NUnit.Framework;
-using ServiceImpls;
 
 namespace SearcherTests.ServiceImpls
 {
     [TestFixture]
     public class SearchByFileNamePluginTest
     {
-        private ISearchPlugin _plugin;
+        #region Setup/Teardown
 
         [SetUp]
         public void Setup()
         {
             _plugin = TestsConfiguration.ObjectsFactory.CreateFileNamePlugin();
         }
+
+        #endregion
+
+        private ISearchPlugin _plugin;
 
         [TestCase("note.xml", true)]
         [TestCase("note", true)]
@@ -25,8 +27,8 @@ namespace SearcherTests.ServiceImpls
         [TestCase("note.xmlns", false)]
         public void CheckTest(string fileNamePattern, bool expectedResult)
         {
-            var serv = TestsConfiguration.ObjectsFactory.CreateSearchSettings(fileNamePattern);
-            var actualResult = _plugin.Check(TestHelper.XmlFileName, serv);
+            ISearchSettings serv = TestsConfiguration.ObjectsFactory.CreateSearchSettings(fileNamePattern);
+            bool actualResult = _plugin.Check(TestHelper.XmlFileName, serv);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }
     }

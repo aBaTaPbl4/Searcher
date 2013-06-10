@@ -1,20 +1,22 @@
-﻿using Common;
-using Common.Interfaces;
+﻿using Common.Interfaces;
 using NUnit.Framework;
-using SearchByType;
 
 namespace SearcherTests.ServiceImpls
 {
     [TestFixture]
     public class SearchByTypePluginTest
     {
-        private ISearchPlugin _plugin;
+        #region Setup/Teardown
 
         [SetUp]
         public void Setup()
         {
             _plugin = TestsConfiguration.ObjectsFactory.CreateTypePlugin();
         }
+
+        #endregion
+
+        private ISearchPlugin _plugin;
 
         [TestCase("ILog", false, true)] //interface
         [TestCase("FilterDecision", false, false)] // enum
@@ -24,10 +26,10 @@ namespace SearcherTests.ServiceImpls
         [TestCase("SomeType", true, false)]
         public void CheckTest(string typeToSearch, bool isNative, bool expectedResult)
         {
-            var fileName = isNative ? TestHelper.NativeFileName : TestHelper.AssemblyFileName;
+            string fileName = isNative ? TestHelper.NativeFileName : TestHelper.AssemblyFileName;
 
-            var settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings("", typeToSearch);
-            var actualResult = _plugin.Check(fileName, settings);
+            ISearchSettings settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings("", typeToSearch);
+            bool actualResult = _plugin.Check(fileName, settings);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }
     }
