@@ -14,13 +14,12 @@ namespace ServiceImpls
     public class DirectoryWalker
     {
         private List<string> _subfolders;
-        private string _parentFolder;
         private string _currentFolder;
         private Stack<string> _currentFoldersStack;
 
         public DirectoryWalker(string folderPath)
         {
-            _currentFolder = _parentFolder = folderPath;
+            _currentFolder = folderPath;
             _subfolders = new List<string>();
             _currentFoldersStack = new Stack<string>();
         }
