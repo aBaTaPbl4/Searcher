@@ -2,12 +2,13 @@
 using System.IO;
 using Common;
 using Common.Interfaces;
+using System.Linq;
 
 namespace SearcherTests
 {
     public static class TestHelper
     {
-        public const int FilesInFirstTestDir = 6;
+        public const int FilesInFirstTestDir = 7;
         public const int DirsInFirstTestFolder = 5;
 
         public static string XmlFileName
@@ -62,20 +63,28 @@ namespace SearcherTests
             }
         }
 
-        public static ISearchPlugin[] CoreAndXmlPlugin()
+        private static ISearchPlugin[] GetCoreAndOneExternalPlugin(string externalPluginFileType)
         {
             var lst = new List<ISearchPlugin>();
             lst.AddRange(AppContext.PluginManager.CorePlugins);
-            lst.Add(AppContext.PluginManager.ExternalPlugins[0]);
-            return lst.ToArray();
+            lst.Add(AppContext.PluginManager.ExternalPlugins.
+                Where(x => x.AssociatedFileExtensions.Contains(externalPluginFileType)).Single());
+            return lst.ToArray();            
         }
 
-        public static ISearchPlugin[] CoreAndTypePlugin()
+        public static ISearchPlugin[] GetCoreAndXmlPlugin()
         {
-            var lst = new List<ISearchPlugin>();
-            lst.AddRange(AppContext.PluginManager.CorePlugins);
-            lst.Add(AppContext.PluginManager.ExternalPlugins[1]);
-            return lst.ToArray();
+            return GetCoreAndOneExternalPlugin(".xml");
+        }
+
+        public static ISearchPlugin[] GetCoreAndTypePlugin()
+        {
+            return GetCoreAndOneExternalPlugin(".dll");
+        }
+
+        public static ISearchPlugin[] GetCoreAndTextPlugin()
+        {
+            return GetCoreAndOneExternalPlugin(".txt");
         }
     }
 }

@@ -8,21 +8,16 @@ using Common.Interfaces;
 
 namespace ServiceImpls
 {
-    /// <summary>
-    /// Сканирование папки с плагинами
-    /// Шерстит сборку плагина
-    /// Создает экземпляр плагина
-    /// Хранит в себе набор всех плагинов
-    /// </summary>
     public class PluginManager : IPluginManager, IDisposable
     {
-        private readonly List<ISearchPlugin> _corePlugins;
+        private readonly List<ISearchPlugin> _corePlugins;        
         private readonly List<ISearchPlugin> _externalPlugins;
         private AppDomain _privateDomain;
 
         public PluginManager()
         {
             _externalPlugins = new List<ISearchPlugin>();
+            _externalPlugins.Add(new SearchByTextPlugin());
             _corePlugins = new List<ISearchPlugin>();
             _corePlugins.Add(new SearchByFileAttributesPlugin());
         }

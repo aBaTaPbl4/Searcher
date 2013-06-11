@@ -7,6 +7,12 @@ using Rhino.Mocks;
 
 namespace SearcherTests.Models
 {
+    /// <summary>
+    /// Абстрактная фикстура
+    /// Тесты сканирования запускаются по одному разу на каждую стратегию сканирования.
+    /// При этом само собой резульаты должны быть одинаковыми вне зависимости от стратегии,
+    /// поэтому все тесты определены в этом классе. В потомках только переопределен метод создания стратегии
+    /// </summary>
     [TestFixture]
     public abstract class ScanTest
     {
@@ -30,14 +36,18 @@ namespace SearcherTests.Models
         protected ScanStrategyBase _scanStrategy;
         private List<string> _foundFiles;
 
+        /// <summary>
+        /// Метод переопределен в потомке
+        /// </summary>
+        /// <returns></returns>
         protected abstract ScanStrategyBase CreateStrategy();
 
         [TestCase("7z", "", 1)]
-        [TestCase("test.txt", "", 2)]
+        [TestCase("test", "", 3)]
         [TestCase("note", "", 2)]
         [TestCase("", "", TestHelper.FilesInFirstTestDir)]
         [TestCase("", "note", TestHelper.FilesInFirstTestDir)]
-        public void ScanOnlyByFileNamesTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
+        public void ScanByFileAttributesTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
             ISearchSettings settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(filePattern,
                                                                                               fileContentPattern);
@@ -47,29 +57,49 @@ namespace SearcherTests.Models
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
 
-        [TestCase("", "note", 1, true)]
-        [TestCase("", "tagotest", 0, true)]
-        [TestCase("", "NativeError", 1, false)]
-        public void ScanWithPluginsTest(string filePattern, string fileContentPattern, int expectedMatchesCount,
-                                        bool xmlPluginNeeded)
+        [TestCase("", "note", 1)]
+        [TestCase("", "tagotest", 0)]
+        public void ScanWithXmlPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            ISearchPlugin[] activePlugins;
-            if (xmlPluginNeeded)
-            {
-                activePlugins = TestHelper.CoreAndXmlPlugin();
-            }
-            else
-            {
-                activePlugins = TestHelper.CoreAndTypePlugin();
-            }
             _scanStrategy.SearchSettings =
                 TestsConfiguration.ObjectsFactory.CreateSearchSettings(
                     filePattern, fileContentPattern,
-                    false, activePlugins);
+                    false, TestHelper.GetCoreAndXmlPlugin());
 
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
+
+        [TestCase("", "NativeError", 1)]
+        public void ScanWithAssemblyPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
+        {
+            _scanStrategy.SearchSettings =
+                TestsConfiguration.ObjectsFactory.CreateSearchSettings(
+                    filePattern, fileContentPattern,
+                    false, TestHelper.GetCoreAndTypePlugin());
+
+            _scanStrategy.StartScan(_process);
+            Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
+        }
+
+        [TestCase("", "один", 2), Description("В dos файле не найдет")]
+        [TestCase("", "два", 1)]//utf-8
+        [TestCase("", "три", 1)]//win
+        [TestCase("", "четыре", 0)]//dos
+        [TestCase("", "one", 3)]
+        [TestCase("", "two", 1)]//utf-8
+        [TestCase("", "free", 1)]//win
+        [TestCase("", "four", 1)]//dos
+        public void ScanWithTextPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
+        {
+            _scanStrategy.SearchSettings =
+                TestsConfiguration.ObjectsFactory.CreateSearchSettings(
+                    filePattern, fileContentPattern,
+                    false, TestHelper.GetCoreAndTextPlugin());
+            _scanStrategy.StartScan(_process);
+            Assert.AreEqual(expectedMatchesCount, _foundFiles.Count,"Error for word '{0}'. {1}", fileContentPattern, Log.Content);
+        }
+
 
         private void RegScan_MatchItem(ScanData file)
         {

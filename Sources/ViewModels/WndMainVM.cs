@@ -113,7 +113,7 @@ namespace Searcher.VM
         {
             StatusBarMessage = "Scan Complete!";
             CurrentState = CurrentAppState.ScanCompleted;
-            ActivityData.Progress = 100;
+            //ActivityData.Progress = 100;
             _elapsedTimer.IsEnabled = false;
             if (e.Cancelled)
             {

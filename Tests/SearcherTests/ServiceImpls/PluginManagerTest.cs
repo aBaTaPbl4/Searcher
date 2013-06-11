@@ -20,7 +20,7 @@ namespace SearcherTests.ServiceImpls
         public void ScanPluginsFolderCountTest()
         {
             _manager.ScanPluginsFolder();
-            Assert.AreEqual(3, _manager.AllPlugins.Count(), Log.Content);
+            Assert.AreEqual(4, _manager.AllPlugins.Count(), Log.Content);
             Assert.IsNotNull(_manager.CorePlugins[0]);
         }
 

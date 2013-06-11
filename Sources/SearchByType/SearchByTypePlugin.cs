@@ -8,7 +8,9 @@ using Common.Interfaces;
 
 namespace SearchByType
 {
-
+    /// <summary>
+    /// Плагин поиска по типу
+    /// </summary>
     public class SearchByTypePlugin : ISearchPlugin
     {
         public const string PluginName = "Search by type in .net assemblies";

@@ -23,11 +23,13 @@ namespace SearcherTests.ObjectsFactory
         [Required]
         public IPluginManager PluginManager { get; set; }
 
+        public IFileSystem FileSystem { get; set; }
         #region IObjectsFactory Members
 
         public void RestoreObjects()
         {
             string sourcePath = Path.Combine(Environment.CurrentDirectory, "TestData");
+            //todo:сделать предварительное удаление всех файлов и каталогов скопированных ранее
             string destPath = Environment.CurrentDirectory;
             TestHelper.CopyFolder(sourcePath, destPath);
         }

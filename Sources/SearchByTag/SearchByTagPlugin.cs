@@ -7,6 +7,9 @@ using Common.Interfaces;
 
 namespace SearchByTag
 {
+    /// <summary>
+    /// Плагин поиска по тэгу
+    /// </summary>
     public class SearchByTagPlugin : ISearchPlugin
     {
         public const string PluginName = "Search by tag in xml files";

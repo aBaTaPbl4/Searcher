@@ -57,6 +57,7 @@ namespace Models
 
         private void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            RaiseProgressChanged(100);
             if (ScanComplete != null)
             {
                 ScanComplete(this, e);

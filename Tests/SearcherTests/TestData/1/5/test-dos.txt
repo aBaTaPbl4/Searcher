@@ -1,0 +1,5 @@
+oem 866 doc encoding
+один
+четыре
+one
+four

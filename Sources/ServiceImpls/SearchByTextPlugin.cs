@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
+using Common;
 using Common.Interfaces;
 
 namespace ServiceImpls
 {
-    public class SearchByTextPlugin
+    /// <summary>
+    /// Плагин поиска по содержимому текстовых файлов
+    /// </summary>
+    public class SearchByTextPlugin : ISearchPlugin
     {
         public const string PluginName = "Search by text in txt files";
 
@@ -26,13 +30,77 @@ namespace ServiceImpls
         {
             try
             {
-                return true;
+                bool checkRequired = !settings.FileContentSearchPattern.IsNullOrEmpty();
+
+                if (!checkRequired)
+                {
+                    return true;
+                }
+
+                bool fileHasDiferentExtension = !AssociatedFileExtensions.Contains(Path.GetExtension(fileName));
+
+                if (fileHasDiferentExtension)
+                {
+                    return false;
+                }
+                var fileEncoding = GetFileEncoding(fileName);
+                using (var reader = new StreamReader(AppContext.FileSystem.GetFileStream(fileName), fileEncoding))
+                {
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        if (line.ContainsIgnoreCase(settings.FileContentSearchPattern))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return false;
             }
             catch (Exception ex)
             {
 
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Проблемма с тем чтобы отличить кодировку win от dos.
+        /// Ввиду того что сам файл не содержит инфы о кодировке.
+        /// Поэтому метод в обоих случаях возращаеть 1251 кодировку
+        /// </summary>
+        /// <param name="srcFile">Файл кодировку которого нужно определить</param>
+        /// <returns>Если кодировку определить не удалось возращается Windows-1251</returns>
+        private static Encoding GetFileEncoding(string srcFile)
+        {
+            // *** Use Default of Encoding.Default (Ansi CodePage)
+            Encoding enc = Encoding.Default;
+
+            // *** Detect byte order mark if any - otherwise assume default
+            var buffer = new byte[5];
+            using (var fs = AppContext.FileSystem.GetFileStream(srcFile))
+            {
+                fs.Read(buffer, 0, 5);                
+            }
+
+            if (buffer[0] == 0xef && buffer[1] == 0xbb && buffer[2] == 0xbf)
+                enc = Encoding.UTF8;
+            else if (buffer[0] == 0xfe && buffer[1] == 0xff)
+                enc = Encoding.Unicode;
+            else if (buffer[0] == 0 && buffer[1] == 0 && buffer[2] == 0xfe && buffer[3] == 0xff)
+                enc = Encoding.UTF32;
+            else if (buffer[0] == 0x2b && buffer[1] == 0x2f && buffer[2] == 0x76)
+                enc = Encoding.UTF7;
+            else if (buffer[0] == 0xFE && buffer[1] == 0xFF)
+                // 1201 unicodeFFFE Unicode (Big-Endian)
+                enc = Encoding.GetEncoding(1201);
+            else if (buffer[0] == 0xFF && buffer[1] == 0xFE)
+                // 1200 utf-16 Unicode
+                enc = Encoding.GetEncoding(1200);
+            else
+                enc = Encoding.GetEncoding(1251);
+
+            return enc;
         }
 
         public string Name

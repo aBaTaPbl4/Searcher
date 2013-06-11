@@ -6,6 +6,9 @@ using Common.Interfaces;
 
 namespace ServiceImpls
 {
+    /// <summary>
+    /// Плагин поиска по файловым атрибутам:Имя, флаги, размер, дата изменения..
+    /// </summary>
     public class SearchByFileAttributesPlugin : ISearchPlugin
     {
         #region ISearchPlugin Members
