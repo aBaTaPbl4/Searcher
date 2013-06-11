@@ -8,16 +8,8 @@ using Common.Interfaces;
 
 namespace ServiceImpls
 {
-    /// <summary>
-    /// Изоляция приложения от жесткого диска
-    /// </summary>
-    [Serializable]
     public class FileSystem : IFileSystem
     {
-        public FileSystem()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += DependenciesResolver;
-        }
 
         public ISearchSettings SearchSettings { get; set; }
 
@@ -36,11 +28,6 @@ namespace ServiceImpls
             return folderName;
         }
 
-        /// <summary>
-        /// Получает список файлов лежащих в каталоге(не рекурсивно)
-        /// </summary>
-        /// <param name="folderName"></param>
-        /// <returns></returns>
         public List<string> GetFiles(string folderName)
         {
             var files = new List<string>();
@@ -64,11 +51,7 @@ namespace ServiceImpls
             }
         }
 
-        /// <summary>
-        /// Рекурсивно получаем список всех подкаталогов
-        /// </summary>
-        /// <param name="folderName"></param>
-        /// <returns></returns>
+
         public List<string> GetAllSubfolders(string folderName)
         {
             var folders = new List<string>();
@@ -117,37 +100,6 @@ namespace ServiceImpls
             return result;
         }
 
-        public XDocument LoadXmlFile(string fileName)
-        {
-            XDocument doc = XDocument.Load(fileName);
-            return doc;
-        }
-
-        public AssemblyName GetAssemblyInfo(string fileName)
-        {
-            AssemblyName asmInfo = null;
-            try
-            {
-                asmInfo = AssemblyName.GetAssemblyName(fileName);
-                return asmInfo;
-            }
-            catch (FileNotFoundException)
-            {
-            }
-            catch (BadImageFormatException)
-            {
-            }
-            catch (FileLoadException)
-            {
-            }
-            return asmInfo;
-        }
-
-        public Assembly LoadAssemblyToDomain(AppDomain domain, AssemblyName asmInfo)
-        {
-            return domain.Load(asmInfo);
-        }
-
         public bool FileExtists(string fileName)
         {
             return File.Exists(fileName);
@@ -165,12 +117,7 @@ namespace ServiceImpls
 
         #endregion
 
-        public Assembly DependenciesResolver(object sender, ResolveEventArgs args)
-        {
-            //allow to resolve conflicts here
-            return null;
-        }
-
+        //todo:продумать возможность переписывания/переделывания рекурсии
         private void InitSubfolders(string folderName, List<string> subfolders)
         {
             foreach (string dir in Directory.GetDirectories(folderName))
@@ -180,14 +127,30 @@ namespace ServiceImpls
             }
         }
 
-        /// <summary>
-        /// Получаем содержимое файла
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <returns></returns>
-        public string GetFileContent(string fileName)
+        public Stream GetFileStream(string fileName)
         {
-            throw new NotImplementedException("");
+            var fs = File.OpenRead(fileName);
+            return fs;
+        }
+
+        public bool IsAssembly(string fileName)
+        {
+            AssemblyName asmInfo = null;
+            try
+            {
+                asmInfo = AssemblyName.GetAssemblyName(fileName);
+                return asmInfo != null;
+            }
+            catch (FileNotFoundException)
+            {
+            }
+            catch (BadImageFormatException)
+            {
+            }
+            catch (FileLoadException)
+            {
+            }
+            return false;
         }
     }
 }

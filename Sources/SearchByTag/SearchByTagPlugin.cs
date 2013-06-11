@@ -28,12 +28,22 @@ namespace SearchByTag
         {
             try
             {
-                if (settings.FileContentSearchPattern.IsNullOrEmpty() ||
-                    !AssociatedFileExtensions.Contains(Path.GetExtension(fileName)))
+                bool checkRequired = !settings.FileContentSearchPattern.IsNullOrEmpty();
+
+                if (!checkRequired)
+                {
+                    return true;
+                }
+
+                XDocument doc = null;
+                using (var fs = AppContext.FileSystem.GetFileStream(fileName))
+                {
+                    doc = XDocument.Load(fs);
+                }
+                if (doc == null)
                 {
                     return false;
                 }
-                XDocument doc = XDocument.Load(fileName);
                 if (doc.Root.Name == settings.FileContentSearchPattern)
                 {
                     return true;

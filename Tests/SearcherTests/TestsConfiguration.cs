@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using System.IO;
 using Common;
+using Common.Interfaces;
 using NUnit.Framework;
 using SearcherTests;
+using ServiceImpls;
 using log4net.Config;
 
 [SetUpFixture]
@@ -19,14 +21,15 @@ public class TestsConfiguration
     [SetUp]
     public static void RunBeforeAnyTests()
     {
+        XmlConfigurator.Configure();
         try
         {
-            XmlConfigurator.Configure();
             TestHelper.CopyFolder(
                 Path.GetFullPath(@"..\..\..\..\Bin\Plugins"),
                 _pluginsFolder
                 );
             RestoreTestData();
+
         }
         catch (Exception ex)
         {

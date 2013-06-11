@@ -8,9 +8,16 @@ using Common.Interfaces;
 
 namespace SearchByType
 {
+
     public class SearchByTypePlugin : ISearchPlugin
     {
         public const string PluginName = "Search by type in .net assemblies";
+        private readonly string _currentAssemblyPath;
+
+        public SearchByTypePlugin()
+        {
+             _currentAssemblyPath = new Uri(this.GetType().Assembly.CodeBase).LocalPath;
+        }
 
         #region ISearchPlugin Members
 
@@ -29,16 +36,26 @@ namespace SearchByType
         {
             try
             {
-                AssemblyName asmInfo = null;
-                if (settings.FileContentSearchPattern.IsNullOrEmpty() ||
-                    !AssociatedFileExtensions.Contains(Path.GetExtension(fileName)) ||
-                    settings.FileContentSearchPattern.IsNullOrEmpty() ||
-                    !IsAssembly(fileName, out asmInfo))
+                bool checkRequired = !settings.FileContentSearchPattern.IsNullOrEmpty();
+
+                if ( !checkRequired )
+                {
+                    return true;
+                }
+
+                bool fileHasDiferentExtension = !AssociatedFileExtensions.Contains(Path.GetExtension(fileName));
+
+                if (fileHasDiferentExtension)
                 {
                     return false;
                 }
 
-                return AssemblyContainsType(asmInfo, settings.FileContentSearchPattern);
+                if (!AppContext.FileSystem.IsAssembly(fileName))
+                {
+                    return false;
+                }
+
+                return AssemblyContainsType(fileName, settings.FileContentSearchPattern);
             }
             catch (Exception ex)
             {
@@ -65,12 +82,21 @@ namespace SearchByType
 
         #endregion
 
-        public bool AssemblyContainsType(AssemblyName asmInfo, string typeName)
+        public bool AssemblyContainsType(string fileName, string typeName)
         {
-            AppDomain domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null);
+
+            var domain = CreateTempDomain(Path.GetDirectoryName(fileName));
+            var resolver = (AssemblyResolver) domain.CreateInstanceFromAndUnwrap(_currentAssemblyPath, 
+                "SearchByType.AssemblyResolver");
+
             try
             {
-                Assembly asm = AppContext.FileSystem.LoadAssemblyToDomain(domain, asmInfo);
+                Assembly asm = domain.LoadAssembly(fileName);
+                
+                if (resolver.ResolvedProblemOccured && resolver.ResolvedAssembly == null)
+                {
+                    return false;
+                }
                 IEnumerable<Type> q = from t in asm.GetTypes()
                                       where t.Name.ContainsIgnoreCase(typeName) && (t.IsClass || t.IsInterface)
                                       select t;
@@ -82,11 +108,13 @@ namespace SearchByType
             }
         }
 
-
-        public bool IsAssembly(string fileName, out AssemblyName asmInfo)
+        public AppDomain CreateTempDomain(string baseDirectory)
         {
-            asmInfo = AppContext.FileSystem.GetAssemblyInfo(fileName);
-            return asmInfo != null;
+            var info = new AppDomainSetup();
+            info.ApplicationBase = baseDirectory;
+            AppDomain domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), AppDomain.CurrentDomain.Evidence, info);
+            return domain;
         }
+
     }
 }

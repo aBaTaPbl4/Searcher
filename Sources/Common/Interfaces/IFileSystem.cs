@@ -19,9 +19,17 @@ namespace Common.Interfaces
         public long FileSize;
     }
 
+    /// <summary>
+    /// Изоляция приложения от жесткого диска
+    /// Сервис введен для удобства мокиривония в контексте написания юнит тестов
+    /// </summary>
     public interface IFileSystem
     {
-        string FixFolderName(string folderName);
+        /// <summary>
+        /// Получает кол-во файлов в сканируемой папке, с учетом заданных пользователем настроек
+        /// </summary>
+        /// <returns></returns>
+        int GetFilesCountToScan();
 
         /// <summary>
         /// Получает список файлов лежащих в каталоге(не рекурсивно)
@@ -37,13 +45,20 @@ namespace Common.Interfaces
         /// <returns></returns>
         List<string> GetAllSubfolders(string folderName);
 
-        XDocument LoadXmlFile(string fileName);
-        AssemblyName GetAssemblyInfo(string fileName);
-        Assembly LoadAssemblyToDomain(AppDomain domain, AssemblyName asmInfo);
+        /// <summary>
+        /// Проверяет является ли переданный файл .net сборкой, не загружая сам файл.
+        /// (С жесткого диска подтягиваются только заголовки файла).
+        /// Таким образом позволяет отличить нативные библиотеки от сборок
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        bool IsAssembly(string fileName);
+
+        string FixFolderName(string folderName);
         bool FileExtists(string fileName);
         bool DirectoryExists(string dir);
         void FileDelete(string fileName);
-        int GetFilesCountToScan();
         FileInfoShort GetFileInfo(string fileName);
+        Stream GetFileStream(string fileName);
     }
 }

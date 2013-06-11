@@ -49,6 +49,7 @@
     <Compile Include="PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchByFileAttributesPlugin.cs" />
+    <Compile Include="SearchByTextPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj">

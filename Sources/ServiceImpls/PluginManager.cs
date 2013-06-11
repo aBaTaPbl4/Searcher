@@ -51,7 +51,15 @@ namespace ServiceImpls
             }
         }
 
-        public IFileSystem FileSystem { get; set; }
+        private IFileSystem _fileSystem;
+        public IFileSystem FileSystem
+        {
+            get { return _fileSystem; }
+            set
+            {
+                _fileSystem = value;
+            }
+        }
 
         #region IDisposable Members
 
@@ -91,14 +99,19 @@ namespace ServiceImpls
 
         #endregion
 
-        private Assembly LoadAssemblyToDomainIfNeeded(AppDomain domain, AssemblyName asmInfo)
+        private Assembly LoadPluginIfNeeded(string pluginLocation)
         {
-            string[] loadedAssemblyNames = (from a in domain.GetAssemblies()
-                                            select a.FullName).ToArray();
+
+            string[] loadedAssemblyFileNames = (from a in PrivateDomain.GetAssemblies()
+                                            select Path.GetFileName(a.Location)).ToArray();
             Assembly asm = null;
-            if (!loadedAssemblyNames.Contains(asmInfo.FullName))
+            string pluginFileName = Path.GetFileName(pluginLocation);
+            bool isAssemblyLoaded = loadedAssemblyFileNames.ContainsIgnoreCase(pluginFileName);
+
+            if (!isAssemblyLoaded)
             {
-                asm = FileSystem.LoadAssemblyToDomain(domain, asmInfo);
+                //обязатель this.FileSystem, потому что FileSystem еще не зарега в контейнере!
+                asm = PrivateDomain.LoadAssembly(pluginLocation, this.FileSystem);
             }
             return asm;
         }
@@ -107,21 +120,20 @@ namespace ServiceImpls
         {
             List<string> pluginFiles = FileSystem.GetFiles("Plugins");
 
-            foreach (string pluginFileName in pluginFiles)
+            foreach (string pluginLocation in pluginFiles)
             {
                 try
                 {
-                    if (!Path.GetExtension(pluginFileName).Equals(".dll", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        continue;
-                    }
-                    AssemblyName asmInfo = FileSystem.GetAssemblyInfo(pluginFileName);
-                    if (asmInfo == null)
+                    if (!Path.GetExtension(pluginLocation).Equals(".dll", StringComparison.InvariantCultureIgnoreCase))
                     {
                         continue;
                     }
 
-                    Assembly asm = LoadAssemblyToDomainIfNeeded(PrivateDomain, asmInfo);
+                    if (!FileSystem.IsAssembly(pluginLocation))
+                    {
+                        continue;
+                    }
+                    Assembly asm = LoadPluginIfNeeded(pluginLocation);
                     bool pluginAlredyLoaded = asm == null;
                     if (pluginAlredyLoaded)
                     {
@@ -148,7 +160,7 @@ namespace ServiceImpls
                 {
                     AppContext.Logger.ErrorFormat(
                         "ScanPluginsFolder:During load plugin from assembly '{0}', error occured: {1}",
-                        pluginFileName, ex);
+                        pluginLocation, ex);
                 }
             }
         }
