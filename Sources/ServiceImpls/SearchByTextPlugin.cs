@@ -44,6 +44,7 @@ namespace ServiceImpls
                     return false;
                 }
                 var fileEncoding = GetFileEncoding(fileName);
+                //Стандартное определение кодировки в классе StreamReader работает коряво
                 using (var reader = new StreamReader(AppContext.FileSystem.GetFileStream(fileName), fileEncoding))
                 {
                     string line;
