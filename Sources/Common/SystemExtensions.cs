@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -36,12 +37,7 @@ namespace Common
             {
                 fileSystem = AppContext.FileSystem;
             }
-            byte[] buffer;
-            using (var fs = fileSystem.GetFileStream(fileName))
-            {
-                 buffer = new byte[(int)fs.Length];
-                fs.Read(buffer, 0, buffer.Length);
-            }
+            var buffer = fileSystem.ReadFile(fileName);
             return domain.Load(buffer);
         }
 

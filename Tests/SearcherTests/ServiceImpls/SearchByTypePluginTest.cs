@@ -19,10 +19,10 @@ namespace SearcherTests.ServiceImpls
         private ISearchPlugin _plugin;
 
         [TestCase("ILog", false, true)] //interface
-        [TestCase("FilterDecision", false, false)] // enum
-        [TestCase("NativeError", false, true)] // class
-        [TestCase("Dicision", false, false)] // no such class
-        [TestCase("abc", false, false)] // no such class
+        [TestCase("FilterDecision", false, false)] 
+        [TestCase("NativeError", false, false)] // no such interface containing class
+        [TestCase("Dicision", false, false)] 
+        [TestCase("abc", false, false)] 
         [TestCase("SomeType", true, false)]
         public void CheckTest(string typeToSearch, bool isNative, bool expectedResult)
         {

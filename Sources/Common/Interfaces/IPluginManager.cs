@@ -20,6 +20,8 @@ namespace Common.Interfaces
         /// </summary>
         ISearchPlugin[] CorePlugins { get; }
 
+        string PluginFolder { get; }
+
         void ScanPluginsFolder();
     }
 }

@@ -60,5 +60,6 @@ namespace Common.Interfaces
         void FileDelete(string fileName);
         FileInfoShort GetFileInfo(string fileName);
         Stream GetFileStream(string fileName);
+        byte[] ReadFile(string fileName);
     }
 }

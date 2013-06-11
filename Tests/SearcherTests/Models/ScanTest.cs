@@ -70,8 +70,8 @@ namespace SearcherTests.Models
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
 
-        [TestCase("", "NativeError", 1)]
-        [TestCase("", "AopConfigException", 2), Description("сборки должны загружаться даже если зависимых рядом не найдено")]
+        [TestCase("", "ILog", 2)] //log4net + Common.Logging
+        [TestCase("", "IInterceptor", 1), Description("сборка должна загружаться если рефы лежат рядом")]
         public void ScanWithAssemblyPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
             _scanStrategy.SearchSettings =

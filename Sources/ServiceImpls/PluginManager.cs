@@ -111,6 +111,11 @@ namespace ServiceImpls
             return asm;
         }
 
+        public string PluginFolder
+        {
+            get { return Path.Combine(Environment.CurrentDirectory, "Plugins"); }
+        }
+
         public void ScanPluginsFolder()
         {
             List<string> pluginFiles = FileSystem.GetFiles("Plugins");

@@ -79,6 +79,10 @@
     <Folder Include="VM\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Sources\AssemblyResolver\AssemblyResolver.csproj">
+      <Project>{8A244CF1-2361-4574-9C15-F4D5DDADD012}</Project>
+      <Name>AssemblyResolver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Sources\Common\Common.csproj">
       <Project>{7DF6CCDE-ACE4-46C2-887C-852D7A03C69E}</Project>
       <Name>Common</Name>
@@ -112,7 +116,16 @@
     <Content Include="TestData\1\2\3\7z.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestData\1\2\3\Common.Logging.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestData\1\2\3\log4net.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\1\2\3\Spring.Aop.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\1\2\3\Spring.Core.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\1\2\4\note_error.xml">
@@ -122,15 +135,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\1\2\4\test-utf-8.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestData\1\2\Common.Logging.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestData\1\2\Spring.Aop.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TestData\1\2\Spring.Core.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\1\2\test-win-encoding.txt">

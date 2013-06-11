@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Policy;
+using AssemblyResolver;
 using Common;
 using Common.Interfaces;
 
@@ -11,6 +13,7 @@ namespace SearchByType
     /// <summary>
     /// Плагин поиска по типу
     /// </summary>
+    [Serializable]
     public class SearchByTypePlugin : ISearchPlugin
     {
         public const string PluginName = "Search by type in .net assemblies";
@@ -57,7 +60,7 @@ namespace SearchByType
                     return false;
                 }
 
-                return AssemblyContainsType(fileName, settings.FileContentSearchPattern);
+                return AssemblyContainsInterfaceImplemetation(fileName, settings.FileContentSearchPattern);
             }
             catch (Exception ex)
             {
@@ -84,25 +87,26 @@ namespace SearchByType
 
         #endregion
 
-        public bool AssemblyContainsType(string fileName, string typeName)
-        {
 
+
+        public bool AssemblyContainsInterfaceImplemetation(string fileName, string interfaceName)
+        {
             var domain = CreateTempDomain(Path.GetDirectoryName(fileName));
-            var resolver = (AssemblyResolver) domain.CreateInstanceFromAndUnwrap(_currentAssemblyPath, 
-                "SearchByType.AssemblyResolver");
+
+            var resolver = (AssemblyResolver.AssemblyResolver)domain.CreateInstanceFromAndUnwrap(
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AssemblyResolver.dll"),
+                "AssemblyResolver.AssemblyResolver");
 
             try
             {
-                Assembly asm = domain.LoadAssembly(fileName);
-                
-                if (resolver.ResolvedProblemOccured && resolver.ResolvedAssembly == null)
+                resolver.LoadAssembly(AppContext.FileSystem.ReadFile(fileName));
+                resolver.FileName = Path.GetFileName(fileName);
+                var result = resolver.ContainsInterfaceImplementation(interfaceName);
+                if (resolver.ErrorMessage != null)
                 {
-                    return false;
+                    AppContext.Logger.ErrorFormat(resolver.ErrorMessage);
                 }
-                IEnumerable<Type> q = from t in asm.GetTypes()
-                                      where t.Name.ContainsIgnoreCase(typeName) && (t.IsClass || t.IsInterface)
-                                      select t;
-                return q.Any();
+                return result;
             }
             finally
             {
@@ -110,13 +114,22 @@ namespace SearchByType
             }
         }
 
+        public static void FileExists()
+        {
+            AppContext.FileSystem.FileExtists("aaaa");
+        }
+
         public AppDomain CreateTempDomain(string baseDirectory)
         {
             var info = new AppDomainSetup();
-            //info.ApplicationBase = baseDirectory;
-            //info.PrivateBinPath = baseDirectory;
-            //info.PrivateBinPathProbe = baseDirectory;
-            AppDomain domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), AppDomain.CurrentDomain.Evidence, info);
+            string name = Guid.NewGuid().ToString();
+            info.ApplicationName = name;
+            info.ApplicationBase = baseDirectory;
+            info.PrivateBinPath = baseDirectory;
+            info.PrivateBinPathProbe = baseDirectory;
+            info.ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+            var evidence = new Evidence(AppDomain.CurrentDomain.Evidence);
+            AppDomain domain = AppDomain.CreateDomain(name, evidence, info);
             return domain;
         }
 

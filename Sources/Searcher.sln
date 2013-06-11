@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{FD8BB421-31A1-
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModels", "ViewModels\ViewModels.csproj", "{255B1413-80D9-408E-B4A0-5A56BC4F8CAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssemblyResolver", "AssemblyResolver\AssemblyResolver.csproj", "{8A244CF1-2361-4574-9C15-F4D5DDADD012}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,6 +144,17 @@ Global
 		{255B1413-80D9-408E-B4A0-5A56BC4F8CAA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{255B1413-80D9-408E-B4A0-5A56BC4F8CAA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{255B1413-80D9-408E-B4A0-5A56BC4F8CAA}.Release|x86.ActiveCfg = Release|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Debug|x86.Build.0 = Debug|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,5 +165,6 @@ Global
 		{255B1413-80D9-408E-B4A0-5A56BC4F8CAA} = {FD8BB421-31A1-46EF-B313-85F0B3AC82C6}
 		{24116A64-8A43-4B6A-BB99-A8566832DDF1} = {28E3845D-4307-4007-BBE5-50C9AC6B7C1E}
 		{BDA527ED-63C3-4C18-BCCD-D1493506C235} = {28E3845D-4307-4007-BBE5-50C9AC6B7C1E}
+		{8A244CF1-2361-4574-9C15-F4D5DDADD012} = {28E3845D-4307-4007-BBE5-50C9AC6B7C1E}
 	EndGlobalSection
 EndGlobal

@@ -142,5 +142,16 @@ namespace ServiceImpls
             }
             return false;
         }
+
+        public byte[] ReadFile(string fileName)
+        {
+            byte[] buffer;
+            using (var fs = GetFileStream(fileName))
+            {
+                buffer = new byte[(int)fs.Length];
+                fs.Read(buffer, 0, buffer.Length);
+            }
+            return buffer;
+        }
     }
 }
