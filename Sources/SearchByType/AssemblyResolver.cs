@@ -17,7 +17,7 @@ namespace SearchByType
         
         public AssemblyResolver()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveDependencies;
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolveDependencies);
         }
 
         public Assembly ResolvedAssembly { get; private set; }
@@ -26,6 +26,7 @@ namespace SearchByType
         
         public Assembly ResolveDependencies(object sender, ResolveEventArgs args)
         {
+            
             ResolvedProblemOccured = true;
             //allow to resolve conflicts here
             //try to find assembly

@@ -71,6 +71,7 @@ namespace SearcherTests.Models
         }
 
         [TestCase("", "NativeError", 1)]
+        [TestCase("", "AopConfigException", 2), Description("сборки должны загружаться даже если зависимых рядом не найдено")]
         public void ScanWithAssemblyPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
             _scanStrategy.SearchSettings =

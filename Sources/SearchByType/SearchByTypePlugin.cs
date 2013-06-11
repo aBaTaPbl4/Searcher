@@ -113,7 +113,9 @@ namespace SearchByType
         public AppDomain CreateTempDomain(string baseDirectory)
         {
             var info = new AppDomainSetup();
-            info.ApplicationBase = baseDirectory;
+            //info.ApplicationBase = baseDirectory;
+            //info.PrivateBinPath = baseDirectory;
+            //info.PrivateBinPathProbe = baseDirectory;
             AppDomain domain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), AppDomain.CurrentDomain.Evidence, info);
             return domain;
         }

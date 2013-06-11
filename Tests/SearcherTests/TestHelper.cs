@@ -8,7 +8,7 @@ namespace SearcherTests
 {
     public static class TestHelper
     {
-        public const int FilesInFirstTestDir = 7;
+        public const int FilesInFirstTestDir = 11;
         public const int DirsInFirstTestFolder = 5;
 
         public static string XmlFileName
