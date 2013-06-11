@@ -54,24 +54,24 @@ namespace ServiceImpls
 
         public List<string> GetAllSubfolders(string folderName)
         {
-            var folders = new List<string>();
-
+            var emptyList = new List<string>();
             try
             {
                 folderName = FixFolderName(folderName);
                 if (folderName.IsNullOrEmpty())
                 {
-                    return folders;
+                    return emptyList;
                 }
-                InitSubfolders(folderName, folders);
-                return folders;
+                var walker = new DirectoryWalker(folderName);
+                walker.Run();
+                return walker.Results;
             }
             catch (Exception ex)
             {
                 AppContext.Logger.ErrorFormat(
                     "GetAllSubfolders:During getting subfolders of folder '{0}' error occured:{1}{2}",
                     folderName, Environment.NewLine, ex);
-                return folders;
+                return emptyList;
             }
         }
 
@@ -116,16 +116,6 @@ namespace ServiceImpls
         }
 
         #endregion
-
-        //todo:продумать возможность переписывания/переделывания рекурсии
-        private void InitSubfolders(string folderName, List<string> subfolders)
-        {
-            foreach (string dir in Directory.GetDirectories(folderName))
-            {
-                subfolders.Add(dir);
-                InitSubfolders(dir, subfolders);
-            }
-        }
 
         public Stream GetFileStream(string fileName)
         {
