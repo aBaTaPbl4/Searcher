@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Common;
 using Common.Interfaces;
 
@@ -100,11 +101,16 @@ namespace Models.ScanStrategies
 
         public static ScanStrategyBase CreateInstance()
         {
-            if (AppContext.ProgramSettings.WorkType == WorkType.SingleThread)
+            switch (AppContext.ProgramSettings.WorkType)
             {
-                return new SingleThreadScan();
+                case WorkType.SingleThread:
+                        return new SingleThreadScan();
+                    //case WorkType.LimitedThreadsCount:
+                    //case WorkType.UnlimitedThreadsCount:
+                default:
+                        return new MultiThreadScan();                    
             }
-            return new MultiThreadScan();
+
         }
     }
 }
