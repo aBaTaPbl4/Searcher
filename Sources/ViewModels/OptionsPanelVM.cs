@@ -96,7 +96,7 @@ namespace Searcher.VM
 
         private void InitThreadPool()
         {
-            CurrentThreadInfo = RequiredThreadInfo;
+            //CurrentThreadInfo = RequiredThreadInfo;
         }
         #endregion
     }

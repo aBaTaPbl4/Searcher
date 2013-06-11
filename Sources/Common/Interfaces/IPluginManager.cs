@@ -8,17 +8,17 @@ namespace Common.Interfaces
     /// </summary>
     public interface IPluginManager
     {
-        ISearchPlugin[] AllPlugins { get; }
+        IScanPlugin[] AllPlugins { get; }
 
         /// <summary>
         ///отключаемые плагины. Отключение происходит по выбору пользователя из UI
         /// </summary>
-        ISearchPlugin[] ExternalPlugins { get; }
+        IScanPlugin[] ExternalPlugins { get; }
         
         /// <summary>
         /// Плагины ядра, отрабатывают при поиске всегда
         /// </summary>
-        ISearchPlugin[] CorePlugins { get; }
+        IScanPlugin[] CorePlugins { get; }
 
         string PluginFolder { get; }
 

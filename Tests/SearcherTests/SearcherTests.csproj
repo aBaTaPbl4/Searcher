@@ -60,7 +60,7 @@
     <Compile Include="ObjectsFactory\IObjectsFactory.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Models\MultiThreadScanTest.cs" />
-    <Compile Include="Models\SearchProcessTest.cs" />
+    <Compile Include="Models\ScanModelTests.cs" />
     <Compile Include="Models\ScanTest.cs" />
     <Compile Include="Models\SingleThreadScanTest.cs" />
     <Compile Include="ObjectsFactory\UnitTestsObjectsFactory.cs" />

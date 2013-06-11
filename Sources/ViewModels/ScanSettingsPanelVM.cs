@@ -8,7 +8,7 @@ using Common.Interfaces;
 
 namespace Searcher.VM
 {
-    public class ScanSettingsPanelVM : ISearchSettings, IDataErrorInfo
+    public class ScanSettingsPanelVM : IScanSettings, IDataErrorInfo
     {
         private ObservableCollection<PluginDecoratorVM> _pluginListsForUser;
         private string _fileNameSearchPattern;
@@ -115,7 +115,7 @@ namespace Searcher.VM
 
         #endregion
 
-        #region ISearchSettings Members
+        #region IScanSettings Members
 
         public bool? IsHidden { get; set; }
         public bool? IsArch { get; set; }
@@ -143,7 +143,7 @@ namespace Searcher.VM
 
         public virtual string FileContentSearchPattern { get; set; }
 
-        public virtual ISearchPlugin[] ActivePlugins
+        public virtual IScanPlugin[] ActivePlugins
         {
             get
             {
@@ -172,7 +172,7 @@ namespace Searcher.VM
 
         public void InitPlugins()
         {
-            foreach (ISearchPlugin loadedPlugin in PluginManager.ExternalPlugins)
+            foreach (IScanPlugin loadedPlugin in PluginManager.ExternalPlugins)
             {
                 bool isPluginAlredyAdded = _pluginListsForUser.Where(x => x.Name == loadedPlugin.Name).Any();
                 if (!isPluginAlredyAdded)

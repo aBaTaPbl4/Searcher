@@ -32,9 +32,9 @@ namespace Common
         /// <summary>
         /// Настройки поиска, указанные пользователем
         /// </summary>
-        public static ISearchSettings SearchSettings
+        public static IScanSettings ScanSettings
         {
-            get { return _springContext.GetObject<ISearchSettings>(); }
+            get { return _springContext.GetObject<IScanSettings>(); }
         }
 
         /// <summary>

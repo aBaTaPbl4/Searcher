@@ -8,7 +8,7 @@ using Models.ScanStrategies;
 
 namespace Models
 {
-    public class SearchProcess
+    public class Scan
     {
         #region Delegates
 
@@ -57,7 +57,7 @@ namespace Models
 
         private void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            RaiseProgressChanged(100);
+            //RaiseProgressChanged(100);
             if (ScanComplete != null)
             {
                 ScanComplete(this, e);
@@ -131,10 +131,10 @@ namespace Models
 
         public bool LastScanResult { get; private set; }
 
-        public ISearchSettings Settings
+        public IScanSettings Settings
         {
-            get { return ScanStrategy.SearchSettings; }
-            set { ScanStrategy.SearchSettings = value; }
+            get { return ScanStrategy.ScanSettings; }
+            set { ScanStrategy.ScanSettings = value; }
         }
 
         internal void AddFoundFile(ScanData fileInfo)

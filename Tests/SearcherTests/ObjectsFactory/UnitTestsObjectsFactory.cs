@@ -16,8 +16,8 @@ namespace SearcherTests.ObjectsFactory
             //Так как тестовые данные для конфигурации моков не меняются, метод останется пустым
         }
 
-        public ISearchSettings CreateSearchSettings(string fileNameSearchPattern, string fileContentSearchPattern,
-                                                    bool isMultithreaded, ISearchPlugin[] activePlugins)
+        public IScanSettings CreateScanSettings(string fileNameSearchPattern, string fileContentSearchPattern,
+                                                    bool isMultithreaded, IScanPlugin[] activePlugins)
         {
             throw new NotImplementedException();
         }
@@ -44,7 +44,7 @@ namespace SearcherTests.ObjectsFactory
             return strategy;
         }
 
-        public SearchProcess CreateEngine()
+        public Scan CreateEngine()
         {
             throw new NotImplementedException();
         }
@@ -59,17 +59,17 @@ namespace SearcherTests.ObjectsFactory
             throw new NotImplementedException();
         }
 
-        public ISearchPlugin CreateFileNamePlugin()
+        public IScanPlugin CreateFileNamePlugin()
         {
             throw new NotImplementedException();
         }
 
-        public ISearchPlugin CreateTagPlugin()
+        public IScanPlugin CreateTagPlugin()
         {
             throw new NotImplementedException();
         }
 
-        public ISearchPlugin CreateTypePlugin()
+        public IScanPlugin CreateTypePlugin()
         {
             throw new NotImplementedException();
         }
@@ -80,7 +80,7 @@ namespace SearcherTests.ObjectsFactory
             throw new NotImplementedException();
         }
 
-        public SearchProcess CreateSearchProcess()
+        public Scan CreateScan()
         {
             throw new NotImplementedException();
         }

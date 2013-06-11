@@ -14,17 +14,17 @@ namespace SearchByType
     /// Плагин поиска по типу
     /// </summary>
     [Serializable]
-    public class SearchByTypePlugin : ISearchPlugin
+    public class ScanByTypePlugin : IScanPlugin
     {
         public const string PluginName = "Search by type in .net assemblies";
         private readonly string _currentAssemblyPath;
 
-        public SearchByTypePlugin()
+        public ScanByTypePlugin()
         {
              _currentAssemblyPath = new Uri(this.GetType().Assembly.CodeBase).LocalPath;
         }
 
-        #region ISearchPlugin Members
+        #region IScanPlugin Members
 
         public SearchType Type
         {
@@ -37,7 +37,7 @@ namespace SearchByType
             get { return false; }
         }
 
-        public bool Check(string fileName, ISearchSettings settings)
+        public bool Check(string fileName, IScanSettings settings)
         {
             try
             {

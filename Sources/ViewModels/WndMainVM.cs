@@ -34,7 +34,7 @@ namespace Searcher.VM
         private readonly DispatcherTimer _pluginCheckTimer;
         private readonly IWndMain _mainWindow;
         private CurrentAppState _currentState;
-        private SearchProcess _scan;
+        private Scan _scan;
         private string _statusBarMessage;
 
         public WndMainVM(IWndMain wnd)
@@ -47,14 +47,14 @@ namespace Searcher.VM
             _elapsedTimer.Tick += ElapsedTimer_Tick;
 
             _pluginCheckTimer = new DispatcherTimer();
-            _pluginCheckTimer.Interval = new TimeSpan(10000);
+            _pluginCheckTimer.Interval = new TimeSpan(20000);
             _pluginCheckTimer.IsEnabled = true;
             _pluginCheckTimer.Tick += PluginCheckTimer_Tick;
         }
 
         public ScanSettingsPanelVM SearchOptions
         {
-            get { return AppContext.SearchSettings as ScanSettingsPanelVM; }
+            get { return AppContext.ScanSettings as ScanSettingsPanelVM; }
         }
 
         public OptionsPanelVM ProgramOptions { get; set; }
@@ -70,7 +70,7 @@ namespace Searcher.VM
             }
         }
 
-        public bool IsTimerOn
+        public bool IsElapsedTimerOn
         {
             get { return _elapsedTimer.IsEnabled; }
         }
@@ -146,7 +146,7 @@ namespace Searcher.VM
 
         public void Reset()
         {
-            _scan = AppContext.GetObject<SearchProcess>();
+            _scan = AppContext.GetObject<Scan>();
             _scan.ScanComplete += ScanCompleted;
             _scan.ProgressChanged += ProgressChanged;
             _scan.SubScanComplete += SubScanCompleted;

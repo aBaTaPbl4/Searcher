@@ -46,7 +46,7 @@
     <Compile Include="ScanData.cs" />
     <Compile Include="ScanStrategies\ScanStrategyBase.cs" />
     <Compile Include="ScanStrategies\MultiThreadScan.cs" />
-    <Compile Include="SearchProcess.cs" />
+    <Compile Include="Scan.cs" />
     <Compile Include="ScanStrategies\SingleThreadScan.cs" />
   </ItemGroup>
   <ItemGroup>

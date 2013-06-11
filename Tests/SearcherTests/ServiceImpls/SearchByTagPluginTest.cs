@@ -16,14 +16,14 @@ namespace SearcherTests.ServiceImpls
 
         #endregion
 
-        private ISearchPlugin _plugin;
+        private IScanPlugin _plugin;
 
         [TestCase("not", false)]
         [TestCase("note", true)]
         [TestCase("heading", true)]
         public void CheckTest(string tagName, bool expectedResult)
         {
-            ISearchSettings settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings("", tagName);
+            IScanSettings settings = TestsConfiguration.ObjectsFactory.CreateScanSettings("", tagName);
             bool actualResult = _plugin.Check(TestHelper.XmlFileName, settings);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }

@@ -11,11 +11,11 @@ namespace Models.ScanStrategies
     {
         private double _filesPerOnePercent;
         private volatile int _filesProcessed;
-        protected SearchProcess _search;
+        protected Scan _scan;
         private int _totalFilesCount;
 
         public IFileSystem FileSystem { get; set; }
-        public ISearchSettings SearchSettings { get; set; }
+        public IScanSettings ScanSettings { get; set; }
         public IProgramSettings ProgramSettings { get; set; }
 
         public int FileProcessed
@@ -28,10 +28,10 @@ namespace Models.ScanStrategies
             get
             {
                 var foldersToScan = new List<string>();
-                foldersToScan.Add(SearchSettings.FolderToScan);
-                if (SearchSettings.RecursiveScan)
+                foldersToScan.Add(ScanSettings.FolderToScan);
+                if (ScanSettings.RecursiveScan)
                 {
-                    foldersToScan.AddRange(FileSystem.GetAllSubfolders(SearchSettings.FolderToScan));
+                    foldersToScan.AddRange(FileSystem.GetAllSubfolders(ScanSettings.FolderToScan));
                 }
                 return foldersToScan;
             }
@@ -49,18 +49,18 @@ namespace Models.ScanStrategies
             }
         }
 
-        public bool StartScan(SearchProcess search)
+        public bool StartScan(Scan scan)
         {
             _filesProcessed = 0;
-            _search = search;
-            search.RaiseCountingFiles();
+            _scan = scan;
+            scan.RaiseCountingFiles();
             _totalFilesCount = FileSystem.GetFilesCountToScan();
             _filesPerOnePercent = _totalFilesCount/100.0000;
-            search.RaiseScanStarted();
-            return StartScanInner(search);
+            scan.RaiseScanStarted();
+            return StartScanInner(scan);
         }
 
-        protected abstract bool StartScanInner(SearchProcess search);
+        protected abstract bool StartScanInner(Scan scan);
 
         protected void ScanFolder(string folderName)
         {
@@ -71,9 +71,9 @@ namespace Models.ScanStrategies
                 {
                     _filesProcessed++;
                     bool isMath = true;
-                    foreach (ISearchPlugin plugin in SearchSettings.ActivePlugins)
+                    foreach (IScanPlugin plugin in ScanSettings.ActivePlugins)
                     {
-                        if (!plugin.Check(fullFileName, SearchSettings))
+                        if (!plugin.Check(fullFileName, ScanSettings))
                         {
                             isMath = false;
                             break;
@@ -84,11 +84,11 @@ namespace Models.ScanStrategies
                         var fileInfo = new ScanData();
                         fileInfo.FileName = Path.GetFileName(fullFileName);
                         fileInfo.FolderName = Path.GetDirectoryName(fullFileName);
-                        _search.AddFoundFile(fileInfo);
+                        _scan.AddFoundFile(fileInfo);
                     }
                     if (IsProgressChanged)
                     {
-                        _search.RaiseProgressChanged((int) (_filesProcessed/_filesPerOnePercent));
+                        _scan.RaiseProgressChanged((int) (_filesProcessed/_filesPerOnePercent));
                     }
                 }
                 catch (Exception ex)
@@ -96,7 +96,7 @@ namespace Models.ScanStrategies
                     AppContext.Logger.ErrorFormat("During proccessing file {0} error occured! {1}", fullFileName, ex);
                 }
             }
-            _search.RaiseSubScanCompleted(folderName);
+            _scan.RaiseSubScanCompleted(folderName);
         }
 
         public static ScanStrategyBase CreateInstance()

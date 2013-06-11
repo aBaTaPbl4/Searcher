@@ -10,11 +10,11 @@ namespace SearchByTag
     /// <summary>
     /// Плагин поиска по тэгу
     /// </summary>
-    public class SearchByTagPlugin : ISearchPlugin
+    public class ScanByTagPlugin : IScanPlugin
     {
         public const string PluginName = "Search by tag in xml files";
 
-        #region ISearchPlugin Members
+        #region IScanPlugin Members
 
         public SearchType Type
         {
@@ -27,7 +27,7 @@ namespace SearchByTag
             get { return false; }
         }
 
-        public bool Check(string fileName, ISearchSettings settings)
+        public bool Check(string fileName, IScanSettings settings)
         {
             try
             {

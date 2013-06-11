@@ -8,7 +8,7 @@ namespace Common.Interfaces
         ByFileContent
     }
 
-    public interface ISearchPlugin
+    public interface IScanPlugin
     {
         SearchType Type { get; }
         string Name { get; }
@@ -22,6 +22,6 @@ namespace Common.Interfaces
         /// <param name="fileName"> имя файла </param>
         /// <param name="settings"> настройки системные</param>
         /// <returns>true - удовлетворяет, false - нет</returns>
-        bool Check(string fileName, ISearchSettings settings);
+        bool Check(string fileName, IScanSettings settings);
     }
 }

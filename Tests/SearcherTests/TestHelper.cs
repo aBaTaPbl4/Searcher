@@ -63,26 +63,26 @@ namespace SearcherTests
             }
         }
 
-        private static ISearchPlugin[] GetCoreAndOneExternalPlugin(string externalPluginFileType)
+        private static IScanPlugin[] GetCoreAndOneExternalPlugin(string externalPluginFileType)
         {
-            var lst = new List<ISearchPlugin>();
+            var lst = new List<IScanPlugin>();
             lst.AddRange(AppContext.PluginManager.CorePlugins);
             lst.Add(AppContext.PluginManager.ExternalPlugins.
                 Where(x => x.AssociatedFileExtensions.Contains(externalPluginFileType)).Single());
             return lst.ToArray();            
         }
 
-        public static ISearchPlugin[] GetCoreAndXmlPlugin()
+        public static IScanPlugin[] GetCoreAndXmlPlugin()
         {
             return GetCoreAndOneExternalPlugin(".xml");
         }
 
-        public static ISearchPlugin[] GetCoreAndTypePlugin()
+        public static IScanPlugin[] GetCoreAndTypePlugin()
         {
             return GetCoreAndOneExternalPlugin(".dll");
         }
 
-        public static ISearchPlugin[] GetCoreAndTextPlugin()
+        public static IScanPlugin[] GetCoreAndTextPlugin()
         {
             return GetCoreAndOneExternalPlugin(".txt");
         }

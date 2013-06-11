@@ -6,11 +6,11 @@ namespace Common.Interfaces
     /// Настройки поиска
     /// (позволяет только читать данные о настройках указанных пользователем)
     /// </summary>
-    public interface ISearchSettings
+    public interface IScanSettings
     {
         string FileNameSearchPattern { get; }
         string FileContentSearchPattern { get; }
-        ISearchPlugin[] ActivePlugins { get; }
+        IScanPlugin[] ActivePlugins { get; }
         string FolderToScan { get; }
         bool RecursiveScan { get; }
         bool? IsHidden { get; }

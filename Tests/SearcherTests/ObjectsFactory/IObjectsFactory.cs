@@ -9,24 +9,24 @@ namespace SearcherTests
     {
         void RestoreObjects();
 
-        ISearchSettings CreateSearchSettings(string fileNameSearchPattern = "note.",
+        IScanSettings CreateScanSettings(string fileNameSearchPattern = "note.",
                                              string fileContentSearchPattern = "note",
-                                             bool isMultithreaded = false, ISearchPlugin[] activePlugins = null);
+                                             bool isMultithreaded = false, IScanPlugin[] activePlugins = null);
 
         IFileSystem CreateFileSystem();
         IPluginManager CreatePluginManager();
         PluginManager CreatePluginManagerConcrete();
         ScanStrategyBase CreateStrategy();
-        SearchProcess CreateEngine();
+        Scan CreateEngine();
         ScanStrategyBase CreateMultiThreadStrategy();
         ScanStrategyBase CreateSingleThreadStrategy();
-        ISearchPlugin CreateFileNamePlugin();
-        ISearchPlugin CreateTagPlugin();
-        ISearchPlugin CreateTypePlugin();
+        IScanPlugin CreateFileNamePlugin();
+        IScanPlugin CreateTagPlugin();
+        IScanPlugin CreateTypePlugin();
 
         IProgramSettings CreateProgramSettings(WorkType tp = WorkType.SingleThread, int threadsCount = 0,
                                                bool logRequired = false, bool verboseLogRequired = false);
 
-        SearchProcess CreateSearchProcess();
+        Scan CreateScan();
     }
 }

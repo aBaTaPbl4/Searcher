@@ -16,7 +16,7 @@ namespace SearcherTests.ServiceImpls
 
         #endregion
 
-        private ISearchPlugin _plugin;
+        private IScanPlugin _plugin;
 
         [TestCase("note.xml", true)]
         [TestCase("note", true)]
@@ -27,7 +27,7 @@ namespace SearcherTests.ServiceImpls
         [TestCase("note.xmlns", false)]
         public void CheckTest(string fileNamePattern, bool expectedResult)
         {
-            ISearchSettings serv = TestsConfiguration.ObjectsFactory.CreateSearchSettings(fileNamePattern);
+            IScanSettings serv = TestsConfiguration.ObjectsFactory.CreateScanSettings(fileNamePattern);
             bool actualResult = _plugin.Check(TestHelper.XmlFileName, serv);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }

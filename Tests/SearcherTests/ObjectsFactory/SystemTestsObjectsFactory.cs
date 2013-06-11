@@ -45,14 +45,14 @@ namespace SearcherTests.ObjectsFactory
             return settings;
         }
 
-        public SearchProcess CreateSearchProcess()
+        public Scan CreateScan()
         {
-            return MockRepository.GeneratePartialMock<SearchProcess>();
+            return MockRepository.GeneratePartialMock<Scan>();
         }
 
-        public ISearchSettings CreateSearchSettings(string fileNameSearchPattern = "note.",
+        public IScanSettings CreateScanSettings(string fileNameSearchPattern = "note.",
                                                     string fileContentSearchPattern = "note",
-                                                    bool isMultithreaded = false, ISearchPlugin[] activePlugins = null)
+                                                    bool isMultithreaded = false, IScanPlugin[] activePlugins = null)
         {
             var settings = MockRepository.GeneratePartialMock<ScanSettingsPanelVM>();
             settings.FolderToScan = TestHelper.DeepestFolder;
@@ -96,24 +96,24 @@ namespace SearcherTests.ObjectsFactory
             return AppContext.GetObject<SingleThreadScan>();
         }
 
-        public SearchProcess CreateEngine()
+        public Scan CreateEngine()
         {
-            return AppContext.GetObject<SearchProcess>();
+            return AppContext.GetObject<Scan>();
         }
 
-        public ISearchPlugin CreateFileNamePlugin()
+        public IScanPlugin CreateFileNamePlugin()
         {
-            return new SearchByFileAttributesPlugin();
+            return new ScanByFileAttributesPlugin();
         }
 
-        public ISearchPlugin CreateTagPlugin()
+        public IScanPlugin CreateTagPlugin()
         {
-            return new SearchByTagPlugin();
+            return new ScanByTagPlugin();
         }
 
-        public ISearchPlugin CreateTypePlugin()
+        public IScanPlugin CreateTypePlugin()
         {
-            return new SearchByTypePlugin();
+            return new ScanByTypePlugin();
         }
 
         #endregion
@@ -123,9 +123,9 @@ namespace SearcherTests.ObjectsFactory
             return CreateProgramSettings(WorkType.SingleThread);
         }
 
-        public ISearchSettings CreateSearchSettings()
+        public IScanSettings CreateScanSettings()
         {
-            return CreateSearchSettings("note.");
+            return CreateScanSettings("note.");
         }
     }
 }

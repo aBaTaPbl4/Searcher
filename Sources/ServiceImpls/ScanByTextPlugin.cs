@@ -10,11 +10,11 @@ namespace ServiceImpls
     /// <summary>
     /// Плагин поиска по содержимому текстовых файлов
     /// </summary>
-    public class SearchByTextPlugin : ISearchPlugin
+    public class ScanByTextPlugin : IScanPlugin
     {
         public const string PluginName = "Search by text in txt files";
 
-        #region ISearchPlugin Members
+        #region IScanPlugin Members
 
         public SearchType Type
         {
@@ -26,7 +26,7 @@ namespace ServiceImpls
             get { return false; }
         }
 
-        public bool Check(string fileName, ISearchSettings settings)
+        public bool Check(string fileName, IScanSettings settings)
         {
             try
             {

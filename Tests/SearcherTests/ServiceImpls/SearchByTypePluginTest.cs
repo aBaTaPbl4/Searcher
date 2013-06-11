@@ -16,7 +16,7 @@ namespace SearcherTests.ServiceImpls
 
         #endregion
 
-        private ISearchPlugin _plugin;
+        private IScanPlugin _plugin;
 
         [TestCase("ILog", false, true)] //interface
         [TestCase("FilterDecision", false, false)] 
@@ -28,7 +28,7 @@ namespace SearcherTests.ServiceImpls
         {
             string fileName = isNative ? TestHelper.NativeFileName : TestHelper.AssemblyFileName;
 
-            ISearchSettings settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings("", typeToSearch);
+            IScanSettings settings = TestsConfiguration.ObjectsFactory.CreateScanSettings("", typeToSearch);
             bool actualResult = _plugin.Check(fileName, settings);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }

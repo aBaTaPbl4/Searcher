@@ -10,16 +10,16 @@ namespace ServiceImpls
 {
     public class PluginManager : IPluginManager, IDisposable
     {
-        private readonly List<ISearchPlugin> _corePlugins;        
-        private readonly List<ISearchPlugin> _externalPlugins;
+        private readonly List<IScanPlugin> _corePlugins;        
+        private readonly List<IScanPlugin> _externalPlugins;
         private AppDomain _privateDomain;
 
         public PluginManager()
         {
-            _externalPlugins = new List<ISearchPlugin>();
-            _externalPlugins.Add(new SearchByTextPlugin());
-            _corePlugins = new List<ISearchPlugin>();
-            _corePlugins.Add(new SearchByFileAttributesPlugin());
+            _externalPlugins = new List<IScanPlugin>();
+            _externalPlugins.Add(new ScanByTextPlugin());
+            _corePlugins = new List<IScanPlugin>();
+            _corePlugins.Add(new ScanByFileAttributesPlugin());
         }
 
         public AppDomain PrivateDomain
@@ -71,21 +71,21 @@ namespace ServiceImpls
 
         #region IPluginManager Members
 
-        public ISearchPlugin[] ExternalPlugins
+        public IScanPlugin[] ExternalPlugins
         {
             get { return _externalPlugins.ToArray(); }
         }
 
-        public ISearchPlugin[] CorePlugins
+        public IScanPlugin[] CorePlugins
         {
             get { return _corePlugins.ToArray(); }
         }
 
-        public ISearchPlugin[] AllPlugins
+        public IScanPlugin[] AllPlugins
         {
             get
             {
-                var list = new List<ISearchPlugin>();
+                var list = new List<IScanPlugin>();
                 list.AddRange(_corePlugins);
                 list.AddRange(_externalPlugins);
                 return list.ToArray();
@@ -105,7 +105,7 @@ namespace ServiceImpls
 
             if (!isAssemblyLoaded)
             {
-                //обязатель this.FileSystem, потому что FileSystem еще не зарега в контейнере!
+                //обязатель this.FileSystem, потому что экземпляр FileSystem еще не зарега в контейнере!
                 asm = PrivateDomain.LoadAssembly(pluginLocation, this.FileSystem);
             }
             return asm;
@@ -141,11 +141,11 @@ namespace ServiceImpls
                     }
 
                     Type[] pluginTypes = (from t in asm.GetTypes()
-                                          where t.IsClass && t.GetInterfaces().Contains(typeof (ISearchPlugin))
+                                          where t.IsClass && t.GetInterfaces().Contains(typeof (IScanPlugin))
                                           select t).ToArray();
                     foreach (Type pluginType in pluginTypes)
                     {
-                        var plug = (ISearchPlugin) Activator.CreateInstance(pluginType);
+                        var plug = (IScanPlugin) Activator.CreateInstance(pluginType);
                         if (plug.IsCorePlugin)
                         {
                             _corePlugins.Add(plug);

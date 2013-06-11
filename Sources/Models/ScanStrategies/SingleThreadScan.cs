@@ -2,13 +2,13 @@
 {
     public class SingleThreadScan : ScanStrategyBase
     {
-        protected override bool StartScanInner(SearchProcess search)
+        protected override bool StartScanInner(Scan scan)
         {
             foreach (string folderName in FoldersToScan)
             {
-                if (search.IsNeedCancelation)
+                if (scan.IsNeedCancelation)
                 {
-                    search.CancelationOccured();
+                    scan.CancelationOccured();
                     return false;
                 }
                 ScanFolder(folderName);

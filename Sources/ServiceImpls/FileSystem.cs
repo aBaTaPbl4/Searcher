@@ -11,7 +11,7 @@ namespace ServiceImpls
     public class FileSystem : IFileSystem
     {
 
-        public ISearchSettings SearchSettings { get; set; }
+        public IScanSettings ScanSettings { get; set; }
 
         #region IFileSystem Members
 
@@ -77,8 +77,8 @@ namespace ServiceImpls
 
         public int GetFilesCountToScan()
         {
-            string folderName = SearchSettings.FolderToScan;
-            if (SearchSettings.RecursiveScan)
+            string folderName = ScanSettings.FolderToScan;
+            if (ScanSettings.RecursiveScan)
             {
                 return Directory.GetFiles(folderName, "*.*", SearchOption.AllDirectories).Length;
             }

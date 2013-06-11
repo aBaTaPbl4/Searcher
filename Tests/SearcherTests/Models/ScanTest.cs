@@ -21,7 +21,7 @@ namespace SearcherTests.Models
         [SetUp]
         public void Setup()
         {
-            _process = TestsConfiguration.ObjectsFactory.CreateSearchProcess();
+            _process = TestsConfiguration.ObjectsFactory.CreateScan();
             _process.Stub(x => x.IsNeedCancelation).Return(false);
             _process.Stub(x => x.CancelationOccured());
             _process.Folder = TestHelper.DeepestFolder;
@@ -32,7 +32,7 @@ namespace SearcherTests.Models
 
         #endregion
 
-        private SearchProcess _process;
+        private Scan _process;
         protected ScanStrategyBase _scanStrategy;
         private List<string> _foundFiles;
 
@@ -49,10 +49,10 @@ namespace SearcherTests.Models
         [TestCase("", "note", TestHelper.FilesInFirstTestDir)]
         public void ScanByFileAttributesTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            ISearchSettings settings = TestsConfiguration.ObjectsFactory.CreateSearchSettings(filePattern,
+            IScanSettings settings = TestsConfiguration.ObjectsFactory.CreateScanSettings(filePattern,
                                                                                               fileContentPattern);
 
-            _scanStrategy.SearchSettings = settings;
+            _scanStrategy.ScanSettings = settings;
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
@@ -61,8 +61,8 @@ namespace SearcherTests.Models
         [TestCase("", "tagotest", 0)]
         public void ScanWithXmlPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            _scanStrategy.SearchSettings =
-                TestsConfiguration.ObjectsFactory.CreateSearchSettings(
+            _scanStrategy.ScanSettings =
+                TestsConfiguration.ObjectsFactory.CreateScanSettings(
                     filePattern, fileContentPattern,
                     false, TestHelper.GetCoreAndXmlPlugin());
 
@@ -74,8 +74,8 @@ namespace SearcherTests.Models
         [TestCase("", "IInterceptor", 1), Description("сборка должна загружаться если рефы лежат рядом")]
         public void ScanWithAssemblyPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            _scanStrategy.SearchSettings =
-                TestsConfiguration.ObjectsFactory.CreateSearchSettings(
+            _scanStrategy.ScanSettings =
+                TestsConfiguration.ObjectsFactory.CreateScanSettings(
                     filePattern, fileContentPattern,
                     false, TestHelper.GetCoreAndTypePlugin());
 
@@ -93,8 +93,8 @@ namespace SearcherTests.Models
         [TestCase("", "four", 1)]//dos
         public void ScanWithTextPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
-            _scanStrategy.SearchSettings =
-                TestsConfiguration.ObjectsFactory.CreateSearchSettings(
+            _scanStrategy.ScanSettings =
+                TestsConfiguration.ObjectsFactory.CreateScanSettings(
                     filePattern, fileContentPattern,
                     false, TestHelper.GetCoreAndTextPlugin());
             _scanStrategy.StartScan(_process);

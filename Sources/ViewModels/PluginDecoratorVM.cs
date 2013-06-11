@@ -8,7 +8,7 @@ namespace Searcher.VM
     public class PluginDecoratorVM : ViewModel
     {
         private bool _isActive;
-        public ISearchPlugin Plugin { get; set; }
+        public IScanPlugin Plugin { get; set; }
 
         public bool IsActive
         {

@@ -30,8 +30,8 @@ namespace SearcherTests.ServiceImpls
             _manager.ScanPluginsFolder();
             string[] pluginNames = (from p in _manager.AllPlugins
                                     select p.Name).ToArray();
-            Assert.Contains(SearchByTagPlugin.PluginName, pluginNames, Log.Content);
-            Assert.Contains(SearchByTypePlugin.PluginName, pluginNames, Log.Content);
+            Assert.Contains(ScanByTagPlugin.PluginName, pluginNames, Log.Content);
+            Assert.Contains(ScanByTypePlugin.PluginName, pluginNames, Log.Content);
         }
     }
 }

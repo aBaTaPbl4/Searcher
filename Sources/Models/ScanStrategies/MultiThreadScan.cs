@@ -5,14 +5,14 @@ namespace Models.ScanStrategies
 {
     public class MultiThreadScan : ScanStrategyBase
     {
-        protected override bool StartScanInner(SearchProcess search)
+        protected override bool StartScanInner(Scan scan)
         {
             var waitHandles = new List<WaitHandle>();
             foreach (string folderName in FoldersToScan)
             {
-                if (search.IsNeedCancelation)
+                if (scan.IsNeedCancelation)
                 {
-                    search.CancelationOccured();
+                    scan.CancelationOccured();
                     return false;
                 }
                 var args = new BuildThreadArgs

@@ -7,7 +7,7 @@ using Rhino.Mocks;
 namespace SearcherTests.Models
 {
     [TestFixture]
-    public class SearchProcessTest
+    public class ScanModelTests
     {
         #region Setup/Teardown
 
@@ -29,7 +29,7 @@ namespace SearcherTests.Models
 
         #endregion
 
-        private SearchProcess _search;
+        private Scan _search;
         private bool _isEventRaised;
         private int _subFolderProcessed;
         private int _lastProgressValue;

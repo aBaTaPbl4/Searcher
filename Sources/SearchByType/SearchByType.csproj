@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchByTypePlugin.cs" />
+    <Compile Include="ScanByTypePlugin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AssemblyResolver\AssemblyResolver.csproj">

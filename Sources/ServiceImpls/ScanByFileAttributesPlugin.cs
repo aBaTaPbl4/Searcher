@@ -9,9 +9,9 @@ namespace ServiceImpls
     /// <summary>
     /// Плагин поиска по файловым атрибутам:Имя, флаги, размер, дата изменения..
     /// </summary>
-    public class SearchByFileAttributesPlugin : ISearchPlugin
+    public class ScanByFileAttributesPlugin : IScanPlugin
     {
-        #region ISearchPlugin Members
+        #region IScanPlugin Members
 
         public SearchType Type
         {
@@ -24,7 +24,7 @@ namespace ServiceImpls
         /// <param name="fileName"> имя файла </param>
         /// <param name="settings"> настройки системные</param>
         /// <returns>true - удовлетворяет, false - нет</returns>
-        public bool Check(string fileName, ISearchSettings settings)
+        public bool Check(string fileName, IScanSettings settings)
         {
             try
             {
