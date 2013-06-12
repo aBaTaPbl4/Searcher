@@ -7,6 +7,10 @@ using ServiceImpls;
 
 namespace SearcherTests.ObjectsFactory
 {
+    /// <summary>
+    /// Фабрика тестовых объектов для юнит тестов.
+    /// Контекст юнит тестов конфигурируются данным видом фабрики.
+    /// </summary>
     public class UnitTestsObjectsFactory : IObjectsFactory
     {
         #region IObjectsFactory Members
@@ -17,7 +21,7 @@ namespace SearcherTests.ObjectsFactory
         }
 
         public IScanSettings CreateScanSettings(string fileNameSearchPattern, string fileContentSearchPattern,
-                                                    bool isMultithreaded, IScanPlugin[] activePlugins)
+                                                    IScanPlugin[] activePlugins)
         {
             throw new NotImplementedException();
         }

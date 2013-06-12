@@ -24,7 +24,7 @@ namespace ServiceImpls
         /// <param name="fileName"> имя файла </param>
         /// <param name="settings"> настройки системные</param>
         /// <returns>true - удовлетворяет, false - нет</returns>
-        public bool Check(string fileName, IScanSettings settings)
+        public bool Check(string fileName, IScanSettings settings, IFileSystem fileSystem)
         {
             try
             {
@@ -35,13 +35,13 @@ namespace ServiceImpls
                 {
                     return false;
                 }
-                var fileInfo = AppContext.FileSystem.GetFileInfo(fileName);
+                var fileInfo = fileSystem.GetFileInfo(fileName);
                 if (settings.MinFileSize > 0 && fileInfo.FileSize < settings.MinFileSize)
                 {
                     return false;
                 }
 
-                if (settings.MinModificationDate != null && fileInfo.ModificationDate < settings.MinModificationDate)
+                if (settings.MinModificationDate != null && fileInfo.ModificationDate.Date < settings.MinModificationDate)
                 {
                     return false;
                 }

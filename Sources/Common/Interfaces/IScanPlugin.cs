@@ -21,7 +21,8 @@ namespace Common.Interfaces
         /// </summary>
         /// <param name="fileName"> имя файла </param>
         /// <param name="settings"> настройки системные</param>
+        /// <param name="fileSystem"></param>
         /// <returns>true - удовлетворяет, false - нет</returns>
-        bool Check(string fileName, IScanSettings settings);
+        bool Check(string fileName, IScanSettings settings, IFileSystem fileSystem);
     }
 }

@@ -73,10 +73,10 @@
     <Compile Include="ServiceImpls\SearchByFileNamePluginTest.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="TestsConfiguration.cs" />
+    <Compile Include="VM\WndMainVMTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="TestData\6\" />
-    <Folder Include="VM\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Sources\AssemblyResolver\AssemblyResolver.csproj">

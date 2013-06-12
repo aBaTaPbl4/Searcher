@@ -13,6 +13,20 @@ namespace ServiceImpls
     public class ScanByTextPlugin : IScanPlugin
     {
         public const string PluginName = "Search by text in txt files";
+        private IFileSystem _fileSystem;
+
+        private IFileSystem FileSystem
+        {
+            get
+            {
+                if (_fileSystem == null)
+                {
+                    return AppContext.FileSystem;
+                }
+                return _fileSystem;
+            }
+            set { _fileSystem = value; }
+        }
 
         #region IScanPlugin Members
 
@@ -26,10 +40,11 @@ namespace ServiceImpls
             get { return false; }
         }
 
-        public bool Check(string fileName, IScanSettings settings)
+        public bool Check(string fileName, IScanSettings settings, IFileSystem fileSystem)
         {
             try
             {
+                FileSystem = fileSystem;
                 bool checkRequired = !settings.FileContentSearchPattern.IsNullOrEmpty();
 
                 if (!checkRequired)
@@ -45,7 +60,7 @@ namespace ServiceImpls
                 }
                 var fileEncoding = GetFileEncoding(fileName);
                 //Стандартное определение кодировки в классе StreamReader работает коряво
-                using (var reader = new StreamReader(AppContext.FileSystem.GetFileStream(fileName), fileEncoding))
+                using (var reader = new StreamReader(FileSystem.GetFileStream(fileName), fileEncoding))
                 {
                     string line;
                     while ((line = reader.ReadLine()) != null)
@@ -72,14 +87,14 @@ namespace ServiceImpls
         /// </summary>
         /// <param name="srcFile">Файл кодировку которого нужно определить</param>
         /// <returns>Если кодировку определить не удалось возращается Windows-1251</returns>
-        private static Encoding GetFileEncoding(string srcFile)
+        private Encoding GetFileEncoding(string srcFile)
         {
             // *** Use Default of Encoding.Default (Ansi CodePage)
             Encoding enc = Encoding.Default;
 
             // *** Detect byte order mark if any - otherwise assume default
             var buffer = new byte[5];
-            using (var fs = AppContext.FileSystem.GetFileStream(srcFile))
+            using (var fs = FileSystem.GetFileStream(srcFile))
             {
                 fs.Read(buffer, 0, 5);                
             }

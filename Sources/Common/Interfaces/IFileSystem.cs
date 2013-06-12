@@ -61,5 +61,6 @@ namespace Common.Interfaces
         FileInfoShort GetFileInfo(string fileName);
         Stream GetFileStream(string fileName);
         byte[] ReadFile(string fileName);
+        IScanSettings ScanSettings { get; }
     }
 }

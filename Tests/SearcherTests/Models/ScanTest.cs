@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Common;
 using Common.Interfaces;
 using Models;
 using Models.ScanStrategies;
 using NUnit.Framework;
 using Rhino.Mocks;
+using Searcher.VM;
 
 namespace SearcherTests.Models
 {
@@ -16,11 +19,24 @@ namespace SearcherTests.Models
     [TestFixture]
     public abstract class ScanTest
     {
+        private Scan _process;
+        protected ScanStrategyBase _scanStrategy;
+        private List<string> _foundFiles;
+        private FileInfoShort _fileInfo;
+        private IFileSystem _fs;
+        const int _fileSizeToReturn = 500;
+        private readonly DateTime _modificationDateToReturn;
         #region Setup/Teardown
+
+        protected  ScanTest()
+        {
+            _modificationDateToReturn = new DateTime(2013, 6, 9);
+        }
 
         [SetUp]
         public void Setup()
         {
+            
             _process = TestsConfiguration.ObjectsFactory.CreateScan();
             _process.Stub(x => x.IsNeedCancelation).Return(false);
             _process.Stub(x => x.CancelationOccured());
@@ -28,13 +44,17 @@ namespace SearcherTests.Models
             _process.FileWasFound += RegScan_MatchItem;
             _scanStrategy = CreateStrategy();
             _foundFiles = new List<string>();
+
+            _fileInfo = new FileInfoShort();
+            _fileInfo.FileSize = _fileSizeToReturn;
+            _fileInfo.ModificationDate = _modificationDateToReturn;
+            _fileInfo.IsHidden = _fileInfo.IsArch = _fileInfo.IsReadOnly = false;
+
+            _fs = TestsConfiguration.ObjectsFactory.CreateFileSystem();
+            _fs.Stub(x => x.GetFileInfo(null)).IgnoreArguments().Return(_fileInfo);
         }
 
         #endregion
-
-        private Scan _process;
-        protected ScanStrategyBase _scanStrategy;
-        private List<string> _foundFiles;
 
         /// <summary>
         /// Метод переопределен в потомке
@@ -57,6 +77,58 @@ namespace SearcherTests.Models
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
         }
 
+        [TestCase(false,false,false, 1)]
+        [TestCase(false, false, null, 1)]
+        [TestCase(true, false, false, 0)]
+        [TestCase(false, true, false, 0)]
+        [TestCase(false, false, true, 0)]
+        public void ScanByFileAttributes_FlagsCheck_Test(bool? isReadonly, bool isHidden, bool isArch, int expectedMatchesCount)
+        {
+            var settings = TestsConfiguration.ObjectsFactory.CreateScanSettings();
+            settings.Stub(x => x.IsReadOnly).Return(isReadonly);
+            settings.Stub(x => x.IsHidden).Return(isHidden);
+            settings.Stub(x => x.IsArch).Return(isArch);
+
+            _fs.Stub(x => x.ScanSettings).Return(settings);
+            _scanStrategy.ScanSettings = settings;
+            _scanStrategy.FileSystem = _fs;
+            _scanStrategy.StartScan(_process);
+
+            Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
+        }
+
+        [TestCase("09.06.2013", 1)]
+        [TestCase("08.06.2013", 1)]
+        [TestCase("10.06.2013", 0)]
+        [TestCase("", 1)]
+        [TestCase(null, 1)]
+        public void ScanByFileAttributes_ModificationDate_Test(string minModificationDate, int expectedMatchesCount)
+        {
+            var settings = TestsConfiguration.ObjectsFactory.CreateScanSettings();
+            var dt = minModificationDate.IsNullOrEmpty() ? null : (DateTime?)DateTime.Parse(minModificationDate);
+            settings.Stub(x => x.MinModificationDate).Return(dt);
+            _fs.Stub(x => x.ScanSettings).Return(settings);
+            _scanStrategy.ScanSettings = settings;
+            _scanStrategy.FileSystem = _fs;
+            _scanStrategy.StartScan(_process);
+            Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
+        }
+
+        [TestCase(_fileSizeToReturn - 100, 1)]
+        [TestCase(_fileSizeToReturn, 1)]
+        [TestCase(_fileSizeToReturn + 100, 0)]
+        public void ScanByFileAttributes_MinSize_Test(int minSize, int expectedMatchesCount)
+        {
+            var settings = TestsConfiguration.ObjectsFactory.CreateScanSettings();
+            settings.Stub(x => x.MinFileSize).Return(minSize);
+            _fs.Stub(x => x.ScanSettings).Return(settings);
+            _scanStrategy.ScanSettings = settings;
+            _scanStrategy.FileSystem = _fs;
+            _scanStrategy.StartScan(_process);
+            Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
+
+        }
+
         [TestCase("", "note", 1)]
         [TestCase("", "tagotest", 0)]
         public void ScanWithXmlPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
@@ -64,7 +136,8 @@ namespace SearcherTests.Models
             _scanStrategy.ScanSettings =
                 TestsConfiguration.ObjectsFactory.CreateScanSettings(
                     filePattern, fileContentPattern,
-                    false, TestHelper.GetCoreAndXmlPlugin());
+                    TestHelper.GetCoreAndXmlPlugin());
+
 
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
@@ -77,7 +150,7 @@ namespace SearcherTests.Models
             _scanStrategy.ScanSettings =
                 TestsConfiguration.ObjectsFactory.CreateScanSettings(
                     filePattern, fileContentPattern,
-                    false, TestHelper.GetCoreAndTypePlugin());
+                    TestHelper.GetCoreAndTypePlugin());
 
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count, Log.Content);
@@ -96,7 +169,7 @@ namespace SearcherTests.Models
             _scanStrategy.ScanSettings =
                 TestsConfiguration.ObjectsFactory.CreateScanSettings(
                     filePattern, fileContentPattern,
-                    false, TestHelper.GetCoreAndTextPlugin());
+                    TestHelper.GetCoreAndTextPlugin());
             _scanStrategy.StartScan(_process);
             Assert.AreEqual(expectedMatchesCount, _foundFiles.Count,"Error for word '{0}'. {1}", fileContentPattern, Log.Content);
         }

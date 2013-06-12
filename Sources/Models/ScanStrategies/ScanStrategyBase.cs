@@ -73,7 +73,7 @@ namespace Models.ScanStrategies
                     bool isMath = true;
                     foreach (IScanPlugin plugin in ScanSettings.ActivePlugins)
                     {
-                        if (!plugin.Check(fullFileName, ScanSettings))
+                        if (!plugin.Check(fullFileName, ScanSettings, FileSystem))
                         {
                             isMath = false;
                             break;

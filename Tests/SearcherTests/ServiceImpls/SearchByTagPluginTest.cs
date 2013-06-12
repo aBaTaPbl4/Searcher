@@ -1,4 +1,5 @@
-﻿using Common.Interfaces;
+﻿using Common;
+using Common.Interfaces;
 using NUnit.Framework;
 
 namespace SearcherTests.ServiceImpls
@@ -24,7 +25,7 @@ namespace SearcherTests.ServiceImpls
         public void CheckTest(string tagName, bool expectedResult)
         {
             IScanSettings settings = TestsConfiguration.ObjectsFactory.CreateScanSettings("", tagName);
-            bool actualResult = _plugin.Check(TestHelper.XmlFileName, settings);
+            bool actualResult = _plugin.Check(TestHelper.XmlFileName, settings, AppContext.FileSystem);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }
     }

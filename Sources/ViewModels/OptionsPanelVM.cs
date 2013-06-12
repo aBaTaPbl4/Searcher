@@ -71,6 +71,8 @@ namespace Searcher.VM
             }
             set
             {
+                if (value == null)
+                    return;
                 ThreadPool.SetMinThreads(value.MinWorkerThreads, value.MinCompletionThreads);
                 ThreadPool.SetMaxThreads(value.MaxWorkerThreads, value.MaxCompletionThreads);
             }
@@ -94,11 +96,9 @@ namespace Searcher.VM
             }
         }
 
-        private int _i = 0;
         private void InitThreadPool()
         {
-            //var info = RequiredThreadInfo;
-            //CurrentThreadInfo = RequiredThreadInfo;
+            CurrentThreadInfo = RequiredThreadInfo;
         }
         #endregion
     }

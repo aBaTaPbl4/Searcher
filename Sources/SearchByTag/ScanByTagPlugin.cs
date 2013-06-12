@@ -27,7 +27,7 @@ namespace SearchByTag
             get { return false; }
         }
 
-        public bool Check(string fileName, IScanSettings settings)
+        public bool Check(string fileName, IScanSettings settings, IFileSystem fileSystem)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace SearchByTag
                 }
 
                 XDocument doc = null;
-                using (var fs = AppContext.FileSystem.GetFileStream(fileName))
+                using (var fs = fileSystem.GetFileStream(fileName))
                 {
                     doc = XDocument.Load(fs);
                 }

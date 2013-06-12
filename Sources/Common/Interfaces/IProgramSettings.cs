@@ -7,7 +7,7 @@
         LimitedThreadsCount
     }
 
-    public struct ThreadInfo
+    public class ThreadInfo
     {
         public int MinWorkerThreads;
         public int MinCompletionThreads;
@@ -15,6 +15,10 @@
         public int MaxCompletionThreads;
     }
 
+    /// <summary>
+    /// Настройки уровня программы
+    /// Данные открыты только на чтение
+    /// </summary>
     public interface IProgramSettings
     {
         int ThreadsNumber { get; }

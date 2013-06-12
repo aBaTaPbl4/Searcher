@@ -2,10 +2,12 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using Common;
 using Searcher.Implementation;
@@ -39,6 +41,7 @@ namespace Searcher
         public WndMain()
         {
             InitializeComponent();
+            this.Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.Name);
             _logger = AppContext.Logger;
             InitFields();
             DataContext = _vm;
@@ -231,11 +234,11 @@ namespace Searcher
 
         public void StopScanning()
         {
-            var stoppingProgressWindow = ShowProgress();
+            //var stoppingProgressWindow = ShowProgress();
             _pnlActiveScan.btnScanCancel.IsEnabled = false;
             _vm.StopScanning();
             UnLockControls(true);
-            stoppingProgressWindow.Close();        
+            //stoppingProgressWindow.Close();        
         }
 
         private ProgressBarWindow ShowProgress()

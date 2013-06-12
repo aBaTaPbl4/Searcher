@@ -4,7 +4,7 @@ namespace Common.Interfaces
 {
     /// <summary>
     /// Настройки поиска
-    /// (позволяет только читать данные о настройках указанных пользователем)
+    /// Данные открыты только на чтение
     /// </summary>
     public interface IScanSettings
     {

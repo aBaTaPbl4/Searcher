@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Common;
@@ -117,17 +118,25 @@ namespace Searcher.VM
 
         #region IScanSettings Members
 
-        public bool? IsHidden { get; set; }
-        public bool? IsArch { get; set; }
-        public bool? IsReadOnly { get; set; }
-        public bool RecursiveScan { get; set; }
+        public virtual bool? IsHidden { get; set; }
+        public virtual bool? IsArch { get; set; }
+        public virtual bool? IsReadOnly { get; set; }
+        public virtual bool RecursiveScan { get; set; }
 
-        public virtual DateTime? MinModificationDate { get; set; }
+        private DateTime? _minModificationDate;
+        public virtual DateTime? MinModificationDate
+        {
+            get { return _minModificationDate; }
+            set
+            {
+                _minModificationDate = value;
+            }
+        }
 
         /// <summary>
         /// Минимальный размер файла в кб
         /// </summary>
-        public long MinFileSize { get; set; }
+        public virtual long MinFileSize { get; set; }
 
         public virtual string FileNameSearchPattern
         {

@@ -52,7 +52,7 @@ namespace SearcherTests.ObjectsFactory
 
         public IScanSettings CreateScanSettings(string fileNameSearchPattern = "note.",
                                                     string fileContentSearchPattern = "note",
-                                                    bool isMultithreaded = false, IScanPlugin[] activePlugins = null)
+                                                    IScanPlugin[] activePlugins = null)
         {
             var settings = MockRepository.GeneratePartialMock<ScanSettingsPanelVM>();
             settings.FolderToScan = TestHelper.DeepestFolder;
@@ -68,7 +68,9 @@ namespace SearcherTests.ObjectsFactory
 
         public IFileSystem CreateFileSystem()
         {
-            return AppContext.FileSystem;
+            var mock = MockRepository.GeneratePartialMock<FileSystem>();
+            mock.ScanSettings = AppContext.ScanSettings;                   
+            return mock;
         }
 
         public IPluginManager CreatePluginManager()
@@ -113,7 +115,7 @@ namespace SearcherTests.ObjectsFactory
 
         public IScanPlugin CreateTypePlugin()
         {
-            return new ScanByTypePlugin();
+            return new ScanByInterfacePlugin();
         }
 
         #endregion

@@ -11,7 +11,7 @@ namespace ServiceImpls
     public class FileSystem : IFileSystem
     {
 
-        public IScanSettings ScanSettings { get; set; }
+        public virtual IScanSettings ScanSettings { get; set; }
 
         #region IFileSystem Members
 
@@ -88,8 +88,12 @@ namespace ServiceImpls
             }
         }
 
-        public FileInfoShort GetFileInfo(string fileName)
+        public virtual FileInfoShort GetFileInfo(string fileName)
         {
+            if (fileName.IsNullOrEmpty())
+            {
+                return new FileInfoShort();
+            }
             var info = new FileInfo(fileName);
             var result = new FileInfoShort();
             result.IsReadOnly = info.IsReadOnly;

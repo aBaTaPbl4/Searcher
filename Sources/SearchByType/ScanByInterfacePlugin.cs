@@ -14,12 +14,12 @@ namespace SearchByType
     /// Плагин поиска по типу
     /// </summary>
     [Serializable]
-    public class ScanByTypePlugin : IScanPlugin
+    public class ScanByInterfacePlugin : IScanPlugin
     {
-        public const string PluginName = "Search by type in .net assemblies";
+        public const string PluginName = "Search for interface implemetation in .net assemblies";
         private readonly string _currentAssemblyPath;
 
-        public ScanByTypePlugin()
+        public ScanByInterfacePlugin()
         {
              _currentAssemblyPath = new Uri(this.GetType().Assembly.CodeBase).LocalPath;
         }
@@ -37,7 +37,7 @@ namespace SearchByType
             get { return false; }
         }
 
-        public bool Check(string fileName, IScanSettings settings)
+        public bool Check(string fileName, IScanSettings settings, IFileSystem fileSystem)
         {
             try
             {
@@ -55,12 +55,12 @@ namespace SearchByType
                     return false;
                 }
 
-                if (!AppContext.FileSystem.IsAssembly(fileName))
+                if (!fileSystem.IsAssembly(fileName))
                 {
                     return false;
                 }
 
-                return AssemblyContainsInterfaceImplemetation(fileName, settings.FileContentSearchPattern);
+                return AssemblyContainsInterfaceImplemetation(fileName, settings.FileContentSearchPattern, fileSystem);
             }
             catch (Exception ex)
             {
@@ -89,7 +89,7 @@ namespace SearchByType
 
 
 
-        public bool AssemblyContainsInterfaceImplemetation(string fileName, string interfaceName)
+        public bool AssemblyContainsInterfaceImplemetation(string fileName, string interfaceName, IFileSystem fileSystem)
         {
             var domain = CreateTempDomain(Path.GetDirectoryName(fileName));
 
@@ -99,7 +99,7 @@ namespace SearchByType
 
             try
             {
-                resolver.LoadAssembly(AppContext.FileSystem.ReadFile(fileName));
+                resolver.LoadAssembly(fileSystem.ReadFile(fileName));
                 resolver.FileName = Path.GetFileName(fileName);
                 var result = resolver.ContainsInterfaceImplementation(interfaceName);
                 if (resolver.ErrorMessage != null)
@@ -112,11 +112,6 @@ namespace SearchByType
             {
                 AppDomain.Unload(domain);
             }
-        }
-
-        public static void FileExists()
-        {
-            AppContext.FileSystem.FileExtists("aaaa");
         }
 
         public AppDomain CreateTempDomain(string baseDirectory)

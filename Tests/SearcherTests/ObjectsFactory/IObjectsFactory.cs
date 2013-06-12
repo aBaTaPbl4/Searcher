@@ -11,7 +11,7 @@ namespace SearcherTests
 
         IScanSettings CreateScanSettings(string fileNameSearchPattern = "note.",
                                              string fileContentSearchPattern = "note",
-                                             bool isMultithreaded = false, IScanPlugin[] activePlugins = null);
+                                             IScanPlugin[] activePlugins = null);
 
         IFileSystem CreateFileSystem();
         IPluginManager CreatePluginManager();

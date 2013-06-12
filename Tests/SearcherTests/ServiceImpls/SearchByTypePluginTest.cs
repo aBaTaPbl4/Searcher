@@ -1,4 +1,5 @@
-﻿using Common.Interfaces;
+﻿using Common;
+using Common.Interfaces;
 using NUnit.Framework;
 
 namespace SearcherTests.ServiceImpls
@@ -29,7 +30,7 @@ namespace SearcherTests.ServiceImpls
             string fileName = isNative ? TestHelper.NativeFileName : TestHelper.AssemblyFileName;
 
             IScanSettings settings = TestsConfiguration.ObjectsFactory.CreateScanSettings("", typeToSearch);
-            bool actualResult = _plugin.Check(fileName, settings);
+            bool actualResult = _plugin.Check(fileName, settings, AppContext.FileSystem);
             Assert.AreEqual(expectedResult, actualResult, Log.Content);
         }
     }
