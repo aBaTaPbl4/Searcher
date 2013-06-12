@@ -140,6 +140,9 @@
     <Content Include="TestData\1\2\test-win-encoding.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="TestData\1\5\deep.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestData\1\5\note.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

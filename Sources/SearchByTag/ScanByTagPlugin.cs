@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Xml.Linq;
 using Common;
 using Common.Interfaces;
+using System.Linq;
 
 namespace SearchByTag
 {
@@ -51,8 +51,7 @@ namespace SearchByTag
                 {
                     return true;
                 }
-                XElement element = doc.Root.Element(settings.FileContentSearchPattern);
-                return element != null;
+                return doc.Root.Descendants(settings.FileContentSearchPattern).Any();
             }
             catch (Exception ex)
             {

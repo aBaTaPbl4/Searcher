@@ -129,8 +129,9 @@ namespace SearcherTests.Models
 
         }
 
-        [TestCase("", "note", 1)]
+        [TestCase("", "note", 2)]
         [TestCase("", "tagotest", 0)]
+        [TestCase("", "body3", 1)]
         public void ScanWithXmlPluginTest(string filePattern, string fileContentPattern, int expectedMatchesCount)
         {
             _scanStrategy.ScanSettings =
