@@ -57,12 +57,11 @@ namespace Models
 
         private void RaiseScanCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //RaiseProgressChanged(100);
+            RaiseProgressChanged(100);
             if (ScanComplete != null)
             {
                 ScanComplete(this, e);
             }
-            //IsNeedCancelation = false;
             _completionSignal.Set();
         }
 
@@ -148,7 +147,6 @@ namespace Models
 
         public void StartScanAsync()
         {
-            //IsNeedCancelation = false;
             if (_worker != null)
             {
                 ResetAsync();

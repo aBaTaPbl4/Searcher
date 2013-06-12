@@ -13,6 +13,7 @@ namespace ServiceImpls
         private readonly List<IScanPlugin> _corePlugins;        
         private readonly List<IScanPlugin> _externalPlugins;
         private AppDomain _privateDomain;
+        private int _lastFilesCountInPluginFolder;
 
         public PluginManager()
         {
@@ -20,6 +21,7 @@ namespace ServiceImpls
             _externalPlugins.Add(new ScanByTextPlugin());
             _corePlugins = new List<IScanPlugin>();
             _corePlugins.Add(new ScanByFileAttributesPlugin());
+            _lastFilesCountInPluginFolder = 0;
         }
 
         public AppDomain PrivateDomain
@@ -120,6 +122,13 @@ namespace ServiceImpls
         {
             List<string> pluginFiles = FileSystem.GetFiles("Plugins");
 
+            // небольшая оптимизация
+            if (_lastFilesCountInPluginFolder == pluginFiles.Count)
+            {
+                return;
+            }
+            _lastFilesCountInPluginFolder = pluginFiles.Count;
+            
             foreach (string pluginLocation in pluginFiles)
             {
                 try

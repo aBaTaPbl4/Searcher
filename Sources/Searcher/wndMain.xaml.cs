@@ -231,9 +231,20 @@ namespace Searcher
 
         public void StopScanning()
         {
+            var stoppingProgressWindow = ShowProgress();
             _pnlActiveScan.btnScanCancel.IsEnabled = false;
             _vm.StopScanning();
             UnLockControls(true);
+            stoppingProgressWindow.Close();        
+        }
+
+        private ProgressBarWindow ShowProgress()
+        {
+            var progressWindow = new ProgressBarWindow();
+            progressWindow.Owner = this;
+            progressWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            progressWindow.Show();
+            return progressWindow;
         }
 
         public void ToggleScanSettingsPanel()

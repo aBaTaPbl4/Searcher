@@ -42,12 +42,12 @@ namespace Searcher.VM
             _mainWindow = wnd;
             Reset();
             _elapsedTimer = new DispatcherTimer();
-            _elapsedTimer.Interval = new TimeSpan(1000);
+            _elapsedTimer.Interval = TimeSpan.FromMilliseconds(100);
             _elapsedTimer.IsEnabled = false;
             _elapsedTimer.Tick += ElapsedTimer_Tick;
 
             _pluginCheckTimer = new DispatcherTimer();
-            _pluginCheckTimer.Interval = new TimeSpan(20000);
+            _pluginCheckTimer.Interval = TimeSpan.FromSeconds(10);
             _pluginCheckTimer.IsEnabled = true;
             _pluginCheckTimer.Tick += PluginCheckTimer_Tick;
         }

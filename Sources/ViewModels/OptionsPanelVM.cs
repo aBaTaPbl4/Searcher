@@ -94,8 +94,10 @@ namespace Searcher.VM
             }
         }
 
+        private int _i = 0;
         private void InitThreadPool()
         {
+            //var info = RequiredThreadInfo;
             //CurrentThreadInfo = RequiredThreadInfo;
         }
         #endregion
