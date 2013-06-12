@@ -84,6 +84,12 @@ namespace Models.ScanStrategies
                         var fileInfo = new ScanData();
                         fileInfo.FileName = Path.GetFileName(fullFileName);
                         fileInfo.FolderName = Path.GetDirectoryName(fullFileName);
+                        var info = FileSystem.GetFileInfo(fullFileName);
+                        fileInfo.Size = info.FileSize;
+                        fileInfo.ModificationDate = info.ModificationDate;
+                        fileInfo.IsArch = info.IsArch;
+                        fileInfo.IsHidden = info.IsHidden;
+                        fileInfo.IsReadOnly = info.IsReadOnly;
                         _scan.AddFoundFile(fileInfo);
                     }
                     if (IsProgressChanged)
