@@ -26,8 +26,8 @@ namespace Searcher.VM
             MinFileSize = 0;
             RecursiveScan = true;
             _pluginListsForUser = new ObservableCollection<PluginDecoratorVM>();
-            FolderToScan = @"H:\docs";
-            FileNameSearchPattern = "Story";
+            //FolderToScan = @"H:\docs";
+            //FileNameSearchPattern = "Story";
         }
 
 
